@@ -21,14 +21,14 @@
         <div id="leftMenu" style="left: -250px;">
             <h3 id="leftMenuTitle">
                 <span style="text-align: left;">Upgrades</span>
-                <span style="text-align: right;font-size:15px;" id="currentUpgradePoints">{{upgradePoints}}</span>
+                <span style="text-align: right;font-size:15px;" id="currentUpgradePoints">{{upgradePoints | number : '1.2'}}</span>
             </h3>
             <ul id="leftMenuContent">
                 <li ng-repeat="upgrade in upgradeList">
                     <span style="float:left;position:absolute;text-align: left;top:2.5px;left:2.5px;">{{upgrade.name}}</span>
                     <span style="float:right;position:absolute;text-align: right;top:2.5px;right:2.5px;font-size:15px;" >LVL: {{upgrade.level}}</span>
-                    <span style="float:left;position:absolute;text-align: left;bottom:2.5px;left:2.5px;font-size:13px;">DPC: 1</span>
-                    <span style="float:right;position:absolute;text-align: right;bottom:2.5px;right:2.5px;font-size:13px;">Cost: 1</span>
+                    <span style="float:left;position:absolute;text-align: left;bottom:2.5px;left:2.5px;font-size:13px;">DPS: {{calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage)}}</span>
+                    <span style="float:right;position:absolute;text-align: right;bottom:2.5px;right:2.5px;font-size:13px;">Cost: {{calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade)}}</span>
                     <div class="upgradeOverlay" data-ng-click="upgradeClicked(upgrade.name)">
                         <div>UPGRADE</div>
                     </div>

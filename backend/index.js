@@ -76,10 +76,10 @@ const Boss = class Boss {
 };
 
 const User = class User {
-    constructor(user_id, level, activeDamage, passiveDamage, upgradePoints = 0) {
+    constructor(user_id, level, passiveDamage, upgradePoints = 0) {
         this.user_id = user_id;
         this.level = level;
-        this.activeDamage = activeDamage;
+
         this.passiveDamage = passiveDamage;
         this.upgradePoints = upgradePoints;
         this.upgradeList = upgradeList;
@@ -89,6 +89,17 @@ const User = class User {
         //gets a user object from a list of users
         return listOfUsers[user_id];
     }
+
+    get activeDamage() {
+        let clickUpgrade = findUpgradeInList(this.upgradeList, 'Click Damage');
+
+        return calculateDamage(clickUpgrade.level, clickUpgrade.baseDamageMultiplierPercentage, clickUpgrade.baseDamage, clickUpgrade.additionalDamage);
+    }
+}
+
+// returns the position of the upgrade in the array provided
+function findUpgradeInList(list, find) {
+    return list[find];
 }
 
 //users is an object of all the users online
@@ -128,6 +139,48 @@ function generateNewBoss() {
 }
 generateNewBoss();
 
+function calculateCost(currentLevel, increasePerLevel, baseCost) {
+    if (currentLevel === 0) {
+        return baseCost;
+    }
+    return Math.floor(baseCost * Math.pow(currentLevel, increasePerLevel) * 100) / 100;
+}
+
+function calculateDamage(currentLevel, increasePerLevel, baseDamage, additionalDamage) {
+    return Math.floor(((baseDamage * Math.pow(currentLevel, increasePerLevel)) + additionalDamage) * 100) / 100;
+}
+
+// function to test and see if a user has enough points to unlock the next level of their upgrade.
+function userCanPurchaseUpgrade(user_id, upgradeName, users) {
+    if (!users[user_id]) return;
+    let user = users[user_id];
+    if (!user.upgradeList[upgradeName]) return;
+    let upgrade = user.upgradeList[upgradeName];
+    if (user.upgradePoints >= calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function userPurchasedUpgrade(user_id, upgradeName, users) {
+    if (!users[user_id]) return false;
+    let user = users[user_id];
+    if (!user.upgradeList[upgradeName]) return false;
+    let upgrade = user.upgradeList[upgradeName];
+    let upgradeCost = calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade);
+    if (user.upgradePoints >= upgradeCost) {
+        //Emit to the socket their new points
+        user.upgradePoints = user.upgradePoints - upgradeCost;
+        user.upgradeList[upgradeName].level = upgrade.level + 1;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
 // Deal the passive damage for everyone in the stream once a second! TODO (May have to move this setInterval internally)
 setInterval(function () {
     currentBoss.idleDamage(users);
@@ -148,28 +201,6 @@ setInterval(function () {
     })
 }, 1000)
 
-var timeout, bossImage = $('#bossImage');
-
-console.log('-----------------')
-console.log(bossImage);
-console.log('-----------------')
-
-bossImage.mousedown(function(){
-    console.log('boss image has been clicked!');
-    timeout = setInterval(function(){
-        bossImage.css('width', '90px');
-        bossImage.css('height', '90px');
-    }, 50)
-
-    return false;
-})
-
-$(document).mouseup(function(){
-    clearInterval(timeout);
-    bossImage.css('width', '100px');
-    bossImage.css('height', '100px');
-    return false;
-})
 
 io.on('connection', function (socket) {
     console.log('a user connected');
@@ -201,7 +232,7 @@ io.on('connection', function (socket) {
                     if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
                         //User is connecting for the first time
                         // In the future we want to get their user object by calling the database but for now we are using JSobjects
-                        users[decoded.user_id] = new User(decoded.user_id, 1, 1, 0, 0)
+                        users[decoded.user_id] = new User(decoded.user_id, 1, 0, 0)
                         socketUsers[decoded.user_id] = [socket];
                         socket.emit('verified');
                         socket.emit('upgradeList', upgradeList);
@@ -247,10 +278,10 @@ io.on('connection', function (socket) {
             console.log(clicks);
             clicks.push(Date.now());
             let userObject = User.getUser(users, socket.user_id);
-            if(userObject){
+            if (userObject) {
                 currentBoss.damage(userObject.activeDamage);
             }
-            
+
         }
 
         console.log(`${socket.user_id} has clicked the boss!`);
@@ -260,6 +291,23 @@ io.on('connection', function (socket) {
     socket.on('getUpgradePoints', function () {
         // Get the users info by socket.user_id and send them back their upgrade points
         socket.emit("currentUpgradePoints", users[socket.user_id].upgradePoints)
+    })
+
+    // User is requesting to purchase an upgrade!
+    socket.on('purchaseUpgrade', function (upgradeName) {
+        // Test to see if the user can purchase this upgrade with their current points
+
+        if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
+            console.log("User can purchase this upgrade!");
+            if (userPurchasedUpgrade(socket.user_id, upgradeName, users)) {
+                socket.emit("currentUpgradePoints", users[socket.user_id].upgradePoints);
+                let upgrade = users[socket.user_id].upgradeList[upgradeName];
+                upgrade.name = upgradeName;
+                socket.emit("purchasedUpgrade", upgrade);
+            }
+        } else {
+            console.log("User can't purchase this upgrade!");
+        }
     })
 
     socket.on('disconnect', function () {

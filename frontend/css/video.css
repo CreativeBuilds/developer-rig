@@ -59,6 +59,8 @@
     -moz-transition: left .5s ease-out;
     -o-transition: left .5s ease-out;
     transition: left .5s ease-out;
+
+    grid-template-rows: 25px;
 }
 
 #leftMenuTitle {
