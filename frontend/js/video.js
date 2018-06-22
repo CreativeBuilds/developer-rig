@@ -16,6 +16,25 @@ window.Twitch.ext.onAuthorized(auth => {
     authCode = auth;
 })
 
+var timeout, bossImage = $('#bossImage');
+
+bossImage.mousedown(function(){
+    console.log('boss image has been clicked!');
+    timeout = setInterval(function(){
+        bossImage.css('width', '95px');
+        bossImage.css('height', '95px');
+    }, 50)
+
+    return false;
+})
+
+$(document).mouseup(function(){
+    clearInterval(timeout);
+    bossImage.css('width', '100px');
+    bossImage.css('height', '100px');
+    return false;
+})
+
 app.controller('myCtrl', function ($scope) {
 
     let clicks = [];
@@ -27,6 +46,9 @@ app.controller('myCtrl', function ($scope) {
     $scope.upgradePoints = 0;
 
     $scope.upgradeList = [];
+
+    $scope.currentClickDamage = 1;
+    $scope.currentIdleDamage = 0;
 
     var socket = io('http://localhost:4000');
 
@@ -80,7 +102,7 @@ app.controller('myCtrl', function ($scope) {
             $scope.upgradePoints = currentUpgradePoints;
         })
 
-        socket.on('upgradeList', (upgradeList)=>{
+        socket.on('upgradeList', (upgradeList) => {
             $scope.upgradeList = [];
             Object.keys(upgradeList).forEach(function (upgrade_name) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -115,15 +137,15 @@ app.controller('myCtrl', function ($scope) {
         return `rgb(${r},${g},${b})`;
     }
 
-    $scope.calculateCost = function(currentLevel, increasePerLevel, baseCost){
-        if(currentLevel === 0){
+    $scope.calculateCost = function (currentLevel, increasePerLevel, baseCost) {
+        if (currentLevel === 0) {
             return baseCost;
         }
-        return baseCost*Math.pow(currentLevel, increasePerLevel);
+        return baseCost * Math.pow(currentLevel, increasePerLevel);
     }
 
-    $scope.calculateDamage = function(currentLevel, increasePerLevel, baseDamage, addDamage){
-        return (baseDamage*Math.pow(currentLevel, increasePerLevel))+addDamage;
+    $scope.calculateDamage = function (currentLevel, increasePerLevel, baseDamage, addDamage) {
+        return (baseDamage * Math.pow(currentLevel, increasePerLevel)) + addDamage;
     }
 
     $scope.updateHealthDisplay = function (totalHealth, health) {
@@ -135,18 +157,23 @@ app.controller('myCtrl', function ($scope) {
         let currentColor = blendRGB(startingColor, endingColor, remainingHealthPercentage);
         //console.log(currentColor);
         $('#bossHealthChild').css(`background`, currentColor);
+        $scope.remainingHealthPercentage = Math.floor(remainingHealthPercentage * 10000) / 100;
+        if(!$scope.$$phase) {
+            //$digest or $apply
+            $scope.$apply();
+          }
         //console.log((remainingHealthPercentage * 100) + "%");
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
 
-        $scope.remainingHealthPercentage = Math.floor(remainingHealthPercentage * 10000) / 100;
+
     }
 
-    $scope.upgradeClicked = function(upgradeName){
+    $scope.upgradeClicked = function (upgradeName) {
         let tempList = $scope.upgradeList;
-        for(upgrade in tempList){
-            if(tempList[upgrade].name === tempList[upgrade]){
+        for (upgrade in tempList) {
+            if (tempList[upgrade].name === tempList[upgrade]) {
                 // Name matches to the one that was clicked
-                if($scope.upgradePoints >= $scope.calculateCost(tempList[upgrade].level, tempList[upgrade].baseCostMultiplierPercentage, tempList[upgrade].baseCostToUpgrade)){
+                if ($scope.upgradePoints >= $scope.calculateCost(tempList[upgrade].level, tempList[upgrade].baseCostMultiplierPercentage, tempList[upgrade].baseCostToUpgrade)) {
                     // The user can buy it!
                     tempList[upgrade].level++;
                     $scope.upgradeList = tempList;
@@ -196,10 +223,17 @@ app.controller('myCtrl', function ($scope) {
                     clicks.splice(0, 1);
                     clicks.push(Date.now());
                     socket.emit('screenClicked');
+                    if($scope.bossHealth - $scope.currentClickDamage < 0)return;
+                    $scope.bossHealth = $scope.bossHealth - $scope.currentClickDamage;
+                    $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);
                 }
             } else {
                 clicks.push(Date.now());
                 socket.emit('screenClicked');
+                if($scope.bossHealth - $scope.currentClickDamage < 0)return;
+                $scope.bossHealth = $scope.bossHealth - $scope.currentClickDamage;
+                $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);
+                lastClick = Date.now();
             }
         }
 
@@ -207,7 +241,7 @@ app.controller('myCtrl', function ($scope) {
     }
 
 
-    
+
 
 
 });

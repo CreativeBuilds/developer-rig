@@ -148,6 +148,29 @@ setInterval(function () {
     })
 }, 1000)
 
+var timeout, bossImage = $('#bossImage');
+
+console.log('-----------------')
+console.log(bossImage);
+console.log('-----------------')
+
+bossImage.mousedown(function(){
+    console.log('boss image has been clicked!');
+    timeout = setInterval(function(){
+        bossImage.css('width', '90px');
+        bossImage.css('height', '90px');
+    }, 50)
+
+    return false;
+})
+
+$(document).mouseup(function(){
+    clearInterval(timeout);
+    bossImage.css('width', '100px');
+    bossImage.css('height', '100px');
+    return false;
+})
+
 io.on('connection', function (socket) {
     console.log('a user connected');
 
