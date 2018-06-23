@@ -16,5 +16,14 @@
         "baseCostToUpgrade": 2,
         "baseCostMultiplierPercentage":1.2,
         "baseDamageMultiplierPercentage":1.15
+    },
+    "Idle Damage 2": {
+        "level":0,
+        "baseDamage": 5,
+        "additionalDamage":0,
+        "type":"active",
+        "baseCostToUpgrade": 1,
+        "baseCostMultiplierPercentage":1.3,
+        "baseDamageMultiplierPercentage":1.15
     }
 }

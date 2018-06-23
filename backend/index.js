@@ -56,7 +56,7 @@ connection.connect(function (err) {
             }
 
             damage(usersDamage) {
-                console.log("dealing damage to the boss, current health:", this.health,);
+                console.log("dealing damage to the boss, current health:", this.health, );
                 if (this.health === 0) return;
                 console.log("Got past this!")
                 if (this.health - usersDamage < 0) {
@@ -141,10 +141,12 @@ connection.connect(function (err) {
             constructor(user_id, level, passiveDamage, upgradePoints = 0, usersUpgradeList = upgradeList) {
                 this.user_id = user_id;
                 this.level = level;
-
-                this.passiveDamage = passiveDamage;
                 this.upgradePoints = upgradePoints;
                 this.upgradeList = usersUpgradeList;
+                this.isActive = false;
+                this.damageFromUpgrade = function(upgrade) {
+                    return calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
+                }
             }
 
             static getUser(listOfUsers, user_id) {
@@ -153,17 +155,53 @@ connection.connect(function (err) {
             }
 
             get activeDamage() {
-                let clickUpgrade = findUpgradeInList(this.upgradeList, 'Click Damage');
+                if(!this.isActive) return 0;
+                let totalDamage = 0;
+                let list = returnUpgradesWithType(this.upgradeList, "active");
+                let thisCopy = this;
+                console.log(list);
+                list.forEach(function(upgrade){
+                    totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
+                })
+                thisCopy = null;
+                return totalDamage;
+            }
 
-                console.log("My current click damage is: ", calculateDamage(clickUpgrade.level, clickUpgrade.baseDamageMultiplierPercentage, clickUpgrade.baseDamage, clickUpgrade.additionalDamage));
-
-                return calculateDamage(clickUpgrade.level, clickUpgrade.baseDamageMultiplierPercentage, clickUpgrade.baseDamage, clickUpgrade.additionalDamage);
+            get passiveDamage() {
+                if(!this.isActive) return 0;
+                let totalDamage = 0;
+                let list = returnUpgradesWithType(this.upgradeList, "passive");
+                let thisCopy = this;
+                console.log(list);
+                list.forEach(function(upgrade){
+                    totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
+                })
+                thisCopy = null;
+                return totalDamage
+                
+                
             }
         }
 
         // returns the position of the upgrade in the array provided
         function findUpgradeInList(list, find) {
             return list[find];
+        }
+
+        // Takes a list of upgrades and returns a list of ones that match "type"
+        function returnUpgradesWithType(list, type) {
+            let tempList = [];
+            let max = Object.keys(list).length;
+            let tempPoints = 0;
+            Object.keys(list).forEach(function (upgrade) {
+                console.log(upgrade, "Upgrade", type)
+                if(list[upgrade].type === type){
+                    console.log("THEY MATCHED!");
+                    tempList.push(list[upgrade]);
+                }
+                
+            })
+            return tempList;
         }
 
         //users is an object of all the users online
@@ -400,7 +438,7 @@ connection.connect(function (err) {
                                     } else {
                                         users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, result.upgrades);
                                         socketUsers[decoded.user_id] = [socket];
-                                        
+
                                         socket.emit('verified');
                                         socket.emit('upgradeList', result.upgrades);
                                     }
@@ -489,6 +527,12 @@ connection.connect(function (err) {
                     }
                 } else {
                     console.log("User can't purchase this upgrade!");
+                }
+            })
+
+            socket.on('joinedFight', function(){
+                if(socket.user_id){
+                    users[socket.user_id].isActive = true;
                 }
             })
 

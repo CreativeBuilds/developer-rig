@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+amountGivenAway.txt
 
 # production
 /build

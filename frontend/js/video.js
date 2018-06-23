@@ -160,6 +160,14 @@ app.controller('myCtrl', function ($scope) {
         return Math.floor(((baseDamage * Math.pow(currentLevel, increasePerLevel)) + addDamage) * 100) / 100;
     }
 
+    // User is active, fade the screen so the user can do stuff and turn display to hidden;
+    $scope.joinFight = function(){
+        let overlay = $("#joinOverlay");
+        overlay.css('opacity', "0");
+        overlay.css('display', "none");
+        socket.emit("joinedFight");
+    }
+
     $scope.updateHealthDisplay = function (totalHealth, health) {
         // Update the width of the health bar and change the color depending on how much is left;
         let startingColor = 'rgb(16,80,0)';
