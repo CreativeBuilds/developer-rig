@@ -59,6 +59,7 @@ app.controller('myCtrl', function ($scope) {
         socket.on('verified', () => {
             console.log("I'm verified")
             verified = true;
+            socket.emit('getUpgradePoints');
         })
 
         function verify() {
@@ -103,6 +104,7 @@ app.controller('myCtrl', function ($scope) {
         })
 
         socket.on('upgradeList', (upgradeList) => {
+            console.log("upgradeList", upgradeList, $scope.upgradeList);
             $scope.upgradeList = [];
             Object.keys(upgradeList).forEach(function (upgrade_name) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -110,6 +112,7 @@ app.controller('myCtrl', function ($scope) {
                 let upgrade = upgradeList[upgrade_name];
                 upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
                 $scope.upgradeList.push(upgrade)
+                console.log($scope.upgradeList);
             })
 
             $scope.updateClickDamage();
@@ -268,7 +271,7 @@ app.controller('myCtrl', function ($scope) {
                     clicks.splice(0, 1);
                     clicks.push(Date.now());
                     socket.emit('screenClicked');
-                    if ($scope.bossHealth - $scope.currentClickDamage < 0) {
+                    if ($scope.bossHealth - $scope.currentClickDamage <= 0) {
                         $scope.bossHealth = 0;
                         $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);
                         return;
@@ -279,7 +282,7 @@ app.controller('myCtrl', function ($scope) {
             } else {
                 clicks.push(Date.now());
                 socket.emit('screenClicked');
-                if ($scope.bossHealth - $scope.currentClickDamage < 0) {
+                if ($scope.bossHealth - $scope.currentClickDamage <= 0) {
                     $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);
                     $scope.bossHealth = 0;
                     return;

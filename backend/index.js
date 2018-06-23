@@ -21,12 +21,26 @@ connection.connect(function (err) {
     if (err) {
         console.error('error connecting: ' + err.stack);
         return;
+
     } else {
+
+        connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, upgrades TEXT)", function (err, result) {
+            if (err) {
+                // If the table exits (do nothing);
+                if (err.message.includes("already exists")) {
+                    console.log("Table exists")
+                } else {
+                    console.log(err.message);
+                    throw err;
+                }
+
+            }
+        })
 
         app.get('/', function (req, res) {
             res.send('<h1>Hello world</h1>');
         });
-        
+
         // Import all extra stuff
         const Boss = class Boss {
             //Initiates the boss
@@ -42,9 +56,17 @@ connection.connect(function (err) {
             }
 
             damage(usersDamage) {
-                console.log("dealing damage to the boss, current health:", this.health);
-                this.health = this.health - usersDamage;
+                console.log("dealing damage to the boss, current health:", this.health,);
+                if (this.health === 0) return;
+                console.log("Got past this!")
+                if (this.health - usersDamage < 0) {
+                    console.log("Health is set to 0!");
+                    this.health = 0;
+                } else {
+                    this.health = this.health - usersDamage;
+                }
                 if (this.testIfKilled()) {
+                    console.log("Should be killed!");
                     this.handleDeath();
                 }
             }
@@ -63,20 +85,45 @@ connection.connect(function (err) {
                 console.log("You just beat a man to death...... GOOD JOB!!!");
 
                 let thisBoss = this;
+
+                let maxAmount = Object.keys(users).length;
+                let currentAmount = 0;
+
                 Object.keys(users).forEach(function (user_id) {
                     //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
-                    users[user_id].upgradePoints = users[user_id].upgradePoints + thisBoss.rewardUpgradePoints;
+                    getPropertyOfAUser(user_id, "upgrade_points", function (err, points) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            users[user_id].upgradePoints = points + thisBoss.rewardUpgradePoints;
+                            updateAUsersProperty(user_id, "upgrade_points", points + thisBoss.rewardUpgradePoints, function (err, isTrue) {
+                                if (err) throw err;
+                                if (isTrue) {
+                                    console.log("Successfully updated the users points!");
+                                    currentAmount++;
+                                    if (currentAmount === maxAmount) {
+                                        generateNewBoss();
+                                    }
+                                }
+                            });
+
+                        }
+                    })
+
                 })
-                generateNewBoss();
             }
 
             // Do idle damage for everyone in the stream
             idleDamage(users) {
                 let thisBoss = this;
+                let maxNum = Object.keys(users);
+                let currentNum = 0;
                 Object.keys(users).forEach(function (user_id) {
                     let passiveDamage = users[user_id].passiveDamage;
                     console.log(user_id, "is dealing passive damage to the boss, damage:", passiveDamage);
                     thisBoss.damage(passiveDamage)
+                    currentNum++;
+                    if (currentNum === maxNum) {}
                 })
             }
 
@@ -91,13 +138,13 @@ connection.connect(function (err) {
         };
 
         const User = class User {
-            constructor(user_id, level, passiveDamage, upgradePoints = 0) {
+            constructor(user_id, level, passiveDamage, upgradePoints = 0, usersUpgradeList = upgradeList) {
                 this.user_id = user_id;
                 this.level = level;
 
                 this.passiveDamage = passiveDamage;
                 this.upgradePoints = upgradePoints;
-                this.upgradeList = upgradeList;
+                this.upgradeList = usersUpgradeList;
             }
 
             static getUser(listOfUsers, user_id) {
@@ -107,6 +154,8 @@ connection.connect(function (err) {
 
             get activeDamage() {
                 let clickUpgrade = findUpgradeInList(this.upgradeList, 'Click Damage');
+
+                console.log("My current click damage is: ", calculateDamage(clickUpgrade.level, clickUpgrade.baseDamageMultiplierPercentage, clickUpgrade.baseDamage, clickUpgrade.additionalDamage));
 
                 return calculateDamage(clickUpgrade.level, clickUpgrade.baseDamageMultiplierPercentage, clickUpgrade.baseDamage, clickUpgrade.additionalDamage);
             }
@@ -188,11 +237,108 @@ connection.connect(function (err) {
                 //Emit to the socket their new points
                 user.upgradePoints = user.upgradePoints - upgradeCost;
                 user.upgradeList[upgradeName].level = upgrade.level + 1;
+                updateAUsersProperty(user_id, "upgrade_points", user.upgradePoints, function (err, updated) {
+                    if (err) throw err;
+                    if (updated) console.log("Updated the points after the user purchased an upgrade!");
+                })
+                updateAUsersProperty(user_id, "upgrades", JSON.stringify(user.upgradeList), function (err, updated) {
+                    if (err) throw err;
+                    if (updated) console.log("Updated the upgrades after the user purchased an upgrade!");
+                })
+
                 return true;
             } else {
                 return false;
             }
         }
+
+        function selectFromTable(table, toSearch, toMatch, callback) {
+            connection.query(`SELECT * FROM ` + table + ` WHERE ` + toSearch + ` = '` + toMatch + `'`, callback);
+        }
+
+        function getOrMakeUser(decoded, callback) {
+            selectFromTable('users', 'opaque_user_id', decoded.opaque_user_id, function (err, result) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    console.log("Results:", result)
+                    if (result.length === 0) {
+                        // User doesn't exist (make the user!)
+                        connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(upgradeList)}')`, function (err, result) {
+                            if (err) {
+                                callback(err, null);
+                            } else {
+                                getOrMakeUser(decoded, callback);
+                            }
+                        })
+                    } else {
+                        result[0].upgrades = JSON.parse(result[0].upgrades);
+                        callback(null, result[0]);
+                    }
+                }
+            })
+        }
+
+        //Returns a user object not an array!
+        function getUserWithUsername(username, callback) {
+            selectFromTable('users', 'user_id', username, function (err, result) {
+                if (err) {
+                    callback(err, null);
+                } else if (result.length === 0) {
+                    callback(null, {});
+                } else {
+                    callback(null, result[0]);
+                }
+            })
+        }
+
+        //Returns an error if it fails, if not it returns true! (Through callback)
+        function updateAUsersProperty(username, field, info, callback) {
+            getUserWithUsername(username, function (err, user) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    connection.query(`UPDATE users SET ${field} = '${info}' WHERE user_id = '${username}'`, function (err, result) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, true);
+                        }
+                    })
+                }
+            })
+        }
+
+        function getPropertyOfAUser(username, property, callback) {
+            getUserWithUsername(username, function (err, user) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(err, user[property]);
+                }
+            })
+        }
+
+        function sendAMessageToAllOfAUsersSockets(user_id, messageName, infoToSend, users) {
+            for (socket of users[user_id]) {
+                socket.emit(messageName, infoToSend);
+            }
+        }
+
+        function getUsersClickDamage(username, callback) {
+            getPropertyOfAUser(username, "upgrades", function (err, upgrades) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    let parsedUpgrades = JSON.parse(upgrades);
+                    let clickDamage = parsedUpgrades['Click Damage'];
+
+                    callback(null, calculateDamage(clickDamage.level, clickDamage.baseDamageMultiplierPercentage, clickDamage.baseDamage, clickDamage.additionalDamage));
+                }
+            })
+        }
+
+
 
 
 
@@ -244,17 +390,33 @@ connection.connect(function (err) {
                         } else {
                             //User has shared their identity with us!
                             socket.user_id = decoded.user_id;
+                            console.log(decoded);
                             if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
                                 //User is connecting for the first time
-                                // In the future we want to get their user object by calling the database but for now we are using JSobjects
-                                users[decoded.user_id] = new User(decoded.user_id, 1, 0, 0)
-                                socketUsers[decoded.user_id] = [socket];
-                                socket.emit('verified');
-                                socket.emit('upgradeList', upgradeList);
+                                // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
+                                getOrMakeUser(decoded, function (err, result) {
+                                    if (err) {
+                                        throw err;
+                                    } else {
+                                        users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, result.upgrades);
+                                        socketUsers[decoded.user_id] = [socket];
+                                        
+                                        socket.emit('verified');
+                                        socket.emit('upgradeList', result.upgrades);
+                                    }
+                                })
+
                             } else {
-                                socketUsers[decoded.user_id].push(socket);
-                                socket.emit('verified');
-                                socket.emit('upgradeList', upgradeList);
+
+                                getOrMakeUser(decoded, function (err, result) {
+                                    if (err) {
+                                        throw err;
+                                    } else {
+                                        socketUsers[decoded.user_id].push(socket);
+                                        socket.emit('verified');
+                                        socket.emit('upgradeList', result.upgrades);
+                                    }
+                                })
                             }
                         }
                     }
@@ -298,14 +460,19 @@ connection.connect(function (err) {
                     }
 
                 }
-
-                console.log(`${socket.user_id} has clicked the boss!`);
             })
 
             // User is now requesting their current upgradePoints because the boss was killed!
             socket.on('getUpgradePoints', function () {
                 // Get the users info by socket.user_id and send them back their upgrade points
-                socket.emit("currentUpgradePoints", users[socket.user_id].upgradePoints)
+                getPropertyOfAUser(socket.user_id, "upgrade_points", function (err, points) {
+                    if (err) {} else {
+                        users[socket.user_id].upgradePoints = points;
+                        socket.emit("currentUpgradePoints", points)
+                    }
+
+                })
+
             })
 
             // User is requesting to purchase an upgrade!
@@ -315,10 +482,10 @@ connection.connect(function (err) {
                 if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
                     console.log("User can purchase this upgrade!");
                     if (userPurchasedUpgrade(socket.user_id, upgradeName, users)) {
-                        socket.emit("currentUpgradePoints", users[socket.user_id].upgradePoints);
+                        sendAMessageToAllOfAUsersSockets(socket.user_id, "currentUpgradePoints", users[socket.user_id].upgradePoints, socketUsers);
                         let upgrade = users[socket.user_id].upgradeList[upgradeName];
                         upgrade.name = upgradeName;
-                        socket.emit("purchasedUpgrade", upgrade);
+                        sendAMessageToAllOfAUsersSockets(socket.user_id, "purchasedUpgrade", upgrade, socketUsers);
                     }
                 } else {
                     console.log("User can't purchase this upgrade!");
