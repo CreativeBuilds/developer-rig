@@ -49,6 +49,20 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.currentClickDamage = 1;
     $scope.currentIdleDamage = 0;
+    $scope.currentFloor = 1;
+
+    // User opened the app
+    $scope.openApp = function(){
+        $('#app').css('display',"block");
+        $('#app').css('opacity',1);
+    }
+
+    $scope.closeApp = function(){
+        $('#app').css('opacity',0);
+        setTimeout(function(){
+            window.location.reload();
+        },250)
+    }
 
     var socket = io('http://localhost:4000');
 
@@ -74,6 +88,10 @@ app.controller('myCtrl', function ($scope) {
         }
 
         verify();
+
+        socket.on("newFloor", (floorNum)=>{
+            $scope.currentFloor = floorNum;
+        })
 
         socket.on("shareIdentity", () => {
             //The server needs the user to agree to share their identity, ask them!
@@ -122,6 +140,10 @@ app.controller('myCtrl', function ($scope) {
 
     });
 
+    socket.on('disconnect', function () {
+        window.location.reload();
+    })
+
     setInterval(function () {
         $scope.updateClickDamage();
     }, 10000)
@@ -161,12 +183,15 @@ app.controller('myCtrl', function ($scope) {
     }
 
     // User is active, fade the screen so the user can do stuff and turn display to hidden;
-    $scope.joinFight = function(){
+    $scope.joinFight = function () {
+        socket.emit("joinFight");
+    }
+
+    socket.on("joinedFight", function () {
         let overlay = $("#joinOverlay");
         overlay.css('opacity', "0");
         overlay.css('display', "none");
-        socket.emit("joinedFight");
-    }
+    })
 
     $scope.updateHealthDisplay = function (totalHealth, health) {
         // Update the width of the health bar and change the color depending on how much is left;
@@ -217,9 +242,21 @@ app.controller('myCtrl', function ($scope) {
     }
 
     $scope.updateClickDamage = function () {
-        let upgrade = $scope.findUpgradeInList($scope.upgradeList, 'Click Damage');
-        $scope.currentClickDamage = upgrade.currentDPS;
+        let tempDamage = 0;
+        let currentInt = 0;
+        let type = "active"; //Active means clicking
+        $scope.upgradeList.forEach(function (upgrade) {
+            currentInt = currentInt + 1;
+            if (upgrade.type === type) {
+                console.log($scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage), tempDamage);
+                tempDamage = tempDamage + $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
+            }
+            if(currentInt === $scope.upgradeList.length){
+                $scope.currentClickDamage = tempDamage;
+            }
+        })
     }
+    $scope.updateClickDamage();
 
     socket.on('purchasedUpgrade', function (upgrade) {
         console.log("Purchase of upgrade is a go!", upgrade);
@@ -264,7 +301,9 @@ app.controller('myCtrl', function ($scope) {
         }
     }
 
-    // Checks to see which upgrades can be purchased.
+    
+
+    // TODO Checks to see which upgrades can be purchased.
     let canPurchase = function () {
 
     }
@@ -279,6 +318,7 @@ app.controller('myCtrl', function ($scope) {
                     clicks.splice(0, 1);
                     clicks.push(Date.now());
                     socket.emit('screenClicked');
+                    console.log($scope.currentClickDamage);
                     if ($scope.bossHealth - $scope.currentClickDamage <= 0) {
                         $scope.bossHealth = 0;
                         $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);

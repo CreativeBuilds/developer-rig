@@ -44,15 +44,18 @@ connection.connect(function (err) {
         // Import all extra stuff
         const Boss = class Boss {
             //Initiates the boss
-            constructor(name, health, damagePerSecond) {
+            constructor(name, floor,type, amountOfActivePlayers) {
 
                 // All of these are variables for each boss, more can be added
                 this.name = name;
-                this.health = health;
-                this.totalHealth = health;
-                this.damagePerSecond = damagePerSecond;
-                this.rewardUpgradePoints = 1; //TODO Remove this as a hardcode and make it a changeable variable;
+                console.log(floor);
+                console.log(amountOfActivePlayers);
+                this.health = 100*floor*amountOfActivePlayers;
+                this.totalHealth = this.health;
+                this.floor = floor;
+                this.rewardUpgradePoints = floor; //TODO Remove this as a hardcode and make it a changeable variable;
                 this.usersWhoHelped = {};
+                this.floor = floor;
 
             }
 
@@ -113,7 +116,8 @@ connection.connect(function (err) {
                                     console.log("Successfully updated the users points!");
                                     currentAmount++;
                                     if (currentAmount === maxAmount) {
-                                        generateNewBoss();
+                                        console.log("Amount of users who've helped!",Object.keys(thisBoss.usersWhoHelped).length);
+                                        generateNewBoss({name:"John", floor: thisBoss.floor+1, "amountOfActivePlayers":Object.keys(thisBoss.usersWhoHelped).length});
                                     }
                                 }
                             });
@@ -127,6 +131,7 @@ connection.connect(function (err) {
             // Do idle damage for everyone in the stream
             idleDamage(users) {
                 let thisBoss = this;
+                if (thisBoss.health === 0) return;
                 let maxNum = Object.keys(users);
                 let currentNum = 0;
                 Object.keys(users).forEach(function (user_id) {
@@ -257,12 +262,27 @@ connection.connect(function (err) {
             return arr;
         }
 
-        function generateNewBoss() {
+        // TODO make a function that will generate a 'boss name'
+        // TODO maybe calculate rewardUpgradePoints/health based on floor
+
+        // Types
+        /*
+            Common
+            Uncommon
+            Rare
+            Epic
+            Legendary
+            Mythical
+        */
+        function generateNewBoss({ name = "John", floor = 1, type = "common",amountOfActivePlayers = 1} = {}) {
             //This just gens a new boss
-            currentBoss = new Boss("John", 100, 0);
+            console.log("Made a new boss");
+            currentBoss = new Boss(name, floor, type, amountOfActivePlayers);
             io.emit('newBoss');
+            io.emit('newFloor', floor);
         }
         generateNewBoss();
+
 
         function calculateCost(currentLevel, increasePerLevel, baseCost) {
             if (currentLevel === 0) {
@@ -317,15 +337,41 @@ connection.connect(function (err) {
             connection.query(`SELECT * FROM ` + table + ` WHERE ` + toSearch + ` = '` + toMatch + `'`, callback);
         }
 
+        // Will take a object in the form of upgrade.json and strip everything except the levels (useful for saving in the database))
+        function returnLevelUpgradeList(list){
+            let tempObj = {};
+            Object.keys(list).forEach(function(upgrade_name){
+                tempObj[upgrade_name] = {"level":list[upgrade_name].level};
+            })
+            console.log("Returning", tempObj);
+            return tempObj;
+        }
+
+        function addUpgradeInfoBack(listFromDatabase, list, username){
+            let haveToUpdate = false;
+            Object.keys(list).forEach(function(upgrade_name){
+                if(!listFromDatabase[upgrade_name]){
+                    haveToUpdate = true;
+                    listFromDatabase[upgrade_name].level = list[upgrade_name].level;
+                } else {
+                    list[upgrade_name].level = listFromDatabase[upgrade_name].level;
+                }
+            })
+            if(haveToUpdate && username){
+                updateAUsersProperty(username, "upgrades", listFromDatabase);
+            }
+            console.log("returning", list);
+            return list;
+        }
+
         function getOrMakeUser(decoded, callback) {
             selectFromTable('users', 'opaque_user_id', decoded.opaque_user_id, function (err, result) {
                 if (err) {
                     callback(err, null);
                 } else {
-                    console.log("Results:", result)
                     if (result.length === 0) {
                         // User doesn't exist (make the user!)
-                        connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(upgradeList)}')`, function (err, result) {
+                        connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}')`, function (err, result) {
                             if (err) {
                                 callback(err, null);
                             } else {
@@ -439,7 +485,6 @@ connection.connect(function (err) {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log(decoded);
                         if (decoded.opaque_user_id[0] !== 'U') {
                             //The user is not logged into twitch, dont allow them to do anything
                             socket.disconnect(0);
@@ -451,7 +496,6 @@ connection.connect(function (err) {
                         } else {
                             //User has shared their identity with us!
                             socket.user_id = decoded.user_id;
-                            console.log(decoded);
                             if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
                                 //User is connecting for the first time
                                 // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
@@ -459,11 +503,13 @@ connection.connect(function (err) {
                                     if (err) {
                                         throw err;
                                     } else {
-                                        users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, result.upgrades);
+                                        let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
+                                        users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
                                         socketUsers[decoded.user_id] = [socket];
 
                                         socket.emit('verified');
-                                        socket.emit('upgradeList', result.upgrades);
+                                        socket.emit('upgradeList', upgrades);
+                                        socket.emit('newFloor', currentBoss.floor);
                                     }
                                 })
 
@@ -473,9 +519,11 @@ connection.connect(function (err) {
                                     if (err) {
                                         throw err;
                                     } else {
+                                        let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                         socketUsers[decoded.user_id].push(socket);
                                         socket.emit('verified');
-                                        socket.emit('upgradeList', result.upgrades);
+                                        socket.emit('upgradeList', upgrades);
+                                        socket.emit('newFloor', currentBoss.floor);
                                     }
                                 })
                             }
@@ -553,10 +601,11 @@ connection.connect(function (err) {
                 }
             })
 
-            socket.on('joinedFight', function(){
+            socket.on('joinFight', function(){
                 if(socket.user_id){
                     if(!users[socket.user_id]) return;
                     users[socket.user_id].isActive = true;
+                    socket.emit("joinedFight");
                 }
             })
 
