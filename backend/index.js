@@ -52,22 +52,31 @@ connection.connect(function (err) {
                 this.totalHealth = health;
                 this.damagePerSecond = damagePerSecond;
                 this.rewardUpgradePoints = 1; //TODO Remove this as a hardcode and make it a changeable variable;
+                this.usersWhoHelped = {};
 
             }
 
-            damage(usersDamage) {
-                console.log("dealing damage to the boss, current health:", this.health, );
+            damage(usersDamage, user_id) {
+                if(user_id === "undefined" || typeof user_id === "undefined") return;
+                let thisBoss = this;
+                console.log("dealing damage to the boss, current health:", this.health, user_id );
+                
                 if (this.health === 0) return;
                 console.log("Got past this!")
                 if (this.health - usersDamage < 0) {
                     console.log("Health is set to 0!");
                     this.health = 0;
                 } else {
+                    console.log()
                     this.health = this.health - usersDamage;
                 }
-                if (this.testIfKilled()) {
-                    console.log("Should be killed!");
-                    this.handleDeath();
+                if(!thisBoss.usersWhoHelped[user_id]){
+                    thisBoss.usersWhoHelped[user_id] = {"passiveDamage":0,"activeDamage":usersDamage};
+                } else {
+                    thisBoss.usersWhoHelped[user_id].activeDamage = thisBoss.usersWhoHelped[user_id].activeDamage + usersDamage; 
+                }
+                if (thisBoss.testIfKilled()) {
+                    thisBoss.handleDeath();
                 }
             }
 
@@ -83,7 +92,9 @@ connection.connect(function (err) {
             // Basically just reward users
             handleDeath() {
                 console.log("You just beat a man to death...... GOOD JOB!!!");
-
+                console.log("----------------------------------------------");
+                console.log(this.usersWhoHelped);
+                console.log("----------------------------------------------");
                 let thisBoss = this;
 
                 let maxAmount = Object.keys(users).length;
@@ -119,11 +130,27 @@ connection.connect(function (err) {
                 let maxNum = Object.keys(users);
                 let currentNum = 0;
                 Object.keys(users).forEach(function (user_id) {
+                    if(user_id === "undefined" || typeof user_id === "undefined") return;
+                    if(!users[user_id].isActive)return;
                     let passiveDamage = users[user_id].passiveDamage;
-                    console.log(user_id, "is dealing passive damage to the boss, damage:", passiveDamage);
-                    thisBoss.damage(passiveDamage)
+                    if (thisBoss.health - passiveDamage < 0) {
+                        console.log("Health is set to 0!");
+                        thisBoss.health = 0;
+                    } else {
+                        thisBoss.health = thisBoss.health - passiveDamage;
+                    }
                     currentNum++;
-                    if (currentNum === maxNum) {}
+                    if(!thisBoss.usersWhoHelped[user_id]){
+                        thisBoss.usersWhoHelped[user_id] = {"passiveDamage":passiveDamage,"activeDamage":0};
+                        console.log("set passiveDamage");
+                    } else {
+                        thisBoss.usersWhoHelped[user_id].passiveDamage = thisBoss.usersWhoHelped[user_id].passiveDamage + passiveDamage; 
+                        console.log("updated passiveDamage", thisBoss.usersWhoHelped[user_id], user_id)
+                    }
+                    if (thisBoss.testIfKilled()) {
+                        console.log("Should be killed!");
+                        thisBoss.handleDeath();
+                    }
                 })
             }
 
@@ -159,7 +186,6 @@ connection.connect(function (err) {
                 let totalDamage = 0;
                 let list = returnUpgradesWithType(this.upgradeList, "active");
                 let thisCopy = this;
-                console.log(list);
                 list.forEach(function(upgrade){
                     totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
                 })
@@ -172,7 +198,6 @@ connection.connect(function (err) {
                 let totalDamage = 0;
                 let list = returnUpgradesWithType(this.upgradeList, "passive");
                 let thisCopy = this;
-                console.log(list);
                 list.forEach(function(upgrade){
                     totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
                 })
@@ -194,9 +219,7 @@ connection.connect(function (err) {
             let max = Object.keys(list).length;
             let tempPoints = 0;
             Object.keys(list).forEach(function (upgrade) {
-                console.log(upgrade, "Upgrade", type)
                 if(list[upgrade].type === type){
-                    console.log("THEY MATCHED!");
                     tempList.push(list[upgrade]);
                 }
                 
@@ -485,7 +508,7 @@ connection.connect(function (err) {
                         clicks.push(Date.now());
                         //Get the user object and run damage against the boss
                         let userObject = User.getUser(users, socket.user_id);
-                        currentBoss.damage(userObject.activeDamage);
+                        currentBoss.damage(userObject.activeDamage, socket.user_id);
                     } else {
                         console.log("Threw away the click!");
                     }
@@ -494,7 +517,7 @@ connection.connect(function (err) {
                     clicks.push(Date.now());
                     let userObject = User.getUser(users, socket.user_id);
                     if (userObject) {
-                        currentBoss.damage(userObject.activeDamage);
+                        currentBoss.damage(userObject.activeDamage, socket.user_id);
                     }
 
                 }
@@ -532,6 +555,7 @@ connection.connect(function (err) {
 
             socket.on('joinedFight', function(){
                 if(socket.user_id){
+                    if(!users[socket.user_id]) return;
                     users[socket.user_id].isActive = true;
                 }
             })
