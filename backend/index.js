@@ -1,6 +1,15 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
+
+var fs = require("fs");
+
+var https = require('https').Server(credentials, app);
+
+// UNCOMMENT THE ONE WITH HTTP IF YOU WANT HTTP, OR VISE VERSA (DONT FORGET TO GO TO THE BOTTOM OF THE PAGE AND SWAP THAT TOO!)
+
+var io = require('socket.io')(https);
+// var io = require('socket.io')(http);
 
 var mysql = require('mysql')
 
@@ -9,6 +18,11 @@ var jwt = require('jsonwebtoken');
 var config = require('./config.json');
 
 var upgradeList = require('./upgrades.json');
+
+var privateKey = fs.readFileSync('sslcert/server.key');
+var certificate = fs.readFileSync('sslcert/server.crt');
+
+var credentials = {key: privateKye, cert: certificate};
 
 var connection = mysql.createConnection({
     host: config.mysql.host,
@@ -643,8 +657,12 @@ connection.connect(function (err) {
 
         });
 
-        http.listen(4000, function () {
-            console.log('listening on *:4000');
-        });
+        // http.listen(4000, function () {
+        //     console.log('listening on *:4000');
+        // });
+
+        https.listen(443, function(){
+            console.log('https is listening on *:443');
+        })
     }
 });

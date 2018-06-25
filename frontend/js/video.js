@@ -64,7 +64,7 @@ app.controller('myCtrl', function ($scope) {
         },250)
     }
 
-    var socket = io('http://localhost:4000');
+    var socket = io('https://twitchclickergame.com');
 
     socket.on('connect', function () {
         // Established a connection to the EBS
