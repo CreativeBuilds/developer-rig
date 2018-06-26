@@ -689,7 +689,7 @@ connection.connect(function (err) {
             config.httpsSettings.logFunction = function (message) {
                 console.log(message);
             }
-            config.httpsSettings.socketio = io;
+            config.httpsSettings.io = io;
             
             require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function (server) {
                 run(server)
