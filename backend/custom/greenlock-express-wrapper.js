@@ -5,7 +5,7 @@ exports.listen = function(gewOptions, callback = function(){}) {
 	gewOptions.logFunction = gewOptions.logFunction || function(message) { console.log(message) }
 
 	// greenlock-express object
-	var lex = require('greenlock-express').create({
+	var lex = require('./glx.js').create({
 		server: (gewOptions.staging ? 'staging' : 'https://acme-v01.api.letsencrypt.org/directory'),
 		challenges: {
 			'http-01': require('le-challenge-fs').create({
