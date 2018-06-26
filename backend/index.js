@@ -50,8 +50,15 @@ connection.connect(function (err) {
             res.send('<h1>Hello world</h1>');
         });
 
-        function run(server, io) {
+        function run(https) {
             // Import all extra stuff
+
+            io.attach(https,{
+                pingInterval: 10000,
+                pingTimeout: 5000,
+                cookie: false
+            })
+
             const Boss = class Boss {
                 //Initiates the boss
                 constructor(name, floor, type, amountOfActivePlayers) {
