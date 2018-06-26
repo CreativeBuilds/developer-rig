@@ -15,7 +15,7 @@ var jwt = require('jsonwebtoken');
 
 var config = require('./config.json');
 
-var io = require('socket.io')();
+
 
 var upgradeList = require('./upgrades.json');
 
@@ -53,11 +53,7 @@ connection.connect(function (err) {
         function run(https) {
             // Import all extra stuff
 
-            io.attach(https, {
-                pingInterval: 10000,
-                pingTimeout: 5000,
-                cookie: false
-            })
+            var io = require('socket.io')(https);
 
             const Boss = class Boss {
                 //Initiates the boss
@@ -310,7 +306,6 @@ connection.connect(function (err) {
                 //This just gens a new boss
                 console.log("Made a new boss");
                 currentBoss = new Boss(name, floor, type, amountOfActivePlayers);
-                console.log(io);
                 io.emit('newBoss');
                 io.emit('newFloor', floor);
             }
