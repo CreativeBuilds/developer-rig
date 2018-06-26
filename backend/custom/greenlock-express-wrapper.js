@@ -30,14 +30,11 @@ exports.listen = function(gewOptions, callback = function(){}) {
 	// Redirect HTTP->HTTPS + Challenge ACME http-01
 	let https = require('http').createServer(lex.middleware(require('redirect-https')()))
 
-	callback(https, gewOptions.io(https));
+	let Server = gewOptions.io;
 
-	https.listen(80, function () {
+	callback(https, new Server(https));
 
-		if (gewOptions.verbose)
-			gewOptions.logFunction('[LE] Listening for ACME http-01 challenges on port ' + this.address().port)
-
-	})
+	
 
 	
 

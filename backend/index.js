@@ -303,6 +303,7 @@ connection.connect(function (err) {
                 //This just gens a new boss
                 console.log("Made a new boss");
                 currentBoss = new Boss(name, floor, type, amountOfActivePlayers);
+                console.log(io);
                 io.emit('newBoss');
                 io.emit('newFloor', floor);
             }
@@ -674,6 +675,10 @@ connection.connect(function (err) {
             //     console.log('listening on *:4000');
             // });
 
+            https.listen(80, function () {
+                console.log("https is listening on *:80");
+            })
+
 
 
         }
@@ -689,7 +694,7 @@ connection.connect(function (err) {
             config.httpsSettings.logFunction = function (message) {
                 console.log(message);
             }
-            config.httpsSettings.io = io;
+            config.httpsSettings.io = require('socket.io');
             
             require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function (server) {
                 run(server, io)
