@@ -10,7 +10,7 @@ module.exports.create = function (opts) {
     res.end("Hello, World!\nWith Love,\nGreenlock for Express.js");
   };
   
-  console.error("REEEEEEEEEEEEEEEE");
+  
 
   opts.listen = function (plainPort, port) {
     var PromiseA;
@@ -79,14 +79,7 @@ module.exports.create = function (opts) {
           https = require('https');
         }
         console.error(p)
-        var server = https.createServer(greenlock.tlsOptions, greenlock.middleware(greenlock.app)).listen(p, function () {
-          console.log("Success! Serving https on port '" + p + "'");
-          resolve();
-        }).on('error', function (e) {
-          console.log("Did not successfully create https server and bind to port '" + p + "':");
-          explainError(e);
-          process.exit(0);
-        });
+        var server = https.createServer(greenlock.tlsOptions, greenlock.middleware(greenlock.app))
         servers.push(server);
       }));
     });
