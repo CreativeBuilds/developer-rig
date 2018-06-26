@@ -76,6 +76,7 @@ module.exports.create = function (opts) {
         } catch(e) {
           https = require('https');
         }
+        console.error(p)
         var server = https.createServer(greenlock.tlsOptions, greenlock.middleware(greenlock.app)).listen(p, function () {
           console.log("Success! Serving https on port '" + p + "'");
           resolve();
