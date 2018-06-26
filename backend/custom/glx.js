@@ -9,6 +9,8 @@ module.exports.create = function (opts) {
   opts.app = opts.app || function (req, res) {
     res.end("Hello, World!\nWith Love,\nGreenlock for Express.js");
   };
+  
+  console.error("REEEEEEEEEEEEEEEE");
 
   opts.listen = function (plainPort, port) {
     var PromiseA;
