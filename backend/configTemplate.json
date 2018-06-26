@@ -5,5 +5,12 @@
         "user":"",
         "password":"",
         "database":""
+    },
+    "httpsSettings":{
+        "email": "admin@domain.com",
+        "approveDomains": [ "domain.com", "sub.domain.com" ],
+        "plainPort": 8080,
+        "staging": false,
+        "verbose": true
     }
 }
