@@ -688,7 +688,7 @@ connection.connect(function (err) {
                     console.log('http is listening on *:4000');
                 })
             } else {
-                https.listen(80, function () {
+                https.listen(443, function () {
                     console.log("https is listening on *:80");
                 })
             }

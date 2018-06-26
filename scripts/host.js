@@ -39,7 +39,7 @@ if (require.main === module) {
       cert: "./ssl/selfsigned.crt",
       key: "./ssl/selfsigned.key"
     },
-    cors:["*"],
+    cors:"Access-Control-Allow-Origin: *",
     logFn: logRequest,
   };
 
