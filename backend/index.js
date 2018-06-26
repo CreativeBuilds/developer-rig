@@ -50,7 +50,7 @@ connection.connect(function (err) {
             res.send('<h1>Hello world</h1>');
         });
 
-        function run(server) {
+        function run(server, io) {
             // Import all extra stuff
             const Boss = class Boss {
                 //Initiates the boss
@@ -682,7 +682,7 @@ connection.connect(function (err) {
             io = io(http);
             http.listen(4000, function () {
                 console.log('http is listening on *:4000');
-                run(http);
+                run(http, io);
             })
         } else {
             config.httpsSettings.express = app;
@@ -692,7 +692,7 @@ connection.connect(function (err) {
             config.httpsSettings.io = io;
             
             require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function (server) {
-                run(server)
+                run(server, io)
             });
         }
 
