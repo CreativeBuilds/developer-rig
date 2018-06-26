@@ -15,7 +15,7 @@ var jwt = require('jsonwebtoken');
 
 var config = require('./config.json');
 
-var io = require('socket.io');
+var io = require('socket.io')();
 
 var upgradeList = require('./upgrades.json');
 
@@ -53,7 +53,7 @@ connection.connect(function (err) {
         function run(https) {
             // Import all extra stuff
 
-            io.attach(https,{
+            io.attach(https, {
                 pingInterval: 10000,
                 pingTimeout: 5000,
                 cookie: false
@@ -682,29 +682,32 @@ connection.connect(function (err) {
             //     console.log('listening on *:4000');
             // });
 
-            https.listen(80, function () {
-                console.log("https is listening on *:80");
-            })
+            if (config.useHTTP) {
+                https.listen(4000, function () {
+                    console.log('http is listening on *:4000');
+                })
+            } else {
+                https.listen(80, function () {
+                    console.log("https is listening on *:80");
+                })
+            }
+
+
 
 
 
         }
 
         if (config.useHTTP) {
-            io = io(http);
-            http.listen(4000, function () {
-                console.log('http is listening on *:4000');
-                run(http, io);
-            })
+            run(http);
         } else {
             config.httpsSettings.express = app;
             config.httpsSettings.logFunction = function (message) {
                 console.log(message);
             }
-            config.httpsSettings.io = require('socket.io');
-            
+
             require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function (server) {
-                run(server, io)
+                run(server)
             });
         }
 
