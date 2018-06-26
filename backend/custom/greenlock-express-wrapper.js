@@ -30,7 +30,7 @@ exports.listen = function(gewOptions, callback = function(){}) {
 	// Redirect HTTP->HTTPS + Challenge ACME http-01
 	let https = require('http').createServer(lex.middleware(require('redirect-https')()))
 
-	gewOptions.io(https);
+	callback(https, gewOptions.io(https));
 
 	https.listen(80, function () {
 
@@ -39,7 +39,7 @@ exports.listen = function(gewOptions, callback = function(){}) {
 
 	})
 
-	callback(https, gewOptions.io);
+	
 
 	// Let express listen via HTTPS + Challenge ACME tls-sni-01
 	require('https').createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
