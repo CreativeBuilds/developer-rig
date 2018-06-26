@@ -57,14 +57,7 @@ module.exports.create = function (opts) {
       if (!(parseInt(p, 10) >= 0)) { console.warn("'" + p + "' doesn't seem to be a valid port number for http"); }
       promises.push(new PromiseA(function (resolve) {
         console.error(p);
-        require('http').createServer(greenlock.middleware(require('redirect-https')())).listen(p, function () {
-          console.log("Success! Bound to port '" + p + "' to handle ACME challenges and redirect to https");
-          resolve();
-        }).on('error', function (e) {
-          console.log("Did not successfully create http server and bind to port '" + p + "':");
-          explainError(e);
-          process.exit(0);
-        });
+        require('http').createServer(greenlock.middleware(require('redirect-https')()))
       }));
     });
 

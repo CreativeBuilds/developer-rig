@@ -28,18 +28,16 @@ exports.listen = function(gewOptions, callback = function(){}) {
 	})
 
 	// Redirect HTTP->HTTPS + Challenge ACME http-01
-	let https = require('http').createServer(lex.middleware(require('redirect-https')()))
+	// let http = require('http').createServer(lex.middleware(require('redirect-https')()))
 
-	console.log(https);
-
-	callback(https);
+	
 
 	
 
 	
 
 	// Let express listen via HTTPS + Challenge ACME tls-sni-01
-	require('https').createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
+	let https = require('https').createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
 
 		if (gewOptions.verbose) {
 			gewOptions.logFunction('[LE] Listening for ACME tls-sni-01 challenges on port ' + this.address().port)
@@ -47,6 +45,8 @@ exports.listen = function(gewOptions, callback = function(){}) {
 		}
 
 	})
+
+	callback(https);
 
 	// Let express listen via HTTP (optional)
 	if (gewOptions.plainPort) {
