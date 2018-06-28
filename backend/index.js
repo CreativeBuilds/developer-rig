@@ -1,6 +1,8 @@
 var app = require('express')();
 var http = require('http').Server(app);
 
+var https = require('https');
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -56,7 +58,7 @@ connection.connect(function (err) {
             res.send('<h1>Hello world</h1>');
         });
 
-        function run(https) {
+        function run() {
             // Import all extra stuff
 
             var io = require('socket.io')(https);
@@ -684,13 +686,17 @@ connection.connect(function (err) {
             // });
 
             if (config.useHTTP) {
-                https.listen(4000, function () {
+                http.listen(4000, function () {
                     console.log('http is listening on *:4000');
                 })
             } else {
-                https.listen(443, function () {
-                    console.log("https is listening on *:80");
-                })
+                config.httpsSettings.express = app;
+                config.httpsSettings.logFunction = function (message) {
+                    console.log(message);
+                }
+                config.https = https;
+                //Should launch the https server
+                require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function () {});
             }
 
 
@@ -699,17 +705,13 @@ connection.connect(function (err) {
 
         }
 
-        if (config.useHTTP) {
-            run(http);
-        } else {
-            config.httpsSettings.express = app;
-            config.httpsSettings.logFunction = function (message) {
-                console.log(message);
-            }
 
-            require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function (server) {
-                run(server)
-            });
+        if (config.useHTTP) {
+            run(null);
+        } else {
+            run()
+
+            
         }
 
 
