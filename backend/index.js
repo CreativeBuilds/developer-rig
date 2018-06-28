@@ -3,6 +3,10 @@ var http = require('http').Server(app);
 
 var https = require('https');
 
+var cors = require('cors');
+
+app.use(cors({origin:"https://localhost.rig.twitch.tv:8081"}))
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
