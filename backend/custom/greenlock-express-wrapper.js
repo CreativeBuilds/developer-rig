@@ -6,7 +6,7 @@ exports.listen = function(gewOptions) {
 
 	// greenlock-express object
 	var lex = require('greenlock-express').create({
-		server: (gewOptions.staging ? 'staging' : 'https://acme-v01.api.letsencrypt.org/directory'),
+		server: (gewOptions.staging ? 'staging' : 'https://acme-v02.api.letsencrypt.org/directory'),
 		challenges: {
 			'http-01': require('le-challenge-fs').create({
 				webrootPath: '/tmp/acme-challenges'
@@ -31,18 +31,21 @@ exports.listen = function(gewOptions) {
 	require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
 
 		if (gewOptions.verbose)
-			gewOptions.logFunction('[LE] Listening for ACME http-01 challenges on port ' + this.address().port)
+			gewOptions.logFunction('[LE] Listening for ACME http-02 challenges on port ' + this.address().port)
 
 	})
 
 	// Let express listen via HTTPS + Challenge ACME tls-sni-01
-	gewOptions.https.createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
-		if (gewOptions.verbose) {
-			gewOptions.logFunction('[LE] Listening for ACME tls-sni-01 challenges on port ' + this.address().port)
-			gewOptions.logFunction('Express listening on HTTPS port ' + this.address().port)
-		}
-
+	gewOptions.setupIO(gewOptions.https, function(https){
+		https.createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
+			if (gewOptions.verbose) {
+				gewOptions.logFunction('[LE] Listening for ACME tls-sni-02 challenges on port ' + this.address().port)
+				gewOptions.logFunction('Express listening on HTTPS port ' + this.address().port)
+			}
+	
+		})
 	})
+	
 
 	// Let express listen via HTTP (optional)
 	if (gewOptions.plainPort) {

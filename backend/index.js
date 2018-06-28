@@ -5,7 +5,9 @@ var https = require('https');
 
 var cors = require('cors');
 
-app.use(cors({origin:"https://localhost.rig.twitch.tv:8081"}))
+app.use(cors({
+    origin: "https://localhost.rig.twitch.tv:8081"
+}))
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "https://localhost.rig.twitch.tv:8081");
@@ -63,10 +65,202 @@ connection.connect(function (err) {
             res.send('<h1>Hello world</h1>');
         });
 
+        let io = null;
+
+        function setupIO(https, callback) {
+            var io = require('socket.io')(https);
+
+            let users = {};
+
+            let socketUsers = {};
+
+            setInterval(function () {
+                io.sockets.emit("bossInfo", {
+                    "health": currentBoss.getHealth,
+                    "totalHealth": currentBoss.getTotalHealth
+                })
+            }, 1000)
+
+
+            io.on('connection', function (socket) {
+                console.log('a user connected');
+
+                // have an array called clicks which is an array of Date.now()'s then compare a new value with the first value in the array (if there are 10 items in the array)
+                let clicks = [];
+
+
+                // User is verifying after connecting! (Tie their socket id with their twitch account!)
+                socket.on('verify', token => {
+                    //Use JWT to verify the token
+                    let secret = new Buffer.from(config.secret, 'base64');
+                    jwt.verify(token, secret, function (err, decoded) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            if (decoded.opaque_user_id[0] !== 'U') {
+                                //The user is not logged into twitch, dont allow them to do anything
+                                socket.disconnect(0);
+                            } else if (!decoded.user_id) {
+                                // User has not shared their identity with us, dont allow them do do anything
+                                console.log("user did not share identity with us!")
+                                socket.emit('shareIdentity');
+                                socket.disconnect(0);
+                            } else {
+                                //User has shared their identity with us!
+                                socket.user_id = decoded.user_id;
+                                if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
+                                    //User is connecting for the first time
+                                    // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
+                                    getOrMakeUser(decoded, function (err, result) {
+                                        if (err) {
+                                            throw err;
+                                        } else {
+                                            let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
+                                            users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
+                                            socketUsers[decoded.user_id] = [socket];
+
+                                            socket.emit('verified');
+                                            socket.emit('upgradeList', upgrades);
+                                            socket.emit('newFloor', currentBoss.floor);
+                                        }
+                                    })
+
+                                } else {
+
+                                    getOrMakeUser(decoded, function (err, result) {
+                                        if (err) {
+                                            throw err;
+                                        } else {
+                                            let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
+                                            socketUsers[decoded.user_id].push(socket);
+                                            socket.emit('verified');
+                                            socket.emit('upgradeList', upgrades);
+                                            socket.emit('newFloor', currentBoss.floor);
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    });
+                })
+
+                // This is a video overlay trying to get info about all current stats (boss)
+                socket.on('getVideoOverlayInfo', () => {
+                    console.log("got request for info sending back info!")
+                    socket.emit("bossInfo", {
+                        "health": currentBoss.getHealth,
+                        "totalHealth": currentBoss.getTotalHealth
+                    })
+                })
+
+                //TODO find a socket based on socket id
+
+                // User clicked the screen (This is how we will detect when people click the boss)
+                // TODO im going to have to add support so people can't spam more than 10 clicks a second
+                socket.on('screenClicked', function () {
+
+                    if (clicks.length === 10) {
+                        //Max amount has been reached (see if the most recent click is atleast 1000 milliseconds older than the first item in that array)
+                        if (Date.now() - clicks[9] > 100) {
+                            //User can click otherwise throw away this click!
+                            console.log("User verified click!");
+                            clicks.splice(0, 1);
+                            clicks.push(Date.now());
+                            //Get the user object and run damage against the boss
+                            let userObject = User.getUser(users, socket.user_id);
+                            currentBoss.damage(userObject.activeDamage, socket.user_id);
+                        } else {
+                            console.log("Threw away the click!");
+                        }
+                    } else {
+                        console.log(clicks);
+                        clicks.push(Date.now());
+                        let userObject = User.getUser(users, socket.user_id);
+                        if (userObject) {
+                            currentBoss.damage(userObject.activeDamage, socket.user_id);
+                        }
+
+                    }
+                })
+
+                // User is now requesting their current upgradePoints because the boss was killed!
+                socket.on('getUpgradePoints', function () {
+                    // Get the users info by socket.user_id and send them back their upgrade points
+                    getPropertyOfAUser(socket.user_id, "upgrade_points", function (err, points) {
+                        if (err) {} else {
+                            users[socket.user_id].upgradePoints = points;
+                            socket.emit("currentUpgradePoints", points)
+                        }
+
+                    })
+
+                })
+
+                // User is requesting to purchase an upgrade!
+                socket.on('purchaseUpgrade', function (upgradeName) {
+                    // Test to see if the user can purchase this upgrade with their current points
+
+                    if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
+                        console.log("User can purchase this upgrade!");
+                        if (userPurchasedUpgrade(socket.user_id, upgradeName, users)) {
+                            sendAMessageToAllOfAUsersSockets(socket.user_id, "currentUpgradePoints", users[socket.user_id].upgradePoints, socketUsers);
+                            let upgrade = users[socket.user_id].upgradeList[upgradeName];
+                            upgrade.name = upgradeName;
+                            sendAMessageToAllOfAUsersSockets(socket.user_id, "purchasedUpgrade", upgrade, socketUsers);
+                        }
+                    } else {
+                        console.log("User can't purchase this upgrade!");
+                    }
+                })
+
+                socket.on('joinFight', function () {
+                    if (socket.user_id) {
+                        if (!users[socket.user_id]) return;
+                        users[socket.user_id].isActive = true;
+                        socket.emit("joinedFight");
+                    }
+                })
+
+                socket.on('disconnect', function () {
+                    if (socket.user_id) {
+                        if (!seeIfUserHasASocketConnected(socket.user_id, socketUsers)) {
+                            // console.log("Returned!");
+                            return;
+                        }
+                        //user was on user list!
+                        if (!returnASocketFromAListOfSockets(socketUsers[socket.user_id], socket)) {
+                            //Error occured this shouldn't happen
+                            // console.log("Error!!!!!!");
+                        } else {
+                            //Delete the socket from the users array
+                            // console.log(users[socket.user_id].length)
+                            let oldSocket = returnASocketFromAListOfSockets(socketUsers[socket.user_id], socket)
+                            removeObjFromArray(socketUsers[socket.user_id], oldSocket);
+                            // console.log(users[socket.user_id].length)
+                        }
+                        if (socketUsers[socket.user_id].length === 0) {
+                            //No more sockets connected!
+                            delete socketUsers[socket.user_id];
+                            // console.log("User is fully disconnected!", users);
+                        } else {
+                            //There are still sockets connected
+                            //console.log(users[socket.user_id]);
+                        }
+                        // console.log("Removed a socket from the user connected!");
+                    } else {
+                        // console.log("No socket.user_id?", socket.user_id);
+                        return;
+                    }
+                })
+
+            });
+
+            callback(https);
+        }
+
         function run() {
             // Import all extra stuff
 
-            var io = require('socket.io')(https, {origins:'https://localhost.rig.twitch.tv:8081'});
 
             const Boss = class Boss {
                 //Initiates the boss
@@ -319,8 +513,11 @@ connection.connect(function (err) {
                 //This just gens a new boss
                 console.log("Made a new boss");
                 currentBoss = new Boss(name, floor, type, amountOfActivePlayers);
-                io.emit('newBoss');
-                io.emit('newFloor', floor);
+                try{
+                    io.emit('newBoss');
+                    io.emit('newFloor', floor);
+                } catch(err){}
+                
             }
             generateNewBoss();
 
@@ -501,198 +698,17 @@ connection.connect(function (err) {
                 //Return a user object
             }
 
-            let users = {};
 
-            let socketUsers = {};
-
-            setInterval(function () {
-                io.sockets.emit("bossInfo", {
-                    "health": currentBoss.getHealth,
-                    "totalHealth": currentBoss.getTotalHealth
-                })
-            }, 1000)
-
-
-            io.on('connection', function (socket) {
-                console.log('a user connected');
-
-                // have an array called clicks which is an array of Date.now()'s then compare a new value with the first value in the array (if there are 10 items in the array)
-                let clicks = [];
-
-
-                // User is verifying after connecting! (Tie their socket id with their twitch account!)
-                socket.on('verify', token => {
-                    //Use JWT to verify the token
-                    let secret = new Buffer.from(config.secret, 'base64');
-                    jwt.verify(token, secret, function (err, decoded) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            if (decoded.opaque_user_id[0] !== 'U') {
-                                //The user is not logged into twitch, dont allow them to do anything
-                                socket.disconnect(0);
-                            } else if (!decoded.user_id) {
-                                // User has not shared their identity with us, dont allow them do do anything
-                                console.log("user did not share identity with us!")
-                                socket.emit('shareIdentity');
-                                socket.disconnect(0);
-                            } else {
-                                //User has shared their identity with us!
-                                socket.user_id = decoded.user_id;
-                                if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
-                                    //User is connecting for the first time
-                                    // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
-                                    getOrMakeUser(decoded, function (err, result) {
-                                        if (err) {
-                                            throw err;
-                                        } else {
-                                            let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
-                                            users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
-                                            socketUsers[decoded.user_id] = [socket];
-
-                                            socket.emit('verified');
-                                            socket.emit('upgradeList', upgrades);
-                                            socket.emit('newFloor', currentBoss.floor);
-                                        }
-                                    })
-
-                                } else {
-
-                                    getOrMakeUser(decoded, function (err, result) {
-                                        if (err) {
-                                            throw err;
-                                        } else {
-                                            let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
-                                            socketUsers[decoded.user_id].push(socket);
-                                            socket.emit('verified');
-                                            socket.emit('upgradeList', upgrades);
-                                            socket.emit('newFloor', currentBoss.floor);
-                                        }
-                                    })
-                                }
-                            }
-                        }
-                    });
-                })
-
-                // This is a video overlay trying to get info about all current stats (boss)
-                socket.on('getVideoOverlayInfo', () => {
-                    console.log("got request for info sending back info!")
-                    socket.emit("bossInfo", {
-                        "health": currentBoss.getHealth,
-                        "totalHealth": currentBoss.getTotalHealth
-                    })
-                })
-
-                //TODO find a socket based on socket id
-
-                // User clicked the screen (This is how we will detect when people click the boss)
-                // TODO im going to have to add support so people can't spam more than 10 clicks a second
-                socket.on('screenClicked', function () {
-
-                    if (clicks.length === 10) {
-                        //Max amount has been reached (see if the most recent click is atleast 1000 milliseconds older than the first item in that array)
-                        if (Date.now() - clicks[9] > 100) {
-                            //User can click otherwise throw away this click!
-                            console.log("User verified click!");
-                            clicks.splice(0, 1);
-                            clicks.push(Date.now());
-                            //Get the user object and run damage against the boss
-                            let userObject = User.getUser(users, socket.user_id);
-                            currentBoss.damage(userObject.activeDamage, socket.user_id);
-                        } else {
-                            console.log("Threw away the click!");
-                        }
-                    } else {
-                        console.log(clicks);
-                        clicks.push(Date.now());
-                        let userObject = User.getUser(users, socket.user_id);
-                        if (userObject) {
-                            currentBoss.damage(userObject.activeDamage, socket.user_id);
-                        }
-
-                    }
-                })
-
-                // User is now requesting their current upgradePoints because the boss was killed!
-                socket.on('getUpgradePoints', function () {
-                    // Get the users info by socket.user_id and send them back their upgrade points
-                    getPropertyOfAUser(socket.user_id, "upgrade_points", function (err, points) {
-                        if (err) {} else {
-                            users[socket.user_id].upgradePoints = points;
-                            socket.emit("currentUpgradePoints", points)
-                        }
-
-                    })
-
-                })
-
-                // User is requesting to purchase an upgrade!
-                socket.on('purchaseUpgrade', function (upgradeName) {
-                    // Test to see if the user can purchase this upgrade with their current points
-
-                    if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
-                        console.log("User can purchase this upgrade!");
-                        if (userPurchasedUpgrade(socket.user_id, upgradeName, users)) {
-                            sendAMessageToAllOfAUsersSockets(socket.user_id, "currentUpgradePoints", users[socket.user_id].upgradePoints, socketUsers);
-                            let upgrade = users[socket.user_id].upgradeList[upgradeName];
-                            upgrade.name = upgradeName;
-                            sendAMessageToAllOfAUsersSockets(socket.user_id, "purchasedUpgrade", upgrade, socketUsers);
-                        }
-                    } else {
-                        console.log("User can't purchase this upgrade!");
-                    }
-                })
-
-                socket.on('joinFight', function () {
-                    if (socket.user_id) {
-                        if (!users[socket.user_id]) return;
-                        users[socket.user_id].isActive = true;
-                        socket.emit("joinedFight");
-                    }
-                })
-
-                socket.on('disconnect', function () {
-                    if (socket.user_id) {
-                        if (!seeIfUserHasASocketConnected(socket.user_id, socketUsers)) {
-                            // console.log("Returned!");
-                            return;
-                        }
-                        //user was on user list!
-                        if (!returnASocketFromAListOfSockets(socketUsers[socket.user_id], socket)) {
-                            //Error occured this shouldn't happen
-                            // console.log("Error!!!!!!");
-                        } else {
-                            //Delete the socket from the users array
-                            // console.log(users[socket.user_id].length)
-                            let oldSocket = returnASocketFromAListOfSockets(socketUsers[socket.user_id], socket)
-                            removeObjFromArray(socketUsers[socket.user_id], oldSocket);
-                            // console.log(users[socket.user_id].length)
-                        }
-                        if (socketUsers[socket.user_id].length === 0) {
-                            //No more sockets connected!
-                            delete socketUsers[socket.user_id];
-                            // console.log("User is fully disconnected!", users);
-                        } else {
-                            //There are still sockets connected
-                            //console.log(users[socket.user_id]);
-                        }
-                        // console.log("Removed a socket from the user connected!");
-                    } else {
-                        // console.log("No socket.user_id?", socket.user_id);
-                        return;
-                    }
-                })
-
-            });
 
             // http.listen(4000, function () {
             //     console.log('listening on *:4000');
             // });
 
             if (config.useHTTP) {
-                http.listen(4000, function () {
-                    console.log('http is listening on *:4000');
+                setupIO(function(http){
+                    http.listen(4000, function () {
+                        console.log('http is listening on *:4000');
+                    })
                 })
             } else {
                 config.httpsSettings.express = app;
@@ -700,8 +716,9 @@ connection.connect(function (err) {
                     console.log(message);
                 }
                 config.httpsSettings.https = https;
+                config.httpsSettings.setupIO = setupIO;
                 //Should launch the https server
-                require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function () {});
+                require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings);
             }
 
 
@@ -711,13 +728,7 @@ connection.connect(function (err) {
         }
 
 
-        if (config.useHTTP) {
-            run(null);
-        } else {
-            run()
-
-            
-        }
+        run()
 
 
     }
