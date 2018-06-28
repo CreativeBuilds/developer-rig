@@ -67,12 +67,12 @@ connection.connect(function (err) {
 
         let io = null;
 
+        let users = {};
+
+        let socketUsers = {};
+
         function setupIO(https, callback) {
             var io = require('socket.io')(https);
-
-            let users = {};
-
-            let socketUsers = {};
 
             setInterval(function () {
                 io.sockets.emit("bossInfo", {
