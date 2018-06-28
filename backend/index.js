@@ -694,7 +694,7 @@ connection.connect(function (err) {
                 config.httpsSettings.logFunction = function (message) {
                     console.log(message);
                 }
-                config.https = https;
+                config.httpsSettings.https = https;
                 //Should launch the https server
                 require("./custom/greenlock-express-wrapper.js").listen(config.httpsSettings, function () {});
             }
