@@ -61,7 +61,7 @@ connection.connect(function (err) {
         function run() {
             // Import all extra stuff
 
-            var io = require('socket.io')(https, {origins:'https://localhost.rig.twitch.tv:3500'});
+            var io = require('socket.io')(https, {origins:'https://localhost.rig.twitch.tv:8081'});
 
             const Boss = class Boss {
                 //Initiates the boss
