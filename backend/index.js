@@ -61,7 +61,7 @@ connection.connect(function (err) {
         function run() {
             // Import all extra stuff
 
-            var io = require('socket.io')(https, {origins:'*'});
+            var io = require('socket.io')(https, {origins:'*.*'});
 
             const Boss = class Boss {
                 //Initiates the boss
