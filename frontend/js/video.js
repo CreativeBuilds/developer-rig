@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    //console.log("Document is ready!");
-    //console.log($("body"));
+    ////console.log("Document is ready!");
+    ////console.log($("body"));
 })
 
 let window2 = window;
@@ -12,14 +12,14 @@ var app = angular.module('app', []);
 let authCode = '';
 
 window.Twitch.ext.onAuthorized(auth => {
-    console.log("Twitch verified!");
+    //console.log("Twitch verified!");
     authCode = auth;
 })
 
 var timeout, bossImage = $('#bossImage');
 
 bossImage.mousedown(function () {
-    console.log('boss image has been clicked!');
+    //console.log('boss image has been clicked!');
     timeout = setInterval(function () {
         bossImage.css('width', '95px');
         bossImage.css('height', '95px');
@@ -71,7 +71,7 @@ app.controller('myCtrl', function ($scope) {
         // Send the EBS our token for it to verify!
 
         socket.on('verified', () => {
-            console.log("I'm verified")
+            //console.log("I'm verified")
             verified = true;
             socket.emit('getUpgradePoints');
         })
@@ -95,22 +95,22 @@ app.controller('myCtrl', function ($scope) {
 
         socket.on("shareIdentity", () => {
             //The server needs the user to agree to share their identity, ask them!
-            //console.log("Server asked me to share identity with it");
+            ////console.log("Server asked me to share identity with it");
             window2.Twitch.ext.actions.requestIdShare(function (one, two) {
-                //console.log("Something happened!");
-                //console.log(one, two);
+                ////console.log("Something happened!");
+                ////console.log(one, two);
                 //TODO in the future when this is actually an extension make sure this works!
             })
         })
 
         socket.on('bossInfo', (boss) => {
-            //console.log("Got boss info!");
+            ////console.log("Got boss info!");
             $scope.bossHealth = boss.health;
             $scope.bossTotalHealth = boss.totalHealth;
 
             $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth)
 
-            //console.log("Boss", boss);
+            ////console.log("Boss", boss);
         })
 
         socket.on('newBoss', () => {
@@ -122,7 +122,7 @@ app.controller('myCtrl', function ($scope) {
         })
 
         socket.on('upgradeList', (upgradeList) => {
-            console.log("upgradeList", upgradeList, $scope.upgradeList);
+            //console.log("upgradeList", upgradeList, $scope.upgradeList);
             $scope.upgradeList = [];
             Object.keys(upgradeList).forEach(function (upgrade_name) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -130,7 +130,7 @@ app.controller('myCtrl', function ($scope) {
                 let upgrade = upgradeList[upgrade_name];
                 upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
                 $scope.upgradeList.push(upgrade)
-                console.log($scope.upgradeList);
+                //console.log($scope.upgradeList);
             })
 
             $scope.updateClickDamage();
@@ -159,14 +159,14 @@ app.controller('myCtrl', function ($scope) {
         let rDiff = (parseInt(rgb1[0]) - parseInt(rgb2[0])) * -1;
         let gDiff = (parseInt(rgb1[1]) - parseInt(rgb2[1])) * -1;
         let bDiff = (parseInt(rgb1[2]) - parseInt(rgb2[2])) * -1;
-        //console.log(percentage, 1 - percentage);
+        ////console.log(percentage, 1 - percentage);
         percentage = 1 - percentage;
 
         let r = parseInt(rgb1[0]) + Math.floor(rDiff * percentage);
         let g = parseInt(rgb1[1]) + Math.floor(gDiff * percentage);
         let b = parseInt(rgb1[2]) + Math.floor(bDiff * percentage);
 
-        //console.log(rgb1[0], rgb1[1], rgb1[2], parseInt(rgb1[0]), parseInt(rgb1[1]), parseInt(rgb1[2]), rDiff, gDiff, bDiff, percentage, Math.floor(rDiff * percentage), Math.floor(gDiff * percentage), Math.floor(bDiff * percentage));
+        ////console.log(rgb1[0], rgb1[1], rgb1[2], parseInt(rgb1[0]), parseInt(rgb1[1]), parseInt(rgb1[2]), rDiff, gDiff, bDiff, percentage, Math.floor(rDiff * percentage), Math.floor(gDiff * percentage), Math.floor(bDiff * percentage));
 
         return `rgb(${r},${g},${b})`;
     }
@@ -198,16 +198,16 @@ app.controller('myCtrl', function ($scope) {
         let startingColor = 'rgb(16,80,0)';
         let endingColor = 'rgb(78,12,12)';
         let remainingHealthPercentage = health / totalHealth;
-        //console.log(health, totalHealth, remainingHealthPercentage);
+        ////console.log(health, totalHealth, remainingHealthPercentage);
         let currentColor = blendRGB(startingColor, endingColor, remainingHealthPercentage);
-        //console.log(currentColor);
+        ////console.log(currentColor);
         $('#bossHealthChild').css(`background`, currentColor);
         $scope.remainingHealthPercentage = Math.floor(remainingHealthPercentage * 10000) / 100;
         if (!$scope.$$phase) {
             //$digest or $apply
             $scope.$apply();
         }
-        //console.log((remainingHealthPercentage * 100) + "%");
+        ////console.log((remainingHealthPercentage * 100) + "%");
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
 
 
@@ -218,11 +218,11 @@ app.controller('myCtrl', function ($scope) {
         for (upgrade in tempList) {
             if (tempList[upgrade].name === upgradeName) {
                 // Name matches to the one that was clicked
-                console.log("it matched!");
+                //console.log("it matched!");
                 $scope.calculateCost(tempList[upgrade].level, tempList[upgrade].baseCostMultiplierPercentage, tempList[upgrade].baseCostToUpgrade);
                 if ($scope.upgradePoints >= $scope.calculateCost(tempList[upgrade].level, tempList[upgrade].baseCostMultiplierPercentage, tempList[upgrade].baseCostToUpgrade)) {
                     // The user can buy it!
-                    // console.log("Upgraded!");
+                    // //console.log("Upgraded!");
                     // tempList[upgrade].level++;
                     // $scope.upgradeList = tempList;
                     socket.emit("purchaseUpgrade", upgradeName);
@@ -248,7 +248,7 @@ app.controller('myCtrl', function ($scope) {
         $scope.upgradeList.forEach(function (upgrade) {
             currentInt = currentInt + 1;
             if (upgrade.type === type) {
-                console.log($scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage), tempDamage);
+                //console.log($scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage), tempDamage);
                 tempDamage = tempDamage + $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
             }
             if(currentInt === $scope.upgradeList.length){
@@ -259,7 +259,7 @@ app.controller('myCtrl', function ($scope) {
     $scope.updateClickDamage();
 
     socket.on('purchasedUpgrade', function (upgrade) {
-        console.log("Purchase of upgrade is a go!", upgrade);
+        //console.log("Purchase of upgrade is a go!", upgrade);
         let list = $scope.upgradeList;
         for (num in list) {
             if (list[num].name === upgrade.name) {
@@ -273,7 +273,7 @@ app.controller('myCtrl', function ($scope) {
             //$digest or $apply
             $scope.$apply();
         }
-        console.log($scope.upgradeList);
+        //console.log($scope.upgradeList);
         return;
     })
 
@@ -318,7 +318,7 @@ app.controller('myCtrl', function ($scope) {
                     clicks.splice(0, 1);
                     clicks.push(Date.now());
                     socket.emit('screenClicked');
-                    console.log($scope.currentClickDamage);
+                    //console.log($scope.currentClickDamage);
                     if ($scope.bossHealth - $scope.currentClickDamage <= 0) {
                         $scope.bossHealth = 0;
                         $scope.updateHealthDisplay($scope.bossTotalHealth, $scope.bossHealth);

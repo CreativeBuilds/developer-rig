@@ -326,7 +326,9 @@ connection.connect(function (err) {
             try {
                 io.emit('newBoss');
                 io.emit('newFloor', floor);
-            } catch (err) {}
+            } catch (err) {
+                console.log(err, io);
+            }
 
         }
         generateNewBoss();
@@ -502,7 +504,7 @@ connection.connect(function (err) {
         function setupIO(https, callback) {
 
 
-            var io = require('socket.io')(https);
+            io = require('socket.io')(https);
 
             setInterval(function () {
                 io.sockets.emit("bossInfo", {

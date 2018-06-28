@@ -1,4 +1,5 @@
-@import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css");
+@import url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css");
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 * {
     font-family: "Roboto", sans-serif;
     user-select: none;
@@ -126,6 +127,7 @@
     margin-top: 10px;
     font-size: 20px;
     letter-spacing: 1.5px;
+    z-index:1;
 }
 
 /* Everything to do with the boss */
@@ -197,6 +199,7 @@
     grid-template-columns: 1fr 1fr;
     margin: 5px 0px 0px;
     padding: 0px 10px;
+    height:95px;
 }
 
 #leftMenuTab {
