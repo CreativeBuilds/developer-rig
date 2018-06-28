@@ -39,7 +39,7 @@ if (require.main === module) {
       cert: "./ssl/selfsigned.crt",
       key: "./ssl/selfsigned.key"
     },
-    cors:"Access-Control-Allow-Origin: *",
+    cors:"Access-Control-Allow-Origin: https://twitchclickergame.com",
     logFn: logRequest,
   };
 
