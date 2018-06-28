@@ -36,15 +36,22 @@ exports.listen = function(gewOptions) {
 	})
 
 	// Let express listen via HTTPS + Challenge ACME tls-sni-01
-	gewOptions.setupIO(gewOptions.https, function(https){
-		https.createServer(lex.httpsOptions, lex.middleware(gewOptions.express)).listen(443, function () {
-			if (gewOptions.verbose) {
-				gewOptions.logFunction('[LE] Listening for ACME tls-sni-02 challenges on port ' + this.address().port)
-				gewOptions.logFunction('Express listening on HTTPS port ' + this.address().port)
-			}
+	gewOptions.httpsLive = gewOptions.https.createServer(lex.httpsOptions, lex.middleware(gewOptions.express));
+	httpsCheckLoop = setInterval(function(){
+		if(gewOptions.httpsLive.listen){
+			clearInterval(httpsCheckLoop);
+			gewOptions.setupIO(gewOptions.httpsLive, function(https){
+				https.listen(443, function () {
+					if (gewOptions.verbose) {
+						gewOptions.logFunction('[LE] Listening for ACME tls-sni-02 challenges on port ' + this.address().port)
+						gewOptions.logFunction('Express listening on HTTPS port ' + this.address().port)
+					}
+			
+				})
+			})
+		}
+	}, 50)
 	
-		})
-	})
 	
 
 	// Let express listen via HTTP (optional)
