@@ -72,6 +72,8 @@ connection.connect(function (err) {
         let socketUsers = {};
 
         function setupIO(https, callback) {
+
+            
             var io = require('socket.io')(https);
 
             setInterval(function () {
