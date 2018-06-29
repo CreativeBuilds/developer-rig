@@ -3,8 +3,9 @@ $(document).ready(function () {
     ////console.log($("body"));
 })
 
-let window2 = window;
 
+
+let window2 = window;
 
 
 var app = angular.module('app', []);
@@ -52,16 +53,33 @@ app.controller('myCtrl', function ($scope) {
     $scope.currentFloor = 1;
 
     // User opened the app
-    $scope.openApp = function(){
-        $('#app').css('display',"block");
-        $('#app').css('opacity',1);
+    $scope.openApp = function () {
+        $('#app').css('display', "block");
+        $('#app').css('opacity', 1);
     }
 
-    $scope.closeApp = function(){
-        $('#app').css('opacity',0);
-        setTimeout(function(){
+    $scope.closeApp = function () {
+        $('#app').css('opacity', 0);
+        setTimeout(function () {
             window.location.reload();
-        },250)
+        }, 250)
+    }
+
+    let minimize;
+
+    leftPage = function (e) {
+        e = e ? e : window.event;
+        var from = e.relatedTarget || e.toElement;
+        if (!from || from.nodeName == "HTML") {
+            minimize = setTimeout(function () {
+                $scope.closeApp();
+            }, 2000)
+        }
+
+    }
+
+    enterPage = function (e) {
+        clearTimeout(minimize);
     }
 
     var socket = io('https://twitchclickergame.com');
@@ -89,7 +107,7 @@ app.controller('myCtrl', function ($scope) {
 
         verify();
 
-        socket.on("newFloor", (floorNum)=>{
+        socket.on("newFloor", (floorNum) => {
             $scope.currentFloor = floorNum;
         })
 
@@ -252,7 +270,7 @@ app.controller('myCtrl', function ($scope) {
                 //console.log($scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage), tempDamage);
                 tempDamage = tempDamage + $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
             }
-            if(currentInt === $scope.upgradeList.length){
+            if (currentInt === $scope.upgradeList.length) {
                 $scope.currentClickDamage = tempDamage;
             }
         })
@@ -302,7 +320,7 @@ app.controller('myCtrl', function ($scope) {
         }
     }
 
-    
+
 
     // TODO Checks to see which upgrades can be purchased.
     let canPurchase = function () {
@@ -345,12 +363,14 @@ app.controller('myCtrl', function ($scope) {
 
     }
 
-    $('body').keydown(function(e){
-        if(e.keyCode === 27){
-            //The user would like to minimize the game (they hit esc)
-            $scope.closeApp();
-        }
-    })
+    // Doesn't work on twitch when live
+    // $('body').keydown(function(e){
+    //     console.log("key down!", e.keydown);
+    //     if(e.keyCode === 27){
+    //         //The user would like to minimize the game (they hit esc)
+    //         $scope.closeApp();
+    //     }
+    // })
 
 });
 

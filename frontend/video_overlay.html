@@ -1,10 +1,30 @@
-<html>
+<html onmouseover="enterPage()" >
 <title>Viewer Page</title>
 <script src="cdnfiles/jquery-3.3.1.js"></script>
 <script src="cdnfiles/angular.js"></script>
 <script src="cdnfiles/socket.io.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
+<script src="cdnfiles/pixi.min.js"></script>
 <link rel="stylesheet" href="css/video.css">
+
+<script>
+    function addEvent(obj, evt, fn) {
+    if (obj.addEventListener) {
+        obj.addEventListener(evt, fn, false);
+    }
+    else if (obj.attachEvent) {
+        obj.attachEvent("on" + evt, fn);
+    }
+}
+
+var leftPage = function(){};
+var enterPage = function(){};
+
+addEvent(window,"load",function(e) {
+    addEvent(document, "mouseout", leftPage);
+    addEvent(document, "mouseenter", enterPage);
+});
+</script>
+
 </head>
 
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100% !important; height: 100% !important; margin: 0px; padding: 0px;"
