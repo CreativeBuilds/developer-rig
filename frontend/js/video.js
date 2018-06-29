@@ -185,6 +185,7 @@ app.controller('myCtrl', function ($scope) {
     // User is active, fade the screen so the user can do stuff and turn display to hidden;
     $scope.joinFight = function () {
         socket.emit("joinFight");
+        startGame();
     }
 
     socket.on("joinedFight", function () {
@@ -344,11 +345,16 @@ app.controller('myCtrl', function ($scope) {
 
     }
 
-
-
-
+    $('body').keydown(function(e){
+        if(e.keyCode === 27){
+            //The user would like to minimize the game (they hit esc)
+            $scope.closeApp();
+        }
+    })
 
 });
+
+
 
 $.fn.rotate = function (options) {
     var $this = $(this),

@@ -3,6 +3,7 @@
 <script src="cdnfiles/jquery-3.3.1.js"></script>
 <script src="cdnfiles/angular.js"></script>
 <script src="cdnfiles/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
 <link rel="stylesheet" href="css/video.css">
 </head>
 
@@ -21,7 +22,7 @@
        </div> 
 
         <!-- Click this tab to bring out left Menu! -->
-        <div id="leftMenu" style="left: -250px;">
+        <div id="leftMenu" style="left: -250px;display:block;">
             <h3 id="leftMenuTitle">
                 <span style="text-align: left;">Upgrades</span>
                 <span style="text-align: right;font-size:15px;" id="currentUpgradePoints">{{upgradePoints | number : '1.2'}}</span>
@@ -44,25 +45,25 @@
             </div>
         </div>
 
-        <div id="clickArea"style="position: absolute;top:0;left:0;width:100%;height:100%;display:grid;justify-content: center;align-items: center;background: rgb(44, 38, 48);">
-
-            <div id="bossImage">
-                <img ng-click="clicked()" src="imgs/tempboss.png" alt="galaxy">
-                <canvas id="bossCanvas"></canvas>
-            </div>
+        <div id="clickArea"style="position: absolute;top:25px;left:0;height:100%;width:100%;display:grid;justify-content: center;align-items: center;background: rgb(44, 38, 48);">
             
         </div>
 
         <div id="joinOverlay">
             <div id="joinButton" ng-click="joinFight()">JOIN</div>
         </div>
+
+        <div id="registerClicks" style="width:0;height:0;" ng-click="clicked()"></div>
     </div>
     <div id="twitchScreenDetector">
         <div id="twitchButton" ng-click="openApp()">OPEN</div>
     </div>
+    <div id="topOverlay" style="z-index:90000;background:#111111;height:100px;width:100%;position: absolute;top:0;display:none;"></div>
+    <div id="bottomOverlay" style="z-index:90000;background:#111111;height:80px;width:100%;position: absolute;bottom:0;display:none;"></div>
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script src="viewer.js" type="text/javascript"></script>
 
+    <script src="js/game.js"></script>
     <script src="js/video.js"></script>
 
 

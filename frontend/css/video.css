@@ -1,5 +1,7 @@
-@import url("https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css");
+@import url("./bootstrap.css");
+@import url("./bootstrap-theme.css");
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+
 * {
     font-family: "Roboto", sans-serif;
     user-select: none;
