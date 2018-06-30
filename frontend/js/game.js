@@ -115,10 +115,10 @@ function startGame() {
 
     function makeSky() {
         var container = new PIXI.Container();
-        pixi.stage.addChild(container);
         // Get the width of the screen and see how many times it can be divided by 32;
         let yImageLength = Math.ceil(parentElement.height() / 32);
         let xImageLength = Math.ceil(parentElement.width() / 32);
+        console.log("Making sky");
         for (let y = 0; y < yImageLength; y++) {
             for (let x = 0; x < xImageLength; x++) {
                 let imgObject = {};
@@ -131,13 +131,14 @@ function startGame() {
                 texture.anchor.set(0);
                 texture.x = x * 32;
                 texture.y = y * 32;
-                console.log("Texture y", texture.y, container);
+                console.log("Texture y", texture.y, container, texture);
                 container.addChild(texture);
             }
         }
         container.x = 0;
         console.log("screen height", pixi.screen.height, "container height", container.height);
         container.y = 0;
+        pixi.stage.addChild(container);
     }
 
     function generateNewBossGameObject({
