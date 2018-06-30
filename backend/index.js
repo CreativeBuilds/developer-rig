@@ -528,6 +528,7 @@ connection.connect(function (err) {
                     jwt.verify(token, secret, function (err, decoded) {
                         if (err) {
                             console.log(err);
+                            socket.disconnect(0)
                         } else {
                             if (decoded.opaque_user_id[0] !== 'U') {
                                 //The user is not logged into twitch, dont allow them to do anything
@@ -620,6 +621,7 @@ connection.connect(function (err) {
                     // Get the users info by socket.user_id and send them back their upgrade points
                     getPropertyOfAUser(socket.user_id, "upgrade_points", function (err, points) {
                         if (err) {} else {
+                            if(!users[socket.user_id]) return;
                             users[socket.user_id].upgradePoints = points;
                             socket.emit("currentUpgradePoints", points)
                         }

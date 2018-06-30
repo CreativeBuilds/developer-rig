@@ -6,24 +6,7 @@
 <script src="cdnfiles/pixi.min.js"></script>
 <link rel="stylesheet" href="css/video.css">
 
-<script>
-    function addEvent(obj, evt, fn) {
-    if (obj.addEventListener) {
-        obj.addEventListener(evt, fn, false);
-    }
-    else if (obj.attachEvent) {
-        obj.attachEvent("on" + evt, fn);
-    }
-}
-
-var leftPage = function(){};
-var enterPage = function(){};
-
-addEvent(window,"load",function(e) {
-    addEvent(document, "mouseout", leftPage);
-    addEvent(document, "mouseenter", enterPage);
-});
-</script>
+<script src="js/init.js"></script>
 
 </head>
 
