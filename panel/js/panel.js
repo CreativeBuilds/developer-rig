@@ -22,6 +22,20 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.upgradeList = [];
 
+    let panels = {
+        "upgrades": {
+            position:0,
+            width: 110
+        },
+        "inventory": {
+            position:1,
+            width:110
+        }
+    }
+    let currentPos = 0;
+
+    let isInTransition = false;
+
     $scope.currentClickDamage = 1;
     $scope.currentIdleDamage = 0;
 
@@ -41,6 +55,7 @@ app.controller('myCtrl', function ($scope) {
                 authCode.type = "panel";
                 socket.emit('verify', authCode);
                 socket.emit("getPanelInfo");
+                socket.emit("getUpgradePoints");
             } else {
                 setTimeout(function () {
                     verify();
@@ -62,10 +77,14 @@ app.controller('myCtrl', function ($scope) {
 
         socket.on('currentUpgradePoints', (currentUpgradePoints) => {
             $scope.upgradePoints = currentUpgradePoints;
+            try{
+                $scope.$apply();
+            } catch(err){
+            }
         })
 
         socket.on('upgradeList', (upgradeList) => {
-            //console.log("upgradeList", upgradeList, $scope.upgradeList);
+            console.log("upgradeList", upgradeList, $scope.upgradeList);
             $scope.upgradeList = [];
             Object.keys(upgradeList).forEach(function (upgrade_name) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -73,7 +92,12 @@ app.controller('myCtrl', function ($scope) {
                 let upgrade = upgradeList[upgrade_name];
                 upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
                 $scope.upgradeList.push(upgrade)
-                //console.log($scope.upgradeList);
+                console.log($scope.upgradeList);
+                try{
+                    $scope.$apply();
+                } catch(err) {
+
+                }
             })
 
             $scope.updateClickDamage();
@@ -83,12 +107,88 @@ app.controller('myCtrl', function ($scope) {
 
     });
 
+    $scope.move = function(side){
+        if(isInTransition)return;
+        if(side === "left"){
+            Object.keys(panels).forEach(function(key){
+                if(panels[key].position === currentPos - 1){
+                    isInTransition = true;
+                    let currentLeft = Math.floor($('#overlay').css('left').replace(/[^-\d\.]/g, ''));
+                    newLeft = currentLeft - panels[key].width;
+                    let ulCurrentLeft = Math.floor($('#menuContent').css('left').replace(/[^-\d\.]/g, ''));
+                    newUlLeft = ulCurrentLeft + panels[key].width;
+                    $('#menuContent').css('left', `${newUlLeft}px`);
+                    setTimeout(function(){
+                        isInTransition = false;
+                    },250)
+                    currentPos = currentPos - 1;
+                }
+            })
+        } else {
+            Object.keys(panels).forEach(function(key){
+                if(panels[key].position === currentPos + 1){
+                    isInTransition = true;
+                    let currentLeft = Math.floor($('#overlay').css('left').replace(/[^-\d\.]/g, ''));
+                    newLeft = currentLeft + panels[key].width;
+                    let ulCurrentLeft = Math.floor($('#menuContent').css('left').replace(/[^-\d\.]/g, ''));
+                    newUlLeft = ulCurrentLeft - panels[key].width;
+                    $('#menuContent').css('left', `${newUlLeft}px`);
+                        setTimeout(function(){
+                            isInTransition = false;
+                        },250)
+                    currentPos = currentPos + 1;
+                }
+            })
+        }
+    }
+
+    $scope.open = function(name){
+        console.log("Opened!", name);
+        if(isInTransition)return;
+        let totalWidthToAdd = 0;
+        let totalLoops = 0;
+        Object.keys(panels).forEach(function(key){
+            totalLoops++;
+            console.log(panels, key);
+            if(panels[key].position < panels[name].position){
+                console.log("updated totalWidthToAdd", totalWidthToAdd);
+                totalWidthToAdd = totalWidthToAdd + panels[key].width;
+            }
+            console.log(totalLoops, Object.keys(panels).length);
+            if(totalLoops === Object.keys(panels).length){
+
+                console.log(`${40 - totalWidthToAdd}px`);
+                isInTransition = true;
+                $('#overlay').css('left', `${totalWidthToAdd}px`);
+                setTimeout(function(){
+                    $('#menuContent').css('left', `${40 - totalWidthToAdd}px`);
+                    setTimeout(function(){
+                        isInTransition = false;
+                    },500)
+                },250)
+                $('.activeWindow').css('opacity', "0");
+                setTimeout(function(){
+                    $('.activeWindow').css('display', 'none');
+                    $(`#${name}`).css('display', "block");
+                    $(`#${name}`).css('opacity',"1");
+                    $('.activeWindow').removeClass("activeWindow");
+                    $(`#${name}`).addClass("activeWindow");
+                },250)
+                currentPos = panels[name].position;
+                
+                
+            }
+        })
+        
+    }
+
     // socket.on('disconnect', function () {
     //     window.location.reload();
     // })
 
     setInterval(function () {
         $scope.updateClickDamage();
+        socket.emit("getUpgradePoints");
     }, 10000)
 
     $scope.calculateCost = function (currentLevel, increasePerLevel, baseCost) {
@@ -104,6 +204,7 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.upgradeClicked = function (upgradeName) {
         let tempList = $scope.upgradeList;
+        console.log(tempList);
         for (upgrade in tempList) {
             if (tempList[upgrade].name === upgradeName) {
                 // Name matches to the one that was clicked
@@ -114,8 +215,11 @@ app.controller('myCtrl', function ($scope) {
                     // //console.log("Upgraded!");
                     // tempList[upgrade].level++;
                     // $scope.upgradeList = tempList;
+                    console.log("Emitted purchase!")
                     socket.emit("purchaseUpgrade", upgradeName);
                     return;
+                } else {
+                    console.log("Don't have enough to buy!", $scope.calculateCost(tempList[upgrade].level, tempList[upgrade].baseCostMultiplierPercentage, tempList[upgrade].baseCostToUpgrade), $scope.upgradePoints);
                 }
             }
         }
@@ -147,24 +251,28 @@ app.controller('myCtrl', function ($scope) {
     }
     $scope.updateClickDamage();
 
-    // socket.on('purchasedUpgrade', function (upgrade) {
-    //     //console.log("Purchase of upgrade is a go!", upgrade);
-    //     let list = $scope.upgradeList;
-    //     for (num in list) {
-    //         if (list[num].name === upgrade.name) {
-    //             upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
-    //             list[num] = upgrade;
-    //             $scope.upgradeList = list;
-    //             $scope.updateClickDamage();
-    //         }
-    //     }
-    //     if (!$scope.$$phase) {
-    //         //$digest or $apply
-    //         $scope.$apply();
-    //     }
-    //     //console.log($scope.upgradeList);
-    //     return;
-    // })
+    socket.on('purchasedUpgrade', function (upgrade) {
+        //console.log("Purchase of upgrade is a go!", upgrade);
+        let list = $scope.upgradeList;
+        for (num in list) {
+            if (list[num].name === upgrade.name) {
+                upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
+                list[num] = upgrade;
+                $scope.upgradeList = list;
+                $scope.updateClickDamage();
+            }
+        }
+        if (!$scope.$$phase) {
+            //$digest or $apply
+            $scope.$apply();
+        }
+        //console.log($scope.upgradeList);
+        return;
+    })
+
+    socket.on('newBoss', function(){
+        socket.emit("getUpgradePoints");
+    })
 
     let verified = false;
 

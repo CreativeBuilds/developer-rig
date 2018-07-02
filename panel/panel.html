@@ -16,25 +16,50 @@
                 <span style="text-align: right;font-size:15px;" id="currentUpgradePoints">{{upgradePoints | number : '1.2'}}</span>
             </h3> -->
             <div id="menuScroller">
-                <div class="scroller" id="leftScroller">
+                <div class="scroller" id="leftScroller" ng-click="move('left')">
                     <span class="glyphicon glyphicon-chevron-left"></span>
                 </div>
-                <div class="scroller" id="rightScroller">
+                <div class="scroller" id="rightScroller" ng-click="move('right')">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                 </div>
                 <ul id="menuContent">
-                        <li ng-click="open('upgrades')"><div>UPGRADES</div></li
-                        ><li ng-click="open('inventory')"><div>INVENTORY</div></li>
+                    <li ng-click="open('upgrades')" class="active">
+                        <div>UPGRADES</div>
+                    </li
+                    ><li ng-click="open('inventory')">
+                        <div>INVENTORY</div>
+                    </li>
+                    <li id="overlay"></li>
                 </ul>
             </div>
-            <div id="leftMenuWrapper">
+            <div id="inventory" style="display:none;opacity:0;">
+                <div id="equippedItems">
+                    <div id="mainHand"></div
+                    ><div id="offHand"></div>
+                    <div id="head"></div>
+                    <div id="breastplate"></div>
+                    <div id="legs"></div>
+                    <div id="feet"></div>
+                </div>
+                <div style="color:#f1f1f1;font-size:25px;text-align: center;margin-top:15px;">ITEMS</div>
+                <ul id="inventoryItems">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <div id="upgrades" class="activeWindow">
+                <div id="leftMenuInfo">Gold:
+                    <span>{{upgradePoints | number : '1.2'}}</span>
+                </div>
                 <ul id="leftMenuContent">
                     <li ng-repeat="upgrade in upgradeList">
                         <span style="float:left;position:absolute;text-align: left;top:2.5px;left:2.5px;">{{upgrade.name}}</span>
                         <span style="float:right;position:absolute;text-align: right;top:2.5px;right:2.5px;font-size:15px;">LVL: {{upgrade.level}}</span>
                         <span style="float:left;position:absolute;text-align: left;bottom:2.5px;left:2.5px;font-size:13px;">DPS: {{calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage,
-                            upgrade.additionalDamage)}}</span>
-                        <span style="float:right;position:absolute;text-align: right;bottom:2.5px;right:2.5px;font-size:13px;">Cost: {{calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade)}}</span>
+                            upgrade.additionalDamage) | number : '1.2'}}</span>
+                        <span style="float:right;position:absolute;text-align: right;bottom:2.5px;right:2.5px;font-size:13px;">Cost: {{calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade)
+                            | number : '1.2'}}</span>
                         <div class="upgradeOverlay" data-ng-click="upgradeClicked(upgrade.name)">
                             <div>UPGRADE</div>
                         </div>

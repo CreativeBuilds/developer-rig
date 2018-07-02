@@ -646,7 +646,7 @@ connection.connect(function (err) {
                 })
 
                 // User is requesting to purchase an upgrade!
-                socket.on('purchaseUpgrade', function (upgradeName) {
+                socket.on('purchaseUpgradepurchaseUpgrade', function (upgradeName) {
                     // Test to see if the user can purchase this upgrade with their current points
 
                     if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
