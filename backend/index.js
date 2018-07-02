@@ -32,6 +32,11 @@ var config = require('./config.json');
 
 var upgradeList = require('./upgrades.json');
 
+var MainHand = require('./imports/mainHand.js');
+
+let testItem = new MainHand("testWeapon", "common", 1, 1);
+console.log(testItem);
+
 var connection = mysql.createConnection({
     host: config.mysql.host,
     user: config.mysql.user,
