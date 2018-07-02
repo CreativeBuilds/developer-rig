@@ -98,7 +98,8 @@ app.controller('myCtrl', function ($scope) {
 
         function verify() {
             if (authCode.token) {
-                socket.emit('verify', authCode.token);
+                authCode.type = "overlay";
+                socket.emit('verify', authCode);
                 socket.emit("getVideoOverlayInfo");
             } else {
                 setTimeout(function () {

@@ -3,10 +3,7 @@ $(document).ready(function () {
     ////console.log($("body"));
 })
 
-
-
 let window2 = window;
-
 
 var app = angular.module('app', []);
 
@@ -14,6 +11,7 @@ let authCode = '';
 
 window.Twitch.ext.onAuthorized(auth => {
     //console.log("Twitch verified!");
+    console.log(auth);
     authCode = auth;
 })
 
@@ -41,7 +39,9 @@ app.controller('myCtrl', function ($scope) {
 
         function verify() {
             if (authCode.token) {
-                socket.emit('verify', authCode.token);
+                console.log(authCode.token);
+                authCode.type = "panel";
+                socket.emit('verify', authCode);
                 socket.emit("getPanelInfo");
             } else {
                 setTimeout(function () {
@@ -85,9 +85,9 @@ app.controller('myCtrl', function ($scope) {
 
     });
 
-    socket.on('disconnect', function () {
-        window.location.reload();
-    })
+    // socket.on('disconnect', function () {
+    //     window.location.reload();
+    // })
 
     setInterval(function () {
         $scope.updateClickDamage();
@@ -149,24 +149,24 @@ app.controller('myCtrl', function ($scope) {
     }
     $scope.updateClickDamage();
 
-    socket.on('purchasedUpgrade', function (upgrade) {
-        //console.log("Purchase of upgrade is a go!", upgrade);
-        let list = $scope.upgradeList;
-        for (num in list) {
-            if (list[num].name === upgrade.name) {
-                upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
-                list[num] = upgrade;
-                $scope.upgradeList = list;
-                $scope.updateClickDamage();
-            }
-        }
-        if (!$scope.$$phase) {
-            //$digest or $apply
-            $scope.$apply();
-        }
-        //console.log($scope.upgradeList);
-        return;
-    })
+    // socket.on('purchasedUpgrade', function (upgrade) {
+    //     //console.log("Purchase of upgrade is a go!", upgrade);
+    //     let list = $scope.upgradeList;
+    //     for (num in list) {
+    //         if (list[num].name === upgrade.name) {
+    //             upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
+    //             list[num] = upgrade;
+    //             $scope.upgradeList = list;
+    //             $scope.updateClickDamage();
+    //         }
+    //     }
+    //     if (!$scope.$$phase) {
+    //         //$digest or $apply
+    //         $scope.$apply();
+    //     }
+    //     //console.log($scope.upgradeList);
+    //     return;
+    // })
 
     let verified = false;
 

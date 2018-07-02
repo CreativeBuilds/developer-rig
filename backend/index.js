@@ -30,8 +30,6 @@ var jwt = require('jsonwebtoken');
 
 var config = require('./config.json');
 
-
-
 var upgradeList = require('./upgrades.json');
 
 var connection = mysql.createConnection({
@@ -57,7 +55,6 @@ connection.connect(function (err) {
                     console.log(err.message);
                     throw err;
                 }
-
             }
         })
 
@@ -70,7 +67,6 @@ connection.connect(function (err) {
         let users = {};
 
         let socketUsers = {};
-
 
         const Boss = class Boss {
             //Initiates the boss
@@ -524,7 +520,14 @@ connection.connect(function (err) {
                 // User is verifying after connecting! (Tie their socket id with their twitch account!)
                 socket.on('verify', token => {
                     //Use JWT to verify the token
-                    let secret = new Buffer.from(config.secret, 'base64');
+
+                    if(token.type === "panel"){
+                        var tokenSecret = config.panelSecret;
+                    } else {
+                        var tokenSecret = config.secret;
+                    }
+
+                    let secret = new Buffer.from(tokenSecret, 'base64');
                     jwt.verify(token, secret, function (err, decoded) {
                         if (err) {
                             console.log(err);
