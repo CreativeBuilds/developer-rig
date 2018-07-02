@@ -35,7 +35,7 @@ var upgradeList = require('./upgrades.json');
 var MainHand = require('./imports/mainHand.js');
 
 let testItem = new MainHand("testWeapon", "common", 1, 1);
-console.log(testItem);
+
 
 var connection = mysql.createConnection({
     host: config.mysql.host,
@@ -517,6 +517,7 @@ connection.connect(function (err) {
 
             io.on('connection', function (socket) {
                 console.log('a user connected');
+                console.log(testItem.damage);
 
                 // have an array called clicks which is an array of Date.now()'s then compare a new value with the first value in the array (if there are 10 items in the array)
                 let clicks = [];
