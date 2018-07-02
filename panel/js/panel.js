@@ -11,7 +11,6 @@ let authCode = '';
 
 window.Twitch.ext.onAuthorized(auth => {
     //console.log("Twitch verified!");
-    console.log(auth);
     authCode = auth;
 })
 
@@ -39,7 +38,6 @@ app.controller('myCtrl', function ($scope) {
 
         function verify() {
             if (authCode.token) {
-                console.log(authCode.token);
                 authCode.type = "panel";
                 socket.emit('verify', authCode);
                 socket.emit("getPanelInfo");

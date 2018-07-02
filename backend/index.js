@@ -516,22 +516,23 @@ connection.connect(function (err) {
                 // have an array called clicks which is an array of Date.now()'s then compare a new value with the first value in the array (if there are 10 items in the array)
                 let clicks = [];
 
-
                 // User is verifying after connecting! (Tie their socket id with their twitch account!)
                 socket.on('verify', token => {
                     //Use JWT to verify the token
 
-                    if(typeof token === "string"){
+                    if (typeof token === "string") {
                         var tokenSecret = config.secret;
+                        var type = "overlay";
                     } else {
-                        if(token.type === "panel"){
+                        if (token.type === "panel") {
                             var tokenSecret = config.panelSecret;
+                            var type = "panel";
                         } else {
                             var tokenSecret = config.secret;
+                            var type = "overlay";
                         }
                         token = token.token;
                     }
-                    
 
                     let secret = new Buffer.from(tokenSecret, 'base64');
                     jwt.verify(token, secret, function (err, decoded) {
@@ -548,6 +549,7 @@ connection.connect(function (err) {
                                 socket.emit('shareIdentity');
                                 socket.disconnect(0);
                             } else {
+                                console.log("A user connected!", decoded.user_id);
                                 //User has shared their identity with us!
                                 socket.user_id = decoded.user_id;
                                 if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
@@ -557,6 +559,7 @@ connection.connect(function (err) {
                                         if (err) {
                                             throw err;
                                         } else {
+                                            socket.type = type;
                                             let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                             users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
                                             socketUsers[decoded.user_id] = [socket];
@@ -573,6 +576,7 @@ connection.connect(function (err) {
                                         if (err) {
                                             throw err;
                                         } else {
+                                            socket.type = type;
                                             let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                             socketUsers[decoded.user_id].push(socket);
                                             socket.emit('verified');
@@ -630,7 +634,7 @@ connection.connect(function (err) {
                     // Get the users info by socket.user_id and send them back their upgrade points
                     getPropertyOfAUser(socket.user_id, "upgrade_points", function (err, points) {
                         if (err) {} else {
-                            if(!users[socket.user_id]) return;
+                            if (!users[socket.user_id]) return;
                             users[socket.user_id].upgradePoints = points;
                             socket.emit("currentUpgradePoints", points)
                         }
