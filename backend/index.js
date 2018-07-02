@@ -559,12 +559,13 @@ connection.connect(function (err) {
                                         if (err) {
                                             throw err;
                                         } else {
-                                            socket.type = type;
+                                            //socket.type = type;
                                             let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                             users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
                                             socketUsers[decoded.user_id] = [socket];
 
                                             socket.emit('verified');
+                                            console.log("Emitting upgrades", upgrades);
                                             socket.emit('upgradeList', upgrades);
                                             socket.emit('newFloor', currentBoss.floor);
                                         }
@@ -576,10 +577,11 @@ connection.connect(function (err) {
                                         if (err) {
                                             throw err;
                                         } else {
-                                            socket.type = type;
+                                            //socket.type = type;
                                             let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                             socketUsers[decoded.user_id].push(socket);
                                             socket.emit('verified');
+                                            console.log("Emitting upgrades 2", upgrades);
                                             socket.emit('upgradeList', upgrades);
                                             socket.emit('newFloor', currentBoss.floor);
                                         }
