@@ -1,4 +1,4 @@
-import Item from './item.js'
+var Item = require('./item.js');
 
 module.exports = class MainHand extends Item{
     constructor(name, type, level, baseDamage){

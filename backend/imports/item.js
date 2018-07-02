@@ -1,4 +1,4 @@
-module.exports.Item = class Item {
+module.exports = class Item {
     constructor(name, type, level){
         this.name = name;
         this.type = type;
