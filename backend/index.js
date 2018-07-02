@@ -555,7 +555,6 @@ connection.connect(function (err) {
                                 socket.emit('shareIdentity');
                                 socket.disconnect(0);
                             } else {
-                                console.log("A user connected!", decoded.user_id);
                                 //User has shared their identity with us!
                                 socket.user_id = decoded.user_id;
                                 if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
@@ -571,7 +570,6 @@ connection.connect(function (err) {
                                             socketUsers[decoded.user_id] = [socket];
 
                                             socket.emit('verified');
-                                            console.log("Emitting upgrades", upgrades);
                                             socket.emit('upgradeList', upgrades);
                                             socket.emit('newFloor', currentBoss.floor);
                                         }
@@ -587,7 +585,6 @@ connection.connect(function (err) {
                                             let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                             socketUsers[decoded.user_id].push(socket);
                                             socket.emit('verified');
-                                            console.log("Emitting upgrades 2", upgrades);
                                             socket.emit('upgradeList', upgrades);
                                             socket.emit('newFloor', currentBoss.floor);
                                         }
@@ -652,7 +649,7 @@ connection.connect(function (err) {
                 })
 
                 // User is requesting to purchase an upgrade!
-                socket.on('purchaseUpgradepurchaseUpgrade', function (upgradeName) {
+                socket.on('purchaseUpgrade', function (upgradeName) {
                     // Test to see if the user can purchase this upgrade with their current points
 
                     if (userCanPurchaseUpgrade(socket.user_id, upgradeName, users)) {
