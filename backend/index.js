@@ -521,11 +521,17 @@ connection.connect(function (err) {
                 socket.on('verify', token => {
                     //Use JWT to verify the token
 
-                    if(token.type === "panel"){
-                        var tokenSecret = config.panelSecret;
-                    } else {
+                    if(typeof token === "string"){
                         var tokenSecret = config.secret;
+                    } else {
+                        if(token.type === "panel"){
+                            var tokenSecret = config.panelSecret;
+                        } else {
+                            var tokenSecret = config.secret;
+                        }
+                        token = token.token;
                     }
+                    
 
                     let secret = new Buffer.from(tokenSecret, 'base64');
                     jwt.verify(token, secret, function (err, decoded) {
