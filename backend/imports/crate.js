@@ -9,10 +9,12 @@ module.exports = class Crate{
         console.log("Running constructor");
         if(typeof rarity !== "string") rarity === "common";
 
+        let found = false;
+
         for(let rarityPos = 0; rarityPos < rarities.length; rarityPos++){
-            if(rarities[rarityPos] === rarity){
-                return;
-            } else if (rarityPos + 1 === rarities.length){
+            if(rarities[rarityPos] === rarity && found === false){
+                found = true;
+            } else if (rarityPos + 1 === rarities.length && found === false){
                 // We've looped threw all the possible types and it's not available
                 rarity = "common";
             }
