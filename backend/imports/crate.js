@@ -31,7 +31,7 @@ module.exports = class Crate{
         console.log(itemPoolWeCanWinFrom, this.rarity);
         let winningNumber = random.integer(1,100);
         let currentChance = 0;
-        for(x of itemPoolWeCanWinFrom){
+        for(let x =0; x < itemPoolWeCanWinFrom.length; x++;){
             let currentItem = itemPoolWeCanWinFrom[x];
             if(currentItem.chanceToGet+currentChance >= winningNumber){
                 // This is the item that won!
