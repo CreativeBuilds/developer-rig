@@ -38,7 +38,9 @@ let testItem = new MainHand("testWeapon", "common", 1, 1);
 
 let crate = new Crate({rarity:"common"});
 
-console.log(crate.open);
+crate.open.then(function(item){
+    console.log("Winning item!", item);
+})
 
 
 var connection = mysql.createConnection({
