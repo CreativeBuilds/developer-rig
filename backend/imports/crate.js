@@ -23,6 +23,7 @@ module.exports = class Crate{
     get open() {
         // Maybe have a chance to fail in general and not give anything
         let itemPoolWeCanWinFrom = items[this.rarity];
+        console.log(itemPoolWeCanWinFrom, this.rarity);
         let winningNumber = random.integer(1,100);
         let currentChance = 0;
         for(x of itemPoolWeCanWinFrom){
