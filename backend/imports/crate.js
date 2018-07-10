@@ -17,6 +17,7 @@ module.exports = class Crate{
             }
         }
 
+        console.log("setting rarity", this.rarity);
         this.rarity = rarity;
     }
 
