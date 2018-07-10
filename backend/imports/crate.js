@@ -9,7 +9,7 @@ module.exports = class Crate{
         if(typeof rarity !== "string") rarity === "common";
 
         for(let rarityPos = 0; rarityPos < rarities.length; rarityPos++){
-            if(types[rarityPos] === rarity){
+            if(rarities[rarityPos] === rarity){
                 return;
             } else if (rarityPos + 1 === rarities.length){
                 // We've looped threw all the possible types and it's not available
