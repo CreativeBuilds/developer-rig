@@ -38,6 +38,7 @@ module.exports = class Crate{
                 var winningItem = currentItem;
             } else {
                 // Didn't win :(
+                    console.log("Nothing won!");
             }
         }
         console.log("Winning Item!");
