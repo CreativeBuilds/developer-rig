@@ -38,7 +38,7 @@ let testItem = new MainHand("testWeapon", "common", 1, 1);
 
 let crate = new Crate({rarity:"common"});
 
-crate.open();
+console.log(crate.open);
 
 
 var connection = mysql.createConnection({
