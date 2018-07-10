@@ -16,7 +16,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-
 var fs = require("fs");
 
 // UNCOMMENT THE ONE WITH HTTP IF YOU WANT HTTP, OR VISE VERSA (DONT FORGET TO GO TO THE BOTTOM OF THE PAGE AND SWAP THAT TOO!)
@@ -33,8 +32,13 @@ var config = require('./config.json');
 var upgradeList = require('./upgrades.json');
 
 var MainHand = require('./imports/mainHand.js');
+var Crate = require('./imports/crate.js');
 
 let testItem = new MainHand("testWeapon", "common", 1, 1);
+
+let crate = new Crate({rarity:"common"});
+
+crate.open();
 
 
 var connection = mysql.createConnection({

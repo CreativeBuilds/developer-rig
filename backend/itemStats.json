@@ -1,0 +1,52 @@
+{
+    "common":[
+        {
+            "name":"Wooden Sword",
+            "type":"mainHand",
+            "baseDamage":2,
+            "upgradeCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 20
+        },
+        {
+            "name":"Wooden Dagger",
+            "type":"offHand",
+            "baseDamage":1,
+            "upgradeCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 20
+        },
+        {
+            "name":"Wooden Helm",
+            "type":"head",
+            "baseProtection":1,
+            "upgradeCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 15
+        },
+        {
+            "name":"Wooden Breastplate",
+            "type":"breastplate",
+            "baseProtection":3,
+            "upgradeCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 15
+        },
+        {
+            "name":"Wooden Legs",
+            "type":"legs",
+            "baseProtection":2,
+            "upgradeCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 15
+        },
+        {
+            "name":"Wooden Boots",
+            "type":"feet",
+            "baseProtection":1,
+            "upgradeCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 15
+        }
+    ]
+}
