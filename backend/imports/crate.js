@@ -6,6 +6,7 @@ var random = new Random(Random.engines.mt19937().autoSeed());
 
 module.exports = class Crate{
     constructor({rarity = "common"}){
+        console.log("Running constructor");
         if(typeof rarity !== "string") rarity === "common";
 
         for(let rarityPos = 0; rarityPos < rarities.length; rarityPos++){
@@ -17,7 +18,8 @@ module.exports = class Crate{
             }
         }
 
-        console.log("setting rarity", this.rarity);
+        console.log("setting rarity");
+        console.log(rarity);
         this.rarity = rarity;
     }
 
