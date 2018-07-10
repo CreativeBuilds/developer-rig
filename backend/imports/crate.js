@@ -40,10 +40,9 @@ module.exports = class Crate {
                     // This is the item that won!
                     var winningItem = currentItem;
                     resolve(winningItem);
-                } else {
+                } else if(x + 1 < itemPoolWeCanWinFrom.length){
                     currentChance = currentChance + currentItem.chanceToGet;
-                    // Didn't win :(
-                    console.log("Nothing won!");
+                } else {
                     reject("Nothing won!");
                 }
             }
