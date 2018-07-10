@@ -8,7 +8,7 @@ module.exports = class Crate{
     constructor({rarity = "common"}){
         if(typeof rarity !== "string") rarity === "common";
 
-        for(rarityPos in rarities){
+        for(let rarityPos = 0; rarityPos < rarities.length; rarityPos++){
             if(types[rarityPos] === rarity){
                 return;
             } else if (rarityPos + 1 === rarities.length){
@@ -25,7 +25,7 @@ module.exports = class Crate{
         let itemPoolWeCanWinFrom = items[this.rarity];
         let winningNumber = random.integer(1,100);
         let currentChance = 0;
-        for(x in itemPoolWeCanWinFrom){
+        for(x of itemPoolWeCanWinFrom){
             let currentItem = itemPoolWeCanWinFrom[x];
             if(currentItem.chanceToGet+currentChance >= winningNumber){
                 // This is the item that won!
