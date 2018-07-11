@@ -19,7 +19,7 @@ exports.connect = function (mode, done) {
         host: config.mysql.host,
         user: config.mysql.user,
         password: config.mysql.password,
-        database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
+        database: config.mysql.database
     })
 
     state.mode = mode
