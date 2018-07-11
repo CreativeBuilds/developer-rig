@@ -620,7 +620,7 @@ db.connect(null, function () {
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', currentBoss.floor);
-                                        socket.emit('inventory', JSON.parse(result.inventory))
+                                        socket.emit('inventory', JSON.parse(result.inventory));
                                     }
                                 })
 
@@ -636,6 +636,7 @@ db.connect(null, function () {
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', currentBoss.floor);
+                                        socket.emit('inventory', JSON.parse(result.inventory));
                                     }
                                 })
                             }
