@@ -22,6 +22,11 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.upgradeList = [];
     $scope.inventory = [];
+    $scope.itemOverlay = {
+        name: "test",
+        type: "crate",
+        imageLocation: "commonCrate200px.png"
+    };
 
     let panels = {
         "upgrades": {
@@ -39,6 +44,50 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.currentClickDamage = 1;
     $scope.currentIdleDamage = 0;
+
+    let triggerRunning = false;
+    $scope.triggerShake = function($event){
+        if(triggerRunning)return;
+        triggerRunning = true;
+        $($event.currentTarget).addClass("animated");
+        $($event.currentTarget).addClass("headShake");
+        $($event.currentTarget).removeClass("clickable");
+        setTimeout(function(){
+            $($event.currentTarget).addClass("clickable");
+            $($event.currentTarget).removeClass("headShake");
+            triggerRunning = false;
+        },750)
+    }
+
+    $scope.removeItemOverlay = function(){
+        $('#itemOverlay').css('opacity', 0);
+        setTimeout(function(){
+            $('#itemOverlay').css('display','none');
+            $('#itemOverlay').css('opacity', 1);
+        },250)
+    }
+
+    $scope.openItemOverlay = function(item){
+        console.log(item);
+        let item2 = {};
+        item2.imageLocation = item.imageLocation;
+        item2.name = item.name;
+        item2.stackSize = item.stackSize || 1;
+        item2.type = item.type; 
+        // purchaseAmount needs to be set server side for all crates;
+        item2.unlockAmount = item.unlockAmount || 100;
+        $scope.itemOverlay = item2;
+        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.png',"200px.png");
+        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.jpg',"200px.jpg");
+        console.log(item);
+
+        setTimeout(function(){
+            console.log($scope.itemOverlay);
+            $('#itemOverlay').css('display','block');
+        },10)
+        
+        
+    }
 
     var socket = io('https://twitchclickergame.com');
 

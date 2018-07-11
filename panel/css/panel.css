@@ -218,6 +218,110 @@ body {
     
 }
 
+/* Item overlay */
+
+#exitItemOverlay{
+    color:#f1f1f1;
+    font-size:25px;
+    position: absolute;
+    top:5px;
+    right:5px;
+    z-index:90001;
+}
+
+#exitItemOverlay:hover{
+    cursor: pointer;
+}
+
+#itemOverlay{
+    display:block;
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    background:rgba(33,33,33,0.78);
+    z-index:90000;
+    -webkit-transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -o-transition: opacity .25s ease-in-out;
+    transition: opacity .25s ease-in-out;
+}
+
+#itemOverlay img.displayImage{
+    width:200px;
+    height:200px;
+    margin:auto;
+    margin-top:25px;
+    display:block;
+    -webkit-transition: margin .25s ease-in-out;
+    -moz-transition: margin .25s ease-in-out;
+    -o-transition: margin .25s ease-in-out;
+    transition: margin .25s ease-in-out;
+    position:absolute;
+    top:55px;
+    left:50px;
+}
+
+#itemOverlay img.displayImage.clickable:hover{
+    cursor:pointer;
+}
+
+#itemOverlay img.displayImage:hover{
+    margin-top:20px;
+}
+#itemOverlay div.crate img{
+    width:40px;
+    height:40px;
+}
+
+#itemOverlay div.crate span{
+    display:inline;
+    text-align:center;
+}
+
+#itemOverlay div.crate{
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    width:200px;
+    height:75px;
+    background:#111111;
+    box-shadow:#000000 0px 4px 4px;
+    grid-template-columns: 40px 55px;
+    white-space: nowrap;
+    margin:auto;
+    margin-top:200px;
+    color:#f1f1f1;
+
+    -webkit-transition: margin .25s ease-in-out;
+    -moz-transition: margin .25s ease-in-out;
+    -o-transition: margin .25s ease-in-out;
+    transition: margin .25s ease-in-out;
+}
+
+#itemOverlay div.crate:hover{
+    margin-top:195px;
+    cursor: pointer;
+}
+
+#itemOverlayTitle{
+    font-size:25px;
+    color:#f1f1f1;
+    margin:auto;
+    text-align:center;
+    margin-top:25px;
+}
+
+#itemOverlayAmount{
+    font-size:20px;
+    color:#f1f1f1;
+    margin:auto;
+    text-align: center;
+    margin-top:5px;
+}
+
+
 /* Inventory CSS */
 
 #inventory{
@@ -241,6 +345,30 @@ body {
     margin:2.5px;
     font-size:normal;
     background:#111111;
+    position: relative;
+}
+
+#inventoryItems li img{
+    width:45px;
+    height:45px;
+    position: absolute;
+    z-index:1;
+    top:0;
+    left:0;
+}
+
+#inventoryItems li:hover{
+    cursor: pointer;
+}
+
+#inventoryItems li div{
+    position:absolute;
+    color:#f1f1f1;
+    z-index:2;
+    bottom:2;
+    right:2;
+    font-size:15px;
+    text-shadow: black 2px 2px 4px;
 }
 
 #equippedItems{

@@ -5,6 +5,7 @@
 <script src="cdnfiles/socket.io.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="css/panel.css">
+<link rel="stylesheet" href="css/animate.css">
 </head>
 
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100% !important; height: 100% !important; margin: 0px; padding: 0px;background:#111111;"
@@ -43,10 +44,10 @@
                 </div>
                 <div style="color:#f1f1f1;font-size:25px;text-align: center;margin-top:15px;">ITEMS</div>
                 <ul id="inventoryItems">
-                    <li ng-repeat="item in inventory" style="position:relative">
-                        <img src="{{item.imageLocation}}" alt="">
-                        <div style="position:absolute;bottom:2;right:2;" ng-if="item.stackSize">{{item.stackSize}}</div>
-                        <div style="position:absolute;bottom:2;right:2;" ng-if="!item.stackSize">1</div>
+                    <li ng-repeat="item in inventory" ng-click="openItemOverlay(item)">
+                        <img src="/imgs/{{item.imageLocation}}" alt="">
+                        <div  ng-if="item.stackSize">{{item.stackSize}}</div>
+                        <div ng-if="!item.stackSize">1</div>
                     </li>
                 </ul>
             </div>
@@ -67,6 +68,16 @@
                         </div>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div id="itemOverlay">
+            <span class="glyphicon glyphicon-remove" id="exitItemOverlay" ng-click="removeItemOverlay()"></span>
+            <div id="itemOverlayTitle" >{{itemOverlay.name}}</div>
+            <div id="itemOverlayAmount" >{{itemOverlay.stackSize}}</div>
+            <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
+            <div class="crate" ng-if="itemOverlay.type === 'crate'">
+                <img src="/imgs/gem.png" alt="">
+                <span>{{itemOverlay.unlockAmount}}</span>
             </div>
         </div>
     </div>
