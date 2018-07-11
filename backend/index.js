@@ -61,7 +61,7 @@ db.connect(null, function () {
     let connection = db.get();
 
 
-    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, upgrades TEXT)", function (err, result) {
+    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, upgrades TEXT, inventory TEXT)", function (err, result) {
         if (err) {
             // If the table exits (do nothing);
             if (err.message.includes("already exists")) {
