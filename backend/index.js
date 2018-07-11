@@ -201,13 +201,27 @@ db.connect(null, function () {
                         if(err){
                             return;
                         } else {
-                            inventory.push(new Crate({"rarity":thisBoss.rarity}));
+
+                            let done = false;
+                            for(x in inventory){
+                                if(inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done){
+                                    inventory[x].stackSize = inventory[x].stackSize;
+                                    done = true;
+                                } else if(x + 1 === inventory.length){
+                                    inventory.push(new Crate({"rarity":thisBoss.rarity}));
+                            
+                                }
+                            }
+
                             db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
                                 if(err) return;
                                 if(bool){
                                     console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
                                 }
                             })
+
+
+                            
                         }
                     })
                 }

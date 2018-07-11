@@ -10,8 +10,16 @@ module.exports = class Crate extends Item {
     constructor({
         rarity = "common"
     }) {
-        rarity.charAt(0).toUpperCase();
-        super({name:rarity + " Crate", type:rarity.toLowerCase(), imageLocation:rarity+'Crate.png', stackable:true, tradeable: true, stacksize: 1})
+        rarity = rarity.charAt(0).toUpperCase();
+        super({
+            name: rarity + " Crate",
+            type: "crate",
+            rarity: rarity.toLowerCase(),
+            imageLocation: rarity.toLowerCase() + 'Crate.png',
+            stackable: true,
+            tradeable: true,
+            stackSize: 1
+        })
         console.log("Running constructor");
         if (typeof rarity !== "string") rarity === "common";
 
@@ -26,8 +34,8 @@ module.exports = class Crate extends Item {
             }
         }
 
-        
-        
+
+
     }
 
     get open() {
@@ -43,7 +51,7 @@ module.exports = class Crate extends Item {
                     // This is the item that won!
                     var winningItem = currentItem;
                     resolve(winningItem);
-                } else if(x + 1 < itemPoolWeCanWinFrom.length){
+                } else if (x + 1 < itemPoolWeCanWinFrom.length) {
                     currentChance = currentChance + currentItem.chanceToGet;
                 } else {
                     reject("Nothing won!");
