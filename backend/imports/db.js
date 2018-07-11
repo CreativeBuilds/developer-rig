@@ -102,7 +102,7 @@ exports.getPropertyOfAUser = function(username, property, callback) {
 }
 
 exports.parseInventory = function(username, callback){
-    exports.getPropertyOfAUser(username, property, function(err, inventory){
+    exports.getPropertyOfAUser(username, "inventory", function(err, inventory){
         if(err){
             callback(err, null);
             return;
