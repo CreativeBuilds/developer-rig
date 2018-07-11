@@ -113,7 +113,9 @@ exports.parseInventory = function (username, callback) {
         if (!inventory) {
             inventory = [];
         }
-        if (!callback) return;
-        callback(null, JSON.parse(inventory));
+        if (!callback) {return} else {
+            callback(null, JSON.parse(inventory));
+        }
+        
     })
 }
