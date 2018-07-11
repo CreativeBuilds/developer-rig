@@ -92,7 +92,7 @@ exports.updateAUsersProperty = function(username, field, info, callback) {
 }
 
 exports.getPropertyOfAUser = function(username, property, callback) {
-    getUserWithUsername(username, function (err, user) {
+    exports.getUserWithUsername(username, function (err, user) {
         if (err) {
             callback(err, null);
         } else {
@@ -102,7 +102,7 @@ exports.getPropertyOfAUser = function(username, property, callback) {
 }
 
 exports.parseInventory = function(username, callback){
-    getPropertyOfAUser(username, property, function(err, inventory){
+    exports.getPropertyOfAUser(username, property, function(err, inventory){
         if(err){
             callback(err, null);
             return;
