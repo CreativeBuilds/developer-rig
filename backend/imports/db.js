@@ -109,6 +109,9 @@ exports.parseInventory = function(username, callback){
         }
 
         // turns '[]' = [];
+        if(!inventory){
+            inventory = [];
+        }
         callback(null, JSON.parse(inventory));
     })
 }
