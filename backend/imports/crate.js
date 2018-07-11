@@ -1,13 +1,16 @@
 let rarities = require('../rarities.json');
 let items = require('../itemStats.json');
 
+var Item = require('./item.js');
+
 var Random = require("random-js");
 var random = new Random(Random.engines.mt19937().autoSeed());
 
-module.exports = class Crate {
+module.exports = class Crate extends Item {
     constructor({
         rarity = "common"
     }) {
+        
         console.log("Running constructor");
         if (typeof rarity !== "string") rarity === "common";
 
@@ -22,9 +25,10 @@ module.exports = class Crate {
             }
         }
 
-        console.log("setting rarity");
-        console.log(rarity);
         this.rarity = rarity;
+        rarity.charAt(0).toUpperCase();
+        this.name = rarity + " Crate";
+        super({name:this.name, type:rarity, null, 'commonCrate.png', stackable:true, tradeable: true, stacksize: 1})
     }
 
     get open() {
