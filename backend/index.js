@@ -211,12 +211,8 @@ db.connect(null, function () {
                                 if(inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done){
                                     inventory[x].stackSize = inventory[x].stackSize;
                                     done = true;
-                                } else if(x + 1 === inventory.length){
-                                    console.log("-------------------------------------------");
-                                    console.log("PUSHED NEW CRATE");
-                                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                                } else if(x + 1 === inventory.length && !done){
                                     inventory.push(new Crate({"rarity":thisBoss.rarity}));
-                            
                                 }
                             }
 
