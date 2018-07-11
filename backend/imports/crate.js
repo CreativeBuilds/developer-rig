@@ -28,7 +28,7 @@ module.exports = class Crate extends Item {
         this.rarity = rarity;
         rarity.charAt(0).toUpperCase();
         this.name = rarity + " Crate";
-        super({name:this.name, type:rarity, null, 'commonCrate.png', stackable:true, tradeable: true, stacksize: 1})
+        super({name:this.name, type:rarity, 'commonCrate.png', stackable:true, tradeable: true, stacksize: 1})
     }
 
     get open() {
