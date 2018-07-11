@@ -226,12 +226,14 @@ db.connect(null, function () {
                                 if (err) return;
                                 if (bool) {
                                     console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
+                                    let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
+                                    sockets.forEach(function (socket) {
+                                        console.log("Emitting to the sockets!");
+                                        socket.emit("newCrate");
+                                        socket.emit("inventory", inventory);
+                                    })
                                 }
-                                let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
-                                sockets.forEach(function(socket){
-                                    socket.emit("newCrate");
-                                    socket.emit("inventory", inventory);
-                                })
+
                             })
 
 
