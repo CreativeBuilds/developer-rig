@@ -474,7 +474,7 @@ db.connect(null, function () {
                 if (result.length === 0) {
                     // User doesn't exist (make the user!)
                     let inventory = [];
-                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}'),'${JSON.stringify(inventory)}')`, function (err, result) {
+                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}')`, function (err, result) {
                         if (err) {
                             callback(err, null);
                         } else {
