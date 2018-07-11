@@ -205,7 +205,7 @@ db.connect(null, function () {
                             db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
                                 if(err) return;
                                 if(bool){
-                                    console.log(user_id, 'got a crate of rarity': this.rarity);
+                                    console.log(user_id, 'got a crate of rarity:', this.rarity);
                                 }
                             }.bind(this))
                         }
