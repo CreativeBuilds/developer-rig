@@ -54,7 +54,7 @@ var connection = mysql.createConnection({
     database: config.mysql.database
 });
 
-db.connect(function () {
+db.connect(null, function () {
     let connection = db.get();
 
 
