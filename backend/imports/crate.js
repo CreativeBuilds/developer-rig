@@ -49,7 +49,5 @@ module.exports = class Crate {
         }.bind(this))
 
         // Maybe have a chance to fail in general and not give anything
-
-
     }
 }

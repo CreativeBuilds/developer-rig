@@ -5,6 +5,9 @@ var https = require('https');
 
 var cors = require('cors');
 
+var Random = require("random-js");
+var random = new Random(Random.engines.mt19937().autoSeed());
+
 app.use(cors({
     origin: "https://localhost.rig.twitch.tv:8081"
 }))
@@ -82,7 +85,7 @@ db.connect(null, function () {
 
     const Boss = class Boss {
         //Initiates the boss
-        constructor(name, floor, type, amountOfActivePlayers) {
+        constructor(name, floor, rarity, amountOfActivePlayers) {
 
             // All of these are variables for each boss, more can be added
             this.name = name;
@@ -94,7 +97,7 @@ db.connect(null, function () {
             this.rewardUpgradePoints = floor; //TODO Remove this as a hardcode and make it a changeable variable;
             this.usersWhoHelped = {};
             this.floor = floor;
-
+            this.rarity = rarity;
         }
 
         damage(usersDamage, user_id) {
@@ -144,6 +147,28 @@ db.connect(null, function () {
             let maxAmount = Object.keys(users).length;
             let currentAmount = 0;
 
+
+            let chanceToGetCrateFunction = function(){
+                // These are stats out of 100 for each user to get a type of crate
+                switch(this.type){
+                    case "common":
+                        return 50;
+                    case "uncommon":
+                        return 40;
+                    case "rare":
+                        return 25;
+                    case "epic":
+                        return 15;
+                    case "legendary":
+                        return 5;
+                    case "mythic":
+                        return 2;
+                }
+                return 0;
+            }.bind(this);
+
+            let chanceToGetCrate = chanceToGetCrateFunction();
+
             Object.keys(users).forEach(function (user_id) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
                 getPropertyOfAUser(user_id, "upgrade_points", function (err, points) {
@@ -169,6 +194,25 @@ db.connect(null, function () {
 
                     }
                 })
+
+                if(random.integer(1,100) >= 50){
+                    // Only do this if the user wins a crate.
+                    db.parseInventory(user_id, "inventory", function(err, inventory){
+                        if(err){
+                            return;
+                        } else {
+                            inventory.push(new Crate({"rarity":this.rarity}));
+                            db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
+                                if(err) return;
+                                if(bool){
+                                    console.log(user_id, 'got a crate of rarity': this.rarity);
+                                }
+                            }.bind(this))
+                        }
+                    }.bind(this))
+                }
+
+               
 
             })
         }
@@ -391,9 +435,7 @@ db.connect(null, function () {
         }
     }
 
-    function selectFromTable(table, toSearch, toMatch, callback) {
-        connection.query(`SELECT * FROM ` + table + ` WHERE ` + toSearch + ` = '` + toMatch + `'`, callback);
-    }
+    selectFromTable = db.selectFromTable;
 
     // Will take a object in the form of upgrade.json and strip everything except the levels (useful for saving in the database))
     function returnLevelUpgradeList(list) {
@@ -431,7 +473,8 @@ db.connect(null, function () {
             } else {
                 if (result.length === 0) {
                     // User doesn't exist (make the user!)
-                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}')`, function (err, result) {
+                    let inventory = [];
+                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}'),'${JSON.stringify(inventory)}')`, function (err, result) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -447,44 +490,12 @@ db.connect(null, function () {
     }
 
     //Returns a user object not an array!
-    function getUserWithUsername(username, callback) {
-        selectFromTable('users', 'user_id', username, function (err, result) {
-            if (err) {
-                callback(err, null);
-            } else if (result.length === 0) {
-                callback(null, {});
-            } else {
-                callback(null, result[0]);
-            }
-        })
-    }
+    var getUserWithUsername = db.getUserWithUsername;
+    
 
     //Returns an error if it fails, if not it returns true! (Through callback)
-    function updateAUsersProperty(username, field, info, callback) {
-        getUserWithUsername(username, function (err, user) {
-            if (err) {
-                callback(err, null);
-            } else {
-                connection.query(`UPDATE users SET ${field} = '${info}' WHERE user_id = '${username}'`, function (err, result) {
-                    if (err) {
-                        callback(err, null);
-                    } else {
-                        callback(null, true);
-                    }
-                })
-            }
-        })
-    }
-
-    function getPropertyOfAUser(username, property, callback) {
-        getUserWithUsername(username, function (err, user) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(err, user[property]);
-            }
-        })
-    }
+    var updateAUsersProperty = db.updateAUsersProperty;
+    var getPropertyOfAUser = db.getPropertyOfAUser;
 
     function sendAMessageToAllOfAUsersSockets(user_id, messageName, infoToSend, users) {
         for (socket of users[user_id]) {
