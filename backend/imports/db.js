@@ -56,11 +56,11 @@ exports.drop = function (tables, done) {
     }, done)
 }
 
-exports.selectFromTable = function(table, toSearch, toMatch, callback) {
+exports.selectFromTable = function (table, toSearch, toMatch, callback) {
     state.pool.query(`SELECT * FROM ` + table + ` WHERE ` + toSearch + ` = '` + toMatch + `'`, callback);
 }
 
-exports.getUserWithUsername = function(username, callback) {
+exports.getUserWithUsername = function (username, callback) {
     selectFromTable('users', 'user_id', username, function (err, result) {
         if (err) {
             callback(err, null);
@@ -72,12 +72,12 @@ exports.getUserWithUsername = function(username, callback) {
     })
 }
 
-exports.updateAUsersProperty = function(username, field, info, callback) {
+exports.updateAUsersProperty = function (username, field, info, callback) {
     exports.getUserWithUsername(username, function (err, user) {
         if (err) {
             callback(err, null);
         } else {
-            if(typeof info === "object"){
+            if (typeof info === "object") {
                 info = JSON.stringify(info);
             }
             state.pool.query(`UPDATE users SET ${field} = '${info}' WHERE user_id = '${username}'`, function (err, result) {
@@ -91,7 +91,8 @@ exports.updateAUsersProperty = function(username, field, info, callback) {
     })
 }
 
-exports.getPropertyOfAUser = function(username, property, callback) {
+exports.getPropertyOfAUser = function (username, property, callback) {
+    if (!callback) return;
     exports.getUserWithUsername(username, function (err, user) {
         if (err) {
             callback(err, null);
@@ -101,17 +102,18 @@ exports.getPropertyOfAUser = function(username, property, callback) {
     })
 }
 
-exports.parseInventory = function(username, callback){
-    exports.getPropertyOfAUser(username, "inventory", function(err, inventory){
-        if(err){
+exports.parseInventory = function (username, callback) {
+    exports.getPropertyOfAUser(username, "inventory", function (err, inventory) {
+        if (err) {
             callback(err, null);
             return;
         }
 
         // turns '[]' = [];
-        if(!inventory){
+        if (!inventory) {
             inventory = [];
         }
+        if (!callback) return;
         callback(null, JSON.parse(inventory));
     })
 }
