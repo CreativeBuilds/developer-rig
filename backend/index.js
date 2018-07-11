@@ -203,8 +203,11 @@ db.connect(null, function () {
                         } else {
 
                             let done = false;
+
+                            
+
                             for(x in inventory){
-                                console.log("X:", x);
+                                // console.log("X:", x);
                                 if(inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done){
                                     inventory[x].stackSize = inventory[x].stackSize;
                                     done = true;
@@ -215,6 +218,10 @@ db.connect(null, function () {
                                     inventory.push(new Crate({"rarity":thisBoss.rarity}));
                             
                                 }
+                            }
+
+                            if(inventory.length === 0){
+                                inventory.push(new Crate({"rarity":thisBoss.rarity}));
                             }
 
                             db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
