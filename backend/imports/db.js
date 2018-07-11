@@ -80,7 +80,7 @@ exports.updateAUsersProperty = function(username, field, info, callback) {
             if(typeof info === "object"){
                 info = JSON.stringify(info);
             }
-            connection.query(`UPDATE users SET ${field} = '${info}' WHERE user_id = '${username}'`, function (err, result) {
+            state.pool.query(`UPDATE users SET ${field} = '${info}' WHERE user_id = '${username}'`, function (err, result) {
                 if (err) {
                     callback(err, null);
                 } else {
