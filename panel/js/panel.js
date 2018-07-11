@@ -21,6 +21,7 @@ app.controller('myCtrl', function ($scope) {
     $scope.upgradePoints = 0;
 
     $scope.upgradeList = [];
+    $scope.inventory = [];
 
     let panels = {
         "upgrades": {
@@ -102,6 +103,15 @@ app.controller('myCtrl', function ($scope) {
 
             $scope.updateClickDamage();
 
+        })
+
+        socket.on("inventory", function(inventory){
+            $scope.inventory = inventory;
+            console.log("Inventory has been updated!", inventory);
+        })
+
+        socket.on("newCrate", function(){
+            console.log("We just got a crate!");
         })
 
 
