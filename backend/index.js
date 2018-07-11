@@ -150,7 +150,7 @@ db.connect(null, function () {
 
             let chanceToGetCrateFunction = function(){
                 // These are stats out of 100 for each user to get a type of crate
-                switch(this.type){
+                switch(thisBoss.type){
                     case "common":
                         return 50;
                     case "uncommon":
@@ -165,7 +165,7 @@ db.connect(null, function () {
                         return 2;
                 }
                 return 0;
-            }.bind(this);
+            };
 
             let chanceToGetCrate = chanceToGetCrateFunction();
 
@@ -201,15 +201,15 @@ db.connect(null, function () {
                         if(err){
                             return;
                         } else {
-                            inventory.push(new Crate({"rarity":this.rarity}));
+                            inventory.push(new Crate({"rarity":thisBoss.rarity}));
                             db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
                                 if(err) return;
                                 if(bool){
-                                    console.log(user_id, 'got a crate of rarity:', this.rarity);
+                                    console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
                                 }
-                            }.bind(this))
+                            })
                         }
-                    }.bind(this))
+                    })
                 }
 
                
