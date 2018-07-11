@@ -208,6 +208,9 @@ db.connect(null, function () {
                                     inventory[x].stackSize = inventory[x].stackSize;
                                     done = true;
                                 } else if(x + 1 === inventory.length){
+                                    console.log("-------------------------------------------");
+                                    console.log("PUSHED NEW CRATE");
+                                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                                     inventory.push(new Crate({"rarity":thisBoss.rarity}));
                             
                                 }
