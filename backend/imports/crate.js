@@ -10,7 +10,7 @@ module.exports = class Crate extends Item {
     constructor({
         rarity = "common"
     }) {
-        rarity = rarity.charAt(0).toUpperCase();
+        rarity = rarity.charAt(0).toUpperCase() + rarity.slice(1);
         super({
             name: rarity + " Crate",
             type: "crate",

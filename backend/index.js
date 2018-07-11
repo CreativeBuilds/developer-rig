@@ -148,9 +148,9 @@ db.connect(null, function () {
             let currentAmount = 0;
 
 
-            let chanceToGetCrateFunction = function(){
+            let chanceToGetCrateFunction = function () {
                 // These are stats out of 100 for each user to get a type of crate
-                switch(thisBoss.type){
+                switch (thisBoss.type) {
                     case "common":
                         return 50;
                     case "uncommon":
@@ -195,45 +195,47 @@ db.connect(null, function () {
                     }
                 })
 
-                if(random.integer(1,100) >= 50){
+                if (random.integer(1, 100) >= 50) {
                     // Only do this if the user wins a crate.
-                    db.parseInventory(user_id, function(err, inventory){
-                        if(err){
+                    db.parseInventory(user_id, function (err, inventory) {
+                        if (err) {
                             return;
                         } else {
 
                             let done = false;
 
-                            
-
-                            for(let x = 0; x < inventory.length; x++){
+                            for (let x = 0; x < inventory.length; x++) {
                                 // console.log("X:", x);
-                                if(inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done){
+                                if (inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done) {
                                     inventory[x].stackSize = inventory[x].stackSize;
                                     done = true;
-                                } else if(x + 1 === inventory.length && !done){
-                                    inventory.push(new Crate({"rarity":thisBoss.rarity}));
+                                } else if (x + 1 === inventory.length && !done) {
+                                    inventory.push(new Crate({
+                                        "rarity": thisBoss.rarity
+                                    }));
                                 }
                             }
 
-                            if(inventory.length === 0){
-                                inventory.push(new Crate({"rarity":thisBoss.rarity}));
+                            if (inventory.length === 0) {
+                                inventory.push(new Crate({
+                                    "rarity": thisBoss.rarity
+                                }));
                             }
 
-                            db.updateAUsersProperty(user_id, "inventory", inventory, function(err, bool){
-                                if(err) return;
-                                if(bool){
+                            db.updateAUsersProperty(user_id, "inventory", inventory, function (err, bool) {
+                                if (err) return;
+                                if (bool) {
                                     console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
                                 }
                             })
 
 
-                            
+
                         }
                     })
                 }
 
-               
+
 
             })
         }
@@ -512,7 +514,7 @@ db.connect(null, function () {
 
     //Returns a user object not an array!
     var getUserWithUsername = db.getUserWithUsername;
-    
+
 
     //Returns an error if it fails, if not it returns true! (Through callback)
     var updateAUsersProperty = db.updateAUsersProperty;
