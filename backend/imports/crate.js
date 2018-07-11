@@ -11,8 +11,7 @@ module.exports = class Crate extends Item {
         rarity = "common"
     }) {
         rarity.charAt(0).toUpperCase();
-        this.name = rarity + " Crate";
-        super({name:this.name, type:rarity.toLowerCase(), imageLocation:rarity+'Crate.png', stackable:true, tradeable: true, stacksize: 1})
+        super({name:rarity + " Crate", type:rarity.toLowerCase(), imageLocation:rarity+'Crate.png', stackable:true, tradeable: true, stacksize: 1})
         console.log("Running constructor");
         if (typeof rarity !== "string") rarity === "common";
 
