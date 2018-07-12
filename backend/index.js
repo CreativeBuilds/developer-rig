@@ -640,10 +640,12 @@ db.connect(null, function () {
             socket.on('purchaseCrate', (item) => {
                 console.log("got purchase crate")
                 if (!item) return;
-                db.getPropertyOfAUser(socket.user_id, "gems", function (gems) {
+                db.getPropertyOfAUser(socket.user_id, "gems", function (err, gems) {
+                    if(err) return;
                     if (!gems) return;
                     console.log("got gems");
-                    db.parseInventory(socket.user_id, function (inventory) {
+                    db.parseInventory(socket.user_id, function (err, inventory) {
+                        if(err) return;
                         let done = false;
                         for (let x = 0; x < inventory.length; x++) {
                             let dbItem = inventory[x];
