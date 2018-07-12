@@ -672,6 +672,7 @@ db.connect(null, function () {
                                                 var itemObject = new MainHand({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -680,6 +681,7 @@ db.connect(null, function () {
                                                 var itemObject = new OffHand({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -688,6 +690,7 @@ db.connect(null, function () {
                                                 var itemObject = new Head({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -696,6 +699,7 @@ db.connect(null, function () {
                                                 var itemObject = new Breastplate({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -704,6 +708,7 @@ db.connect(null, function () {
                                                 var itemObject = new Legs({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -712,6 +717,7 @@ db.connect(null, function () {
                                                 var itemObject = new Feet({
                                                     name: crateItem.name,
                                                     level: 1,
+                                                    rarity:crateItem.rarity,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });

@@ -3,6 +3,7 @@
         {
             "name":"Wooden Sword",
             "type":"mainHand",
+            "rarity":"common",
             "imageLocation":"woodenSword.png",
             "baseDamage":2,
             "upgradeCost":1,
@@ -12,6 +13,7 @@
         {
             "name":"Wooden Dagger",
             "type":"offHand",
+            "rarity":"common",
             "imageLocation":"woodenDagger.png",
             "baseDamage":1,
             "upgradeCost":1,
@@ -21,6 +23,7 @@
         {
             "name":"Wooden Helm",
             "type":"head",
+            "rarity":"common",
             "imageLocation":"woodenHelm.png",
             "baseProtection":1,
             "upgradeCost":1,
@@ -30,6 +33,7 @@
         {
             "name":"Wooden Breastplate",
             "type":"breastplate",
+            "rarity":"common",
             "imageLocation":"woodenBreastplate.png",
             "baseProtection":3,
             "upgradeCost":2,
@@ -39,6 +43,7 @@
         {
             "name":"Wooden Legs",
             "type":"legs",
+            "rarity":"common",
             "imageLocation":"woodenLegs.png",
             "baseProtection":2,
             "upgradeCost":1,
@@ -48,6 +53,7 @@
         {
             "name":"Wooden Boots",
             "type":"feet",
+            "rarity":"common",
             "imageLocation":"woodenFeet.png",
             "baseProtection":1,
             "upgradeCost":1,
