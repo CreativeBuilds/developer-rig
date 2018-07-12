@@ -1,4 +1,4 @@
-var Item = require('./item.js');
+var Armor = require('./armor.js');
 
 module.exports = class Legs extends Armor{
     constructor({name, type = "legs", level, baseProtection, imageLocation, tradeable = true}){
