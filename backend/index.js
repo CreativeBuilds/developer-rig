@@ -673,7 +673,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -683,7 +683,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -693,7 +693,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -703,7 +703,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -713,7 +713,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -723,7 +723,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
-                                                    baseCost:crateItem.cost,
+                                                    baseCost:crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
