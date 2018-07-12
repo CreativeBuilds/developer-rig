@@ -21,11 +21,6 @@ app.use(function (req, res, next) {
 
 var fs = require("fs");
 
-// UNCOMMENT THE ONE WITH HTTP IF YOU WANT HTTP, OR VISE VERSA (DONT FORGET TO GO TO THE BOTTOM OF THE PAGE AND SWAP THAT TOO!)
-
-
-// var io = require('socket.io')(http);
-
 var mysql = require('mysql');
 
 var db = require('./imports/db.js');
@@ -37,25 +32,12 @@ var config = require('./config.json');
 var upgradeList = require('./upgrades.json');
 
 var MainHand = require('./imports/mainHand.js');
+var OffHand = require('./imports/offHand.js');
+var Head = require('./imports/head.js');
+var Breastplate = require('./imports/breastplate.js');
+var Legs = require('./imports/legs.js');
+var Feet = require('./imports/feet.js');
 var Crate = require('./imports/crate.js');
-
-let testItem = new MainHand("testWeapon", "common", 1, 1);
-
-let crate = new Crate({
-    rarity: "common"
-});
-
-crate.open.then(function (item) {
-    console.log("Winning item!", item);
-})
-
-
-var connection = mysql.createConnection({
-    host: config.mysql.host,
-    user: config.mysql.user,
-    password: config.mysql.password,
-    database: config.mysql.database
-});
 
 db.connect(null, function () {
     let connection = db.get();
@@ -653,6 +635,101 @@ db.connect(null, function () {
                 socket.emit("bossInfo", {
                     "health": currentBoss.getHealth,
                     "totalHealth": currentBoss.getTotalHealth
+                })
+            })
+
+            socket.on('purchaseCrate', (item) => {
+                if (!item) return;
+                db.getPropertyOfAUser(socket.user_id, "gems", function (gems) {
+                    if (!gems) return;
+                    db.parseInventory(socket.user_id, function (inventory) {
+                        let done = false;
+                        for (let x = 0; x < inventory.length; x++) {
+                            let dbItem = inventory[x];
+                            if (dbItem.name === item.name && dbItem.type === item.type && dbItem.type === "crate" && !done) {
+                                // This is the matching crate!
+                                done = true;
+
+                                // User doesn't have enough
+                                if (dbItem.unlockAmount > gems) return;
+                                if (Math.floor(gems - dbItem.unlockAmount) < 0) return;
+                                db.updateAUsersProperty(socket.User_id, "gems", Math.floor(gems - dbItem.unlockAmount), function (err) {
+                                    if (err) return;
+                                    let crate = new Crate({
+                                        rarity: dbItem.rarity
+                                    });
+                                    crate.open.then(function (crateItem) {
+                                        console.log(crateItem);
+                                        // TODO update cases to actually make the right item
+                                        switch (crateItem.type) {
+                                            case "mainHand":
+                                                var itemObject = new MainHand({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseDamage: crateItem.baseDamage,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                            case "offHand":
+                                                var itemObject = new OffHand({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseDamage: crateItem.baseDamage,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                            case "head":
+                                                var itemObject = new Head({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseProtection: crateItem.baseProtection,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                            case "breastplate":
+                                                var itemObject = new Breastplate({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseProtection: crateItem.baseProtection,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                            case "legs":
+                                                var itemObject = new Legs({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseProtection: crateItem.baseProtection,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                            case "feet":
+                                                var itemObject = new Feet({
+                                                    name: crateItem.name,
+                                                    level: 1,
+                                                    baseProtection: crateItem.baseProtection,
+                                                    imageLocation: crateItem.imageLocation || ''
+                                                });
+                                                break;
+                                        }
+                                        inventory[x].stackSize = inventory[x].stackSize - 1;
+                                        if (inventory[x].stackSize === 0) {
+                                            inventory[x] = null;
+                                        }
+                                        inventory.push(itemObject);
+                                        db.updateAUsersProperty(socket.user_id, "inventory", inventory, function (err) {
+                                            if (err) {
+                                                console.error("There was an error giving the use the item they got from the crate!");
+                                            } else {
+                                                console.log("User got a ", crateItem.name);
+                                            }
+                                        })
+                                    })
+                                })
+
+
+                            }
+                        }
+                    })
                 })
             })
 
