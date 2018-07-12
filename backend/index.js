@@ -720,6 +720,11 @@ db.connect(null, function () {
                                             inventory[x] = null;
                                         }
                                         inventory.push(itemObject);
+
+                                        // TODO Change this so it sends an animation to the overlay before sending to the inventory tab
+
+                                        socket.emit("inventory", inventory);
+                                        socket.emit("gems", gems);
                                         db.updateAUsersProperty(socket.user_id, "inventory", inventory, function (err) {
                                             if (err) {
                                                 console.error("There was an error giving the use the item they got from the crate!");
