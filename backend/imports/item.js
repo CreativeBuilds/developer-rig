@@ -2,7 +2,7 @@ module.exports = class Item {
     constructor({
         name,
         type,
-        rarity,
+        rarity = "common",
         level = null,
         imageLocation,
         stackable = false,

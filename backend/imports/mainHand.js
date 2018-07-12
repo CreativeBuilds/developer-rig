@@ -5,7 +5,7 @@ module.exports = class MainHand extends Item {
         name,
         type = "mainHand",
         level,
-        baseDamage,
+        baseDamage,rarity,
         imageLocation
     }) {
         super({
@@ -13,6 +13,7 @@ module.exports = class MainHand extends Item {
             type,
             level,
             imageLocation,
+            rarity,
             stackable: false,
             tradeable: true
         });

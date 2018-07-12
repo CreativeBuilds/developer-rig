@@ -7,6 +7,31 @@ let window2 = window;
 
 var app = angular.module('app', []);
 
+app.filter('inventorySort', function(){
+    return function(inventory, type, rarity){
+
+        let out = [];
+
+        angular.forEach(inventory, function(item){
+            if(type && type !== "any"){
+                if(!item.type) return;
+                if(item.type !== type) return;
+            }
+    
+            if(rarity && rarity !== "any"){
+                if(!item.rarity) return;
+                if(item.rarity !== rarity) return;
+            }
+    
+            out.push(item);
+        })
+
+        return out;
+
+        
+    }
+})
+
 let authCode = '';
 
 window.Twitch.ext.onAuthorized(auth => {
@@ -29,6 +54,31 @@ app.controller('myCtrl', function ($scope) {
         type: "crate",
         imageLocation: "commonCrate200px.png"
     };
+
+    $scope.sort = {};
+
+    $scope.sort.rarity = "any";
+    $scope.sort.type = "any";
+
+    $scope.rarities = [
+        "any",
+        "common",
+        "uncommon",
+        "rare",
+        "epic",
+        "legendary",
+        "mythic"
+    ]
+
+    $scope.types = [
+        "any",
+        "mainHand",
+        "offHand",
+        "head",
+        "breastplate",
+        "legs",
+        "feet"
+    ]
 
     let panels = {
         "upgrades": {
@@ -118,6 +168,54 @@ app.controller('myCtrl', function ($scope) {
             $scope.itemOverlay = null;
         } 
         socket.emit("purchaseCrate", item);
+    }
+
+    let moving = false;
+
+    $scope.inventoryFilterOpen = function(){
+        if(moving)return;
+        moving = true;
+        $('#inventoryFilterMenu').css('display','block');
+        $('#inventoryFilterMenu').addClass('animated');
+        $('#inventoryFilterMenu').addClass('fadeInLeft');
+        $('#inventoryFilterButton').addClass('animated');
+        $('#inventoryFilterButton').addClass('fadeOutRight');
+        $('#inventoryFilterButtonClose').css('display',"block");
+        $('#inventoryFilterButtonClose').addClass('animated');
+        $('#inventoryFilterButtonClose').addClass('fadeInLeft');
+        setTimeout(function(){
+            $('#inventoryFilterButton').css('display', 'none');
+            $('#inventoryFilterButton').removeClass('animated');
+            $('#inventoryFilterButton').removeClass('fadeOutRight');
+            $('#inventoryFilterButtonClose').removeClass('animated');
+            $('#inventoryFilterButtonClose').removeClass('fadeInLeft');
+            $('#inventoryFilterMenu').removeClass('animated');
+            $('#inventoryFilterMenu').removeClass('fadeInLeft');
+            moving = false;
+        },750)
+    }
+
+    $scope.inventoryFilterClose = function(){
+        if(moving)return;
+        moving = true;
+        $('#inventoryFilterMenu').addClass('animated');
+        $('#inventoryFilterMenu').addClass('fadeOutRight');
+        $('#inventoryFilterButton').css('display', 'block');
+        $('#inventoryFilterButton').addClass('animated');
+        $('#inventoryFilterButton').addClass('fadeInLeft');
+        $('#inventoryFilterButtonClose').addClass('animated');
+        $('#inventoryFilterButtonClose').addClass('fadeOutRight');
+        setTimeout(function(){
+            $('#inventoryFilterButtonClose').css('display',"none");
+            $('#inventoryFilterButton').removeClass('animated');
+            $('#inventoryFilterButton').removeClass('fadeInLeft');
+            $('#inventoryFilterButtonClose').removeClass('animated');
+            $('#inventoryFilterButtonClose').removeClass('fadeOutRight');
+            $('#inventoryFilterMenu').css('display',"none");
+            $('#inventoryFilterMenu').removeClass('animated');
+            $('#inventoryFilterMenu').removeClass('fadeOutRight');
+            moving = false;
+        },750)
     }
 
     var socket = io('https://twitchclickergame.com');

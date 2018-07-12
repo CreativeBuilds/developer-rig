@@ -1,6 +1,5 @@
 @import url("./bootstrap.css");
 @import url('https://fonts.googleapis.com/css?family=Roboto');
-
 * {
     font-family: "Roboto", sans-serif;
     user-select: none;
@@ -38,8 +37,8 @@ body {
     grid-template-rows: 25px 500px;
 }
 
-#upgrades{
-    min-height:425px;
+#upgrades {
+    min-height: 425px;
     -webkit-transition: opacity .25s ease-out;
     -moz-transition: opacity .25s ease-out;
     -o-transition: opacity .25s ease-out;
@@ -64,18 +63,19 @@ body {
     overflow-y: auto;
     margin: 0px;
     background: rgb(24, 24, 24);
-    height:100%;
-    padding:0px;
+    height: 100%;
+    padding: 0px;
 }
 
-#leftMenuInfo{
-    color:#f1f1f1;
+#leftMenuInfo {
+    color: #f1f1f1;
     font-size: 20px;
-    padding:5px;
+    padding: 5px;
 }
-#leftMenuInfo span{
-    float:right;
-    text-align:right;
+
+#leftMenuInfo span {
+    float: right;
+    text-align: right;
 }
 
 #leftMenuContent li {
@@ -87,7 +87,6 @@ body {
     background: rgb(44, 38, 48);
     padding: 5px;
 }
-
 
 #leftMenuContent li div.upgradeOverlay {
     display: block;
@@ -133,262 +132,304 @@ body {
 
 /* scroller css */
 
-#menuScroller{
+#menuScroller {
     position: relative;
-    height:50px;
+    height: 50px;
 }
 
-#menuScroller ul{
-    margin:0;
-    height:100%;
+#menuScroller ul {
+    margin: 0;
+    height: 100%;
 }
 
-.scroller{
-    display:grid;
+.scroller {
+    display: grid;
     justify-content: center;
     align-items: center;
-    width:40px;
-    position:absolute;
-    top:0;
-    height:100%;
-    color:#f1f1f1;
-    font-size:25px;
-    z-index:3;
+    width: 40px;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    color: #f1f1f1;
+    font-size: 25px;
+    z-index: 3;
     background: rgb(31, 31, 31);
 }
 
-.scroller span:hover{
+.scroller span:hover {
     cursor: pointer;
 }
 
-#leftScroller{
-    left:0;
-    
+#leftScroller {
+    left: 0;
 }
 
-#rightScroller{
-    right:0;
-    
+#rightScroller {
+    right: 0;
 }
 
-#menuContent{
-    background:green;
-    position:absolute;
-    left:40px;
-    min-width:220px;
-    z-index:2;
+#menuContent {
+    background: green;
+    position: absolute;
+    left: 40px;
+    min-width: 220px;
+    z-index: 2;
     list-style-type: none;
-    padding:0;
+    padding: 0;
     white-space: nowrap;
     transition: left 0.5s ease;
 }
 
-#menuContent li{
-    min-width:110px;
+#menuContent li {
+    min-width: 110px;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background:#111111;
-    color:#f1f1f1;
-    padding:0;
-    margin:0;
+    background: #111111;
+    color: #f1f1f1;
+    padding: 0;
+    margin: 0;
     display: inline-block;
-    height:100%;
+    height: 100%;
 }
 
-#menuContent li#overlay{
-    height:45px;
-    border-bottom:5px solid #f1f1f1;
-    position:absolute;
-    left:0;
-    background:rgba(0,0,0,0);
+#menuContent li#overlay {
+    height: 45px;
+    border-bottom: 5px solid #f1f1f1;
+    position: absolute;
+    left: 0;
+    background: rgba(0, 0, 0, 0);
     transition: left 0.25s ease;
 }
 
-#menuContent li:hover{
-    cursor:pointer;
+#menuContent li:hover {
+    cursor: pointer;
 }
 
-#menuContent li div{
-    height:100%;
+#menuContent li div {
+    height: 100%;
     display: grid;
     justify-content: center;
     align-items: center;
     text-align: center;
-    
 }
 
 /* Item overlay */
 
-#exitItemOverlay{
-    color:#f1f1f1;
-    font-size:25px;
+#exitItemOverlay {
+    color: #f1f1f1;
+    font-size: 25px;
     position: absolute;
-    top:5px;
-    right:5px;
-    z-index:90001;
+    top: 5px;
+    right: 5px;
+    z-index: 90001;
 }
 
-#exitItemOverlay:hover{
+#exitItemOverlay:hover {
     cursor: pointer;
 }
 
-#itemOverlay{
-    display:block;
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    background:rgba(33,33,33,0.78);
-    z-index:90000;
+#itemOverlay {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(33, 33, 33, 0.78);
+    z-index: 90000;
     -webkit-transition: opacity .25s ease-in-out;
     -moz-transition: opacity .25s ease-in-out;
     -o-transition: opacity .25s ease-in-out;
     transition: opacity .25s ease-in-out;
 }
 
-#itemOverlay img.displayImage{
-    width:200px;
-    height:200px;
-    margin:auto;
-    margin-top:25px;
-    display:block;
+#itemOverlay img.displayImage {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    margin-top: 25px;
+    display: block;
     -webkit-transition: margin .25s ease-in-out;
     -moz-transition: margin .25s ease-in-out;
     -o-transition: margin .25s ease-in-out;
     transition: margin .25s ease-in-out;
-    position:absolute;
-    top:55px;
-    left:50px;
+    position: absolute;
+    top: 55px;
+    left: 50px;
 }
 
-#itemOverlay img.displayImage.clickable:hover{
-    cursor:pointer;
-}
-
-#itemOverlay img.displayImage:hover{
-    margin-top:20px;
-}
-#itemOverlay div.crate img{
-    width:40px;
-    height:40px;
-}
-
-#itemOverlay div.crate span{
-    display:inline;
-    text-align:center;
-}
-
-#itemOverlay div.crate{
-    display:grid;
-    justify-content: center;
-    align-items: center;
-    width:200px;
-    height:75px;
-    background:#111111;
-    box-shadow:#000000 0px 4px 4px;
-    grid-template-columns: 40px 55px;
-    white-space: nowrap;
-    margin:auto;
-    margin-top:200px;
-    color:#f1f1f1;
-
-    -webkit-transition: margin .25s ease-in-out;
-    -moz-transition: margin .25s ease-in-out;
-    -o-transition: margin .25s ease-in-out;
-    transition: margin .25s ease-in-out;
-}
-
-#itemOverlay div.crate:hover{
-    margin-top:195px;
+#itemOverlay img.displayImage.clickable:hover {
     cursor: pointer;
 }
 
-#itemOverlayTitle{
-    font-size:25px;
-    color:#f1f1f1;
-    margin:auto;
-    text-align:center;
-    margin-top:25px;
+#itemOverlay img.displayImage:hover {
+    margin-top: 20px;
 }
 
-#itemOverlayAmount{
-    font-size:20px;
-    color:#f1f1f1;
-    margin:auto;
+#itemOverlay div.crate img {
+    width: 40px;
+    height: 40px;
+}
+
+#itemOverlay div.crate span {
+    display: inline;
     text-align: center;
-    margin-top:5px;
 }
 
-#itemOverlayReason{
-    font-size:20px;
-    color:#f1f1f1;
-    margin:auto;
+#itemOverlay div.crate {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 75px;
+    background: #111111;
+    box-shadow: #000000 0px 4px 4px;
+    grid-template-columns: 40px 55px;
+    white-space: nowrap;
+    margin: auto;
+    margin-top: 200px;
+    color: #f1f1f1;
+    -webkit-transition: margin .25s ease-in-out;
+    -moz-transition: margin .25s ease-in-out;
+    -o-transition: margin .25s ease-in-out;
+    transition: margin .25s ease-in-out;
+}
+
+#itemOverlay div.crate:hover {
+    margin-top: 195px;
+    cursor: pointer;
+}
+
+#itemOverlayTitle {
+    font-size: 25px;
+    color: #f1f1f1;
+    margin: auto;
     text-align: center;
-    margin-top:5px;
+    margin-top: 25px;
 }
 
+#itemOverlayAmount {
+    font-size: 20px;
+    color: #f1f1f1;
+    margin: auto;
+    text-align: center;
+    margin-top: 5px;
+}
+
+#itemOverlayReason {
+    font-size: 20px;
+    color: #f1f1f1;
+    margin: auto;
+    text-align: center;
+    margin-top: 5px;
+}
 
 /* Inventory CSS */
 
-#inventory{
-    min-height:425px;
+#inventoryFilterButton {
+    position: absolute;
+    text-align: center;
+    right: 15;
+}
+#inventoryFilterButtonClose{
+    position: absolute;
+    text-align: center;
+    right: 15;
+    display:none;
+}
+
+#inventoryFilterButtonClose:hover{
+    cursor: pointer;
+}
+
+#inventoryFilterButton:hover{
+    cursor: pointer;
+}
+
+#inventoryFilterMenu{
+    display:none;
+    background:#f1f1f1;
+    width:100%;
+    height:200px;
+    position: absolute;
+    top:150px;
+    z-index:3;
+}
+
+#inventoryFilterMenu div#inventoryFilterMenuTitle{
+    color:#111111;
+    width:100%;
+    text-align: center;
+}
+
+#inventoryFilterMenu div#inventoryFilterMenuOptions{
+    display:grid;
+    width:100%;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#inventoryFilterMenu div#inventoryFilterMenuOptions div{
+    text-align: center;
+}
+
+#inventory {
+    min-height: 425px;
     -webkit-transition: opacity .25s ease-out;
     -moz-transition: opacity .25s ease-out;
     -o-transition: opacity .25s ease-out;
     transition: opacity .25s ease-out;
 }
 
-#inventoryItems{
-    display:grid;
+#inventoryItems {
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     list-style-type: none;
-    padding:0;
-    margin:0;
+    padding: 0;
+    margin: 0;
 }
 
-#inventoryItems li{
-    height:45px;
-    width:45px;
-    margin:2.5px;
-    font-size:normal;
-    background:#111111;
+#inventoryItems li {
+    height: 45px;
+    width: 45px;
+    margin: 2.5px;
+    font-size: normal;
+    background: #111111;
     position: relative;
 }
 
-#inventoryItems li img{
-    width:45px;
-    height:45px;
+#inventoryItems li img {
+    width: 45px;
+    height: 45px;
     position: absolute;
-    z-index:1;
-    top:0;
-    left:0;
+    z-index: 1;
+    top: 0;
+    left: 0;
 }
 
-#inventoryItems li:hover{
+#inventoryItems li:hover {
     cursor: pointer;
 }
 
-#inventoryItems li div{
-    position:absolute;
-    color:#f1f1f1;
-    z-index:2;
-    bottom:2;
-    right:2;
-    font-size:15px;
+#inventoryItems li div {
+    position: absolute;
+    color: #f1f1f1;
+    z-index: 2;
+    bottom: 2;
+    right: 2;
+    font-size: 15px;
     text-shadow: black 2px 2px 4px;
 }
 
-#equippedItems{
-    font-size:0px;
+#equippedItems {
+    font-size: 0px;
 }
 
-#equippedItems div{
-    display:inline-block;
-    background:#111111; 
-    height:45px;
-    width:45px;
-    margin:2.5px;
-    font-size:normal;
+#equippedItems div {
+    display: inline-block;
+    background: #111111;
+    height: 45px;
+    width: 45px;
+    margin: 2.5px;
+    font-size: normal;
 }

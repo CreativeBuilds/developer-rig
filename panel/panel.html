@@ -34,19 +34,39 @@
                 </ul>
             </div>
             <div id="inventory" style="display:none;opacity:0;">
-                <div id="equippedItems"> 
-                    <div id="mainHand"></div
-                    ><div id="offHand"></div>
+                <div id="equippedItems">
+                    <div id="mainHand"></div>
+                    <div id="offHand"></div>
                     <div id="head"></div>
                     <div id="breastplate"></div>
                     <div id="legs"></div>
                     <div id="feet"></div>
                 </div>
-                <div style="color:#f1f1f1;font-size:25px;text-align: center;margin-top:15px;">ITEMS</div>
+                <div style="color:#f1f1f1;font-size:25px;text-align: center;margin-top:15px;position:relative;">ITEMS
+                    <span id="inventoryFilterButton" class="glyphicon glyphicon-filter" ng-click="inventoryFilterOpen()"></span>
+                    <span id="inventoryFilterButtonClose" class="glyphicon glyphicon-remove" ng-click="inventoryFilterClose()"></span>
+                </div>
+                <div id="inventoryFilterMenu">
+                    <div id="inventoryFilterMenuTitle">Sort By</div>
+                    <div id="inventoryFilterMenuOptions">
+                        <div>
+                            <div>Rarity</div>
+                            <select ng-model="sort.rarity">
+                                <option ng-repeat="rarity in rarities" value="{{rarity}}">{{rarity}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div>Type</div>
+                            <select ng-model="sort.type">
+                                <option ng-repeat="type in types" value="{{type}}">{{type}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <ul id="inventoryItems">
-                    <li ng-repeat="item in inventory" ng-click="openItemOverlay(item)">
+                    <li ng-repeat="item in inventory | inventorySort:sort.type:sort.rarity" ng-click="openItemOverlay(item)">
                         <img src="/imgs/{{item.imageLocation}}" alt="">
-                        <div  ng-if="item.stackSize">{{item.stackSize}}</div>
+                        <div ng-if="item.stackSize">{{item.stackSize}}</div>
                         <div ng-if="!item.stackSize">1</div>
                     </li>
                 </ul>
@@ -72,8 +92,8 @@
         </div>
         <div id="itemOverlay" style="display:none;">
             <span class="glyphicon glyphicon-remove" id="exitItemOverlay" ng-click="removeItemOverlay()"></span>
-            <div id="itemOverlayTitle" >{{itemOverlay.name}}</div>
-            <div id="itemOverlayAmount" >{{itemOverlay.stackSize}}</div>
+            <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
+            <div id="itemOverlayAmount">{{itemOverlay.stackSize}}</div>
             <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
                 <img src="/imgs/gem.png" alt="">
