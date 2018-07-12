@@ -7,28 +7,28 @@ let window2 = window;
 
 var app = angular.module('app', []);
 
-app.filter('inventorySort', function(){
-    return function(inventory, type, rarity){
+app.filter('inventorySort', function () {
+    return function (inventory, type, rarity) {
 
         let out = [];
 
-        angular.forEach(inventory, function(item){
-            if(type && type !== "any"){
-                if(!item.type) return;
-                if(item.type !== type) return;
+        angular.forEach(inventory, function (item) {
+            if (type && type !== "any") {
+                if (!item.type) return;
+                if (item.type !== type) return;
             }
-    
-            if(rarity && rarity !== "any"){
-                if(!item.rarity) return;
-                if(item.rarity !== rarity) return;
+
+            if (rarity && rarity !== "any") {
+                if (!item.rarity) return;
+                if (item.rarity !== rarity) return;
             }
-    
+
             out.push(item);
         })
 
         return out;
 
-        
+
     }
 })
 
@@ -59,6 +59,7 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.sort.rarity = "any";
     $scope.sort.type = "any";
+    $scope.sort.sort = "name";
 
     $scope.rarities = [
         "any",
@@ -72,6 +73,7 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.types = [
         "any",
+        "crate",
         "mainHand",
         "offHand",
         "head",
@@ -79,15 +81,20 @@ app.controller('myCtrl', function ($scope) {
         "legs",
         "feet"
     ]
+    $scope.sorts = [
+        "name",
+        "type",
+        "rarity"
+    ]
 
     let panels = {
         "upgrades": {
-            position:0,
+            position: 0,
             width: 110
         },
         "inventory": {
-            position:1,
-            width:110
+            position: 1,
+            width: 110
         }
     }
     let currentPos = 0;
@@ -98,92 +105,108 @@ app.controller('myCtrl', function ($scope) {
     $scope.currentIdleDamage = 0;
 
     let triggerRunning = false;
-    $scope.triggerShake = function($event){
-        if(triggerRunning)return;
+    $scope.triggerShake = function ($event) {
+        if (triggerRunning) return;
         triggerRunning = true;
         $($event.currentTarget).addClass("animated");
         $($event.currentTarget).addClass("headShake");
         $($event.currentTarget).removeClass("clickable");
-        setTimeout(function(){
+        setTimeout(function () {
             $($event.currentTarget).addClass("clickable");
             $($event.currentTarget).removeClass("headShake");
             triggerRunning = false;
-        },750)
+        }, 750)
     }
 
-    $scope.removeItemOverlay = function(){
+    $scope.removeItemOverlay = function () {
         $('#itemOverlay').css('opacity', 0);
-        setTimeout(function(){
-            $('#itemOverlay').css('display','none');
+        setTimeout(function () {
+            $('#itemOverlay').css('display', 'none');
             $('#itemOverlay').css('opacity', 1);
-        },250)
+        }, 250)
     }
 
-    $scope.openItemOverlay = function(item){
+    $scope.openItemOverlay = function (item) {
         console.log(item);
         let item2 = {};
         item2.imageLocation = item.imageLocation;
         item2.name = item.name;
         item2.stackSize = item.stackSize || 1;
-        item2.type = item.type; 
+        item2.type = item.type;
+        console.log("ITEM OVERLAY TYPE", item.type);
+        item2.level = item.level;
         item2.item = item;
+
+
+        if (item.baseProtection) {
+            if (item.level > 1) {
+                item2.protection = item.baseProtection * Math.pow(item.protectionMultiplier, item.level - 1);
+            } else {
+                item2.protection = item.baseProtection;
+            }
+            item2.protectionMultiplier = item.protectionMultiplier;
+            item2.costMultiplier = item.costMultiplier;
+            item2.baseCost = item.baseCost;
+        }
+
         // purchaseAmount needs to be set server side for all crates;
         item2.unlockAmount = item.unlockAmount || 100;
         $scope.itemOverlay = item2;
-        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.png',"200px.png");
-        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.jpg',"200px.jpg");
+        $scope.itemOverlay.type = item.type;
+        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.png', "200px.png");
+        $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.jpg', "200px.jpg");
         console.log(item);
 
-        setTimeout(function(){
+        setTimeout(function () {
             console.log($scope.itemOverlay);
-            $('#itemOverlay').css('display','block');
-        },10)
+            $('#itemOverlay').css('display', 'block');
+        }, 10)
     }
 
-    $scope.buyCrate = function($event, item){
-        if(!item.unlockAmount){
+    $scope.buyCrate = function ($event, item) {
+        if (!item.unlockAmount) {
             $scope.triggerShake($event);
             $scope.itemOverlay.reason = "Invalid Purchase Amount!";
-            setTimeout(function(){
+            setTimeout(function () {
                 $scope.itemOverlay.reason = "";
-            },1000)
+            }, 1000)
             return;
         }
 
-        if(item.unlockAmount > $scope.gems){
+        if (item.unlockAmount > $scope.gems) {
             $scope.triggerShake($event);
             console.log(item.unlockAmount, $scope.gems);
             $scope.itemOverlay.reason = "Not Enough Gems!";
             // In the future ask user to buy/watch ads for gems Kappa
-            setTimeout(function(){
+            setTimeout(function () {
                 $scope.itemOverlay.reason = "";
-            },1000)
+            }, 1000)
             return;
         }
 
         console.log("sent socket emit to buy crate", item);
         $scope.itemOverlay.stackSize = $scope.itemOverlay.stackSize - 1;
-        if($scope.itemOverlay.stackSize <= 0){
+        if ($scope.itemOverlay.stackSize <= 0) {
             $scope.removeItemOverlay();
             $scope.itemOverlay = null;
-        } 
+        }
         socket.emit("purchaseCrate", item);
     }
 
     let moving = false;
 
-    $scope.inventoryFilterOpen = function(){
-        if(moving)return;
+    $scope.inventoryFilterOpen = function () {
+        if (moving) return;
         moving = true;
-        $('#inventoryFilterMenu').css('display','block');
+        $('#inventoryFilterMenu').css('display', 'block');
         $('#inventoryFilterMenu').addClass('animated');
         $('#inventoryFilterMenu').addClass('fadeInLeft');
         $('#inventoryFilterButton').addClass('animated');
         $('#inventoryFilterButton').addClass('fadeOutRight');
-        $('#inventoryFilterButtonClose').css('display',"block");
+        $('#inventoryFilterButtonClose').css('display', "block");
         $('#inventoryFilterButtonClose').addClass('animated');
         $('#inventoryFilterButtonClose').addClass('fadeInLeft');
-        setTimeout(function(){
+        setTimeout(function () {
             $('#inventoryFilterButton').css('display', 'none');
             $('#inventoryFilterButton').removeClass('animated');
             $('#inventoryFilterButton').removeClass('fadeOutRight');
@@ -192,11 +215,11 @@ app.controller('myCtrl', function ($scope) {
             $('#inventoryFilterMenu').removeClass('animated');
             $('#inventoryFilterMenu').removeClass('fadeInLeft');
             moving = false;
-        },750)
+        }, 750)
     }
 
-    $scope.inventoryFilterClose = function(){
-        if(moving)return;
+    $scope.inventoryFilterClose = function () {
+        if (moving) return;
         moving = true;
         $('#inventoryFilterMenu').addClass('animated');
         $('#inventoryFilterMenu').addClass('fadeOutRight');
@@ -205,17 +228,17 @@ app.controller('myCtrl', function ($scope) {
         $('#inventoryFilterButton').addClass('fadeInLeft');
         $('#inventoryFilterButtonClose').addClass('animated');
         $('#inventoryFilterButtonClose').addClass('fadeOutRight');
-        setTimeout(function(){
-            $('#inventoryFilterButtonClose').css('display',"none");
+        setTimeout(function () {
+            $('#inventoryFilterButtonClose').css('display', "none");
             $('#inventoryFilterButton').removeClass('animated');
             $('#inventoryFilterButton').removeClass('fadeInLeft');
             $('#inventoryFilterButtonClose').removeClass('animated');
             $('#inventoryFilterButtonClose').removeClass('fadeOutRight');
-            $('#inventoryFilterMenu').css('display',"none");
+            $('#inventoryFilterMenu').css('display', "none");
             $('#inventoryFilterMenu').removeClass('animated');
             $('#inventoryFilterMenu').removeClass('fadeOutRight');
             moving = false;
-        },750)
+        }, 750)
     }
 
     var socket = io('https://twitchclickergame.com');
@@ -256,10 +279,9 @@ app.controller('myCtrl', function ($scope) {
 
         socket.on('currentUpgradePoints', (currentUpgradePoints) => {
             $scope.upgradePoints = currentUpgradePoints;
-            try{
+            try {
                 $scope.$apply();
-            } catch(err){
-            }
+            } catch (err) {}
         })
 
         socket.on('upgradeList', (upgradeList) => {
@@ -272,9 +294,9 @@ app.controller('myCtrl', function ($scope) {
                 upgrade.currentDPS = $scope.calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage);
                 $scope.upgradeList.push(upgrade)
                 console.log($scope.upgradeList);
-                try{
+                try {
                     $scope.$apply();
-                } catch(err) {
+                } catch (err) {
 
                 }
             })
@@ -283,105 +305,114 @@ app.controller('myCtrl', function ($scope) {
 
         })
 
-        socket.on("inventory", function(inventory){
+        socket.on("inventory", function (inventory) {
             $scope.inventory = inventory;
             console.log("Inventory has been updated!", inventory);
-            try{
+            try {
                 $scope.$apply();
-            } catch (err){
+            } catch (err) {
 
+            }
+            let element = $('#inventoryItems');
+
+            console.log("Children", element.children, element.children().length);
+            if (element.children().length >= 42) {
+                element.css('grid-template-columns', '1fr 1fr 1fr 1fr 1fr');
+                element.css('overflow-y', 'scroll');
+            } else {
+                element.css('grid-template-columns', '1fr 1fr 1fr 1fr 1fr 1fr');
             }
         })
 
-        socket.on("newCrate", function(){
+        socket.on("newCrate", function () {
             console.log("We just got a crate!");
         })
 
-        socket.on('gems', function(gems){
+        socket.on('gems', function (gems) {
             $scope.gems = gems;
             console.log(gems, $scope.gems, "GOT GEMS");
-            try{
+            try {
                 $scope.$apply();
-            } catch (err){
-                
+            } catch (err) {
+
             }
         })
 
     });
 
-    $scope.move = function(side){
-        if(isInTransition)return;
-        if(side === "left"){
-            Object.keys(panels).forEach(function(key){
-                if(panels[key].position === currentPos - 1){
+    $scope.move = function (side) {
+        if (isInTransition) return;
+        if (side === "left") {
+            Object.keys(panels).forEach(function (key) {
+                if (panels[key].position === currentPos - 1) {
                     isInTransition = true;
                     let currentLeft = Math.floor($('#overlay').css('left').replace(/[^-\d\.]/g, ''));
                     newLeft = currentLeft - panels[key].width;
                     let ulCurrentLeft = Math.floor($('#menuContent').css('left').replace(/[^-\d\.]/g, ''));
                     newUlLeft = ulCurrentLeft + panels[key].width;
                     $('#menuContent').css('left', `${newUlLeft}px`);
-                    setTimeout(function(){
+                    setTimeout(function () {
                         isInTransition = false;
-                    },250)
+                    }, 250)
                     currentPos = currentPos - 1;
                 }
             })
         } else {
-            Object.keys(panels).forEach(function(key){
-                if(panels[key].position === currentPos + 1){
+            Object.keys(panels).forEach(function (key) {
+                if (panels[key].position === currentPos + 1) {
                     isInTransition = true;
                     let currentLeft = Math.floor($('#overlay').css('left').replace(/[^-\d\.]/g, ''));
                     newLeft = currentLeft + panels[key].width;
                     let ulCurrentLeft = Math.floor($('#menuContent').css('left').replace(/[^-\d\.]/g, ''));
                     newUlLeft = ulCurrentLeft - panels[key].width;
                     $('#menuContent').css('left', `${newUlLeft}px`);
-                        setTimeout(function(){
-                            isInTransition = false;
-                        },250)
+                    setTimeout(function () {
+                        isInTransition = false;
+                    }, 250)
                     currentPos = currentPos + 1;
                 }
             })
         }
     }
 
-    $scope.open = function(name){
+    $scope.open = function (name) {
         console.log("Opened!", name);
-        if(isInTransition)return;
+        if (isInTransition) return;
         let totalWidthToAdd = 0;
         let totalLoops = 0;
-        Object.keys(panels).forEach(function(key){
+        Object.keys(panels).forEach(function (key) {
             totalLoops++;
             console.log(panels, key);
-            if(panels[key].position < panels[name].position){
+            if (panels[key].position < panels[name].position) {
                 console.log("updated totalWidthToAdd", totalWidthToAdd);
                 totalWidthToAdd = totalWidthToAdd + panels[key].width;
             }
             console.log(totalLoops, Object.keys(panels).length);
-            if(totalLoops === Object.keys(panels).length){
+            if (totalLoops === Object.keys(panels).length) {
 
                 console.log(`${40 - totalWidthToAdd}px`);
                 isInTransition = true;
                 $('#overlay').css('left', `${totalWidthToAdd}px`);
-                setTimeout(function(){
+                setTimeout(function () {
                     $('#menuContent').css('left', `${40 - totalWidthToAdd}px`);
-                    setTimeout(function(){
+                    setTimeout(function () {
                         isInTransition = false;
-                    },500)
-                },250)
+                    }, 500)
+                }, 250)
                 $('.activeWindow').css('opacity', "0");
-                setTimeout(function(){
+                setTimeout(function () {
                     $('.activeWindow').css('display', 'none');
                     $(`#${name}`).css('display', "block");
-                    $(`#${name}`).css('opacity',"1");
+                    $(`#${name}`).css('opacity', "1");
                     $('.activeWindow').removeClass("activeWindow");
                     $(`#${name}`).addClass("activeWindow");
-                },250)
+                }, 250)
                 currentPos = panels[name].position;
-                
-                
+
+
             }
         })
-        
+
     }
 
     // socket.on('disconnect', function () {
@@ -472,7 +503,7 @@ app.controller('myCtrl', function ($scope) {
         return;
     })
 
-    socket.on('newBoss', function(){
+    socket.on('newBoss', function () {
         socket.emit("getUpgradePoints");
     })
 

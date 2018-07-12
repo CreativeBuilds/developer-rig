@@ -673,6 +673,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -682,6 +683,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -691,6 +693,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -700,6 +703,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -709,6 +713,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -718,6 +723,7 @@ db.connect(null, function () {
                                                     name: crateItem.name,
                                                     level: 1,
                                                     rarity:crateItem.rarity,
+                                                    baseCost:crateItem.cost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });

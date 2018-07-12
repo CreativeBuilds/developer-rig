@@ -26,8 +26,8 @@
                 <ul id="menuContent">
                     <li ng-click="open('upgrades')" class="active">
                         <div>UPGRADES</div>
-                    </li
-                    ><li ng-click="open('inventory')">
+                    </li>
+                    <li ng-click="open('inventory')">
                         <div>INVENTORY</div>
                     </li>
                     <li id="overlay"></li>
@@ -47,7 +47,7 @@
                     <span id="inventoryFilterButtonClose" class="glyphicon glyphicon-remove" ng-click="inventoryFilterClose()"></span>
                 </div>
                 <div id="inventoryFilterMenu">
-                    <div id="inventoryFilterMenuTitle">Sort By</div>
+                    <div id="inventoryFilterMenuTitle">Filter</div>
                     <div id="inventoryFilterMenuOptions">
                         <div>
                             <div>Rarity</div>
@@ -61,10 +61,16 @@
                                 <option ng-repeat="type in types" value="{{type}}">{{type}}</option>
                             </select>
                         </div>
+                        <div>
+                            <div>Sort By</div>
+                            <select ng-model="sort.sort">
+                                <option ng-repeat="sort in sorts" value="{{sort}}">{{sort}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <ul id="inventoryItems">
-                    <li ng-repeat="item in inventory | inventorySort:sort.type:sort.rarity" ng-click="openItemOverlay(item)">
+                    <li ng-repeat="item in inventory | inventorySort:sort.type:sort.rarity | orderBy:sort.sort" ng-click="openItemOverlay(item)">
                         <img src="/imgs/{{item.imageLocation}}" alt="">
                         <div ng-if="item.stackSize">{{item.stackSize}}</div>
                         <div ng-if="!item.stackSize">1</div>
@@ -93,11 +99,18 @@
         <div id="itemOverlay" style="display:none;">
             <span class="glyphicon glyphicon-remove" id="exitItemOverlay" ng-click="removeItemOverlay()"></span>
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
-            <div id="itemOverlayAmount">{{itemOverlay.stackSize}}</div>
+            <div id="itemOverlayAmount" ng-if="item.stackable">{{itemOverlay.stackSize}}</div>
+            <div id="itemOverlayAmount" ng-if="!item.stackable">LVL: {{itemOverlay.level}}</div>
             <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
-                <img src="/imgs/gem.png" alt="">
-                <span>{{itemOverlay.unlockAmount}}</span>
+                    <img src="/imgs/gem.png" alt="">
+                    <span>{{itemOverlay.unlockAmount}}</span>
+                </div>
+            <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'" ng-click="buyCrate($event, itemOverlay.item)">
+                    <div>Protection<br>{{itemOverlay.protection}}</div>
+                    <div>Prot<br>Multiplier<br>{{itemOverlay.protectionMultiplier}}</div>
+                    <div>Cost<br>Multiplier<br>{{itemOverlay.costMultiplier}}</div>
+                    <div>Cost to<br>Upgrade<br>{{itemOverlay.cost}}</div>
             </div>
             <div id="itemOverlayReason">{{itemOverlay.reason}}</div>
         </div>
