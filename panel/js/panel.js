@@ -112,6 +112,11 @@ app.controller('myCtrl', function ($scope) {
         }
 
         console.log("sent socket emit to buy crate", item);
+        $scope.itemOverlay.stackSize = $scope.itemOverlay.stackSize - 1;
+        if($scope.itemOverlay.stackSize <= 0){
+            $scope.removeItemOverlay();
+            $scope.itemOverlay = null;
+        } 
         socket.emit("purchaseCrate", item);
     }
 
@@ -183,6 +188,11 @@ app.controller('myCtrl', function ($scope) {
         socket.on("inventory", function(inventory){
             $scope.inventory = inventory;
             console.log("Inventory has been updated!", inventory);
+            try{
+                $scope.$apply();
+            } catch (err){
+
+            }
         })
 
         socket.on("newCrate", function(){
@@ -192,6 +202,11 @@ app.controller('myCtrl', function ($scope) {
         socket.on('gems', function(gems){
             $scope.gems = gems;
             console.log(gems, $scope.gems, "GOT GEMS");
+            try{
+                $scope.$apply();
+            } catch (err){
+                
+            }
         })
 
     });
