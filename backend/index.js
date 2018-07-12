@@ -547,7 +547,6 @@ db.connect(null, function () {
 
         io.on('connection', function (socket) {
             console.log('a user connected');
-            console.log(testItem.damage);
 
             // have an array called clicks which is an array of Date.now()'s then compare a new value with the first value in the array (if there are 10 items in the array)
             let clicks = [];
