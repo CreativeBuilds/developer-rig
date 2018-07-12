@@ -621,6 +621,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', currentBoss.floor);
                                         socket.emit('inventory', JSON.parse(result.inventory));
+                                        console.log(result.gems, "- gems");
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })

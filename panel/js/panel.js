@@ -187,6 +187,10 @@ app.controller('myCtrl', function ($scope) {
             console.log("We just got a crate!");
         })
 
+        socket.on('gems', function(gems){
+            $scope.gems = gems;
+            console.log(gems, $scope.gems);
+        })
 
     });
 
