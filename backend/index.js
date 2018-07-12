@@ -638,20 +638,25 @@ db.connect(null, function () {
             })
 
             socket.on('purchaseCrate', (item) => {
+                console.log("got purchase crate")
                 if (!item) return;
                 db.getPropertyOfAUser(socket.user_id, "gems", function (gems) {
                     if (!gems) return;
+                    console.log("got gems");
                     db.parseInventory(socket.user_id, function (inventory) {
                         let done = false;
                         for (let x = 0; x < inventory.length; x++) {
                             let dbItem = inventory[x];
-                            if (dbItem.name === item.name && dbItem.type === item.type && dbItem.type === "crate" && !done) {
+                            console.log(dbItem, item, done);
+                            if (dbItem.name === item.name && dbItem.type === item.type && dbItem.type === "crate" && done === false) {
+                                console.log("Matching crate")
                                 // This is the matching crate!
                                 done = true;
 
                                 // User doesn't have enough
                                 if (dbItem.unlockAmount > gems) return;
                                 if (Math.floor(gems - dbItem.unlockAmount) < 0) return;
+                                console.log("User has enough gems to unlock crate!")
                                 db.updateAUsersProperty(socket.User_id, "gems", Math.floor(gems - dbItem.unlockAmount), function (err) {
                                     if (err) return;
                                     let crate = new Crate({

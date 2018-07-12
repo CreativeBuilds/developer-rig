@@ -110,6 +110,7 @@ app.controller('myCtrl', function ($scope) {
             return;
         }
 
+        console.log("sent socket emit to buy crate", item);
         socket.emit("purchaseCrate", item);
     }
 
