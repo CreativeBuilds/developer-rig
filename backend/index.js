@@ -645,7 +645,6 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "gems", function (err, gems) {
                     if(err) return;
                     if (!gems) return;
-                    console.log("got gems");
                     db.parseInventory(socket.user_id, function (err, inventory) {
                         if(err) return;
                         let done = false;
@@ -653,21 +652,18 @@ db.connect(null, function () {
                             let dbItem = inventory[x];
                             console.log(dbItem, item, done);
                             if (dbItem.name === item.name && dbItem.type === item.type && dbItem.type === "crate" && done === false) {
-                                console.log("Matching crate")
                                 // This is the matching crate!
                                 done = true;
 
                                 // User doesn't have enough
                                 if (dbItem.unlockAmount > gems) return;
                                 if (Math.floor(gems - dbItem.unlockAmount) < 0) return;
-                                console.log("User has enough gems to unlock crate!")
-                                db.updateAUsersProperty(socket.User_id, "gems", Math.floor(gems - dbItem.unlockAmount), function (err) {
+                                db.updateAUsersProperty(socket.user_id, "gems", Math.floor(gems - dbItem.unlockAmount), function (err) {
                                     if (err) return;
                                     let crate = new Crate({
                                         rarity: dbItem.rarity
                                     });
                                     crate.open.then(function (crateItem) {
-                                        console.log(crateItem);
                                         // TODO update cases to actually make the right item
                                         switch (crateItem.type) {
                                             case "mainHand":
