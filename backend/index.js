@@ -188,6 +188,8 @@ db.connect(null, function () {
 
                             for (let x = 0; x < inventory.length; x++) {
                                 // console.log("X:", x);
+                                if(!inventory[x])return;
+                                if(!thisBoss)return;
                                 if (inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done && inventory[x].stackSize < 10000) {
                                     inventory[x].stackSize = inventory[x].stackSize + 1;
                                     done = true;
