@@ -20,6 +20,8 @@ app.controller('myCtrl', function ($scope) {
 
     $scope.upgradePoints = 0;
 
+    $scope.gems = 0;
+
     $scope.upgradeList = [];
     $scope.inventory = [];
     $scope.itemOverlay = {
@@ -74,6 +76,7 @@ app.controller('myCtrl', function ($scope) {
         item2.name = item.name;
         item2.stackSize = item.stackSize || 1;
         item2.type = item.type; 
+        item2.item = item;
         // purchaseAmount needs to be set server side for all crates;
         item2.unlockAmount = item.unlockAmount || 100;
         $scope.itemOverlay = item2;
@@ -85,8 +88,29 @@ app.controller('myCtrl', function ($scope) {
             console.log($scope.itemOverlay);
             $('#itemOverlay').css('display','block');
         },10)
-        
-        
+    }
+
+    $scope.buyCrate = function($event, item){
+        if(!item.purchaseAmount){
+            $scope.triggerShake($event);
+            $scope.itemOverlay.reason = "Invalid Purchase Amount!";
+            setTimeout(function(){
+                $scope.itemOverlay.reason = "";
+            },1000)
+            return;
+        }
+
+        if(item.purchaseAmount > $scope.gems){
+            $scope.triggerShake($event);
+            $scope.itemOverlay.reason = "Not Enough Gems!";
+            // In the future ask user to buy/watch ads for gems Kappa
+            setTimeout(function(){
+                $scope.itemOverlay.reason = "";
+            },1000)
+            return;
+        }
+
+        socket.emit("purchaseCrate", item);
     }
 
     var socket = io('https://twitchclickergame.com');

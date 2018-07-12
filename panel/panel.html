@@ -70,15 +70,16 @@
                 </ul>
             </div>
         </div>
-        <div id="itemOverlay">
+        <div id="itemOverlay" style="display:none;">
             <span class="glyphicon glyphicon-remove" id="exitItemOverlay" ng-click="removeItemOverlay()"></span>
             <div id="itemOverlayTitle" >{{itemOverlay.name}}</div>
             <div id="itemOverlayAmount" >{{itemOverlay.stackSize}}</div>
             <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
-            <div class="crate" ng-if="itemOverlay.type === 'crate'">
+            <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
                 <img src="/imgs/gem.png" alt="">
                 <span>{{itemOverlay.unlockAmount}}</span>
             </div>
+            <div id="itemOverlayReason">{{itemOverlay.reason}}</div>
         </div>
     </div>
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>

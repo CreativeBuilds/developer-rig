@@ -321,6 +321,14 @@ body {
     margin-top:5px;
 }
 
+#itemOverlayReason{
+    font-size:20px;
+    color:#f1f1f1;
+    margin:auto;
+    text-align: center;
+    margin-top:5px;
+}
+
 
 /* Inventory CSS */
 
