@@ -99,8 +99,8 @@
         <div id="itemOverlay" style="display:none;">
             <span class="glyphicon glyphicon-remove" id="exitItemOverlay" ng-click="removeItemOverlay()"></span>
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
-            <div id="itemOverlayAmount" ng-if="item.stackable">{{itemOverlay.stackSize}}</div>
-            <div id="itemOverlayAmount" ng-if="!item.stackable">LVL: {{itemOverlay.level}}</div>
+            <div id="itemOverlayAmount" ng-if="itemOverlay.stackSize">{{itemOverlay.stackSize}}</div>
+            <div id="itemOverlayAmount" ng-if="!itemOverlay.stackSize">LVL: {{itemOverlay.level}}</div>
             <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
                     <img src="/imgs/gem.png" alt="">

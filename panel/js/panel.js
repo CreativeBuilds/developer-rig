@@ -131,7 +131,7 @@ app.controller('myCtrl', function ($scope) {
         let item2 = {};
         item2.imageLocation = item.imageLocation;
         item2.name = item.name;
-        item2.stackSize = item.stackSize || 1;
+        item2.stackSize = item.stackSize || false;
         item2.type = item.type;
         console.log("ITEM OVERLAY TYPE", item.type);
         item2.level = item.level;
@@ -147,6 +147,14 @@ app.controller('myCtrl', function ($scope) {
             item2.protectionMultiplier = item.protectionMultiplier;
             item2.costMultiplier = item.costMultiplier;
             item2.baseCost = item.baseCost;
+        }
+
+        if(item.level > 1){
+            console.log(item.baseCost, item.costMultiplier, item.level)
+            item2.cost = item.baseCost * Math.pow(item.costMultiplier, item.level - 1);
+        } else {
+            console.log(item.baseCost);
+            item2.cost = item.baseCost;
         }
 
         // purchaseAmount needs to be set server side for all crates;
@@ -321,6 +329,7 @@ app.controller('myCtrl', function ($scope) {
                 element.css('overflow-y', 'scroll');
             } else {
                 element.css('grid-template-columns', '1fr 1fr 1fr 1fr 1fr 1fr');
+                element.css('overflow-y', 'auto');
             }
         })
 
