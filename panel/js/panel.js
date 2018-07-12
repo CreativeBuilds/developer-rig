@@ -102,6 +102,7 @@ app.controller('myCtrl', function ($scope) {
 
         if(item.unlockAmount > $scope.gems){
             $scope.triggerShake($event);
+            console.log(item.unlockAmount, $scope.gems);
             $scope.itemOverlay.reason = "Not Enough Gems!";
             // In the future ask user to buy/watch ads for gems Kappa
             setTimeout(function(){
@@ -190,7 +191,7 @@ app.controller('myCtrl', function ($scope) {
 
         socket.on('gems', function(gems){
             $scope.gems = gems;
-            console.log(gems, $scope.gems);
+            console.log(gems, $scope.gems, "GOT GEMS");
         })
 
     });
