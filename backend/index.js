@@ -61,7 +61,7 @@ db.connect(null, function () {
     let connection = db.get();
 
 
-    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, upgrades TEXT, inventory TEXT)", function (err, result) {
+    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, gems INT, upgrades TEXT, inventory TEXT)", function (err, result) {
         if (err) {
             // If the table exits (do nothing);
             if (err.message.includes("already exists")) {
@@ -504,7 +504,7 @@ db.connect(null, function () {
                 if (result.length === 0) {
                     // User doesn't exist (make the user!)
                     let inventory = [];
-                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}')`, function (err, result) {
+                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, gems, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,100,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}')`, function (err, result) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -621,6 +621,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', currentBoss.floor);
                                         socket.emit('inventory', JSON.parse(result.inventory));
+                                        socket.emit('gems', result.gems || 0);
                                     }
                                 })
 

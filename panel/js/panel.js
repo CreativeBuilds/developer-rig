@@ -91,7 +91,7 @@ app.controller('myCtrl', function ($scope) {
     }
 
     $scope.buyCrate = function($event, item){
-        if(!item.purchaseAmount){
+        if(!item.unlockAmount){
             $scope.triggerShake($event);
             $scope.itemOverlay.reason = "Invalid Purchase Amount!";
             setTimeout(function(){
@@ -100,7 +100,7 @@ app.controller('myCtrl', function ($scope) {
             return;
         }
 
-        if(item.purchaseAmount > $scope.gems){
+        if(item.unlockAmount > $scope.gems){
             $scope.triggerShake($event);
             $scope.itemOverlay.reason = "Not Enough Gems!";
             // In the future ask user to buy/watch ads for gems Kappa
