@@ -667,6 +667,7 @@ db.connect(null, function () {
                                     });
                                     crate.open.then(function (crateItem) {
                                         // TODO update cases to actually make the right item
+                                        console.log(crateItem.baseCost);
                                         switch (crateItem.type) {
                                             case "mainHand":
                                                 var itemObject = new MainHand({

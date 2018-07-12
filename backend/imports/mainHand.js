@@ -6,7 +6,8 @@ module.exports = class MainHand extends Item {
         type = "mainHand",
         level,
         baseDamage,rarity,
-        imageLocation
+        imageLocation,
+        baseCost = 1
     }) {
         super({
             name,
@@ -15,9 +16,10 @@ module.exports = class MainHand extends Item {
             imageLocation,
             rarity,
             stackable: false,
-            tradeable: true
+            tradeable: true,
         });
         this.baseDamage = baseDamage;
+        this.baseCost = baseCost;
     }
 
     get damage() {
