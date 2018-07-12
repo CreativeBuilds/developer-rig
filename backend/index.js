@@ -652,7 +652,7 @@ db.connect(null, function () {
                         let done = false;
                         for (let x = 0; x < inventory.length; x++) {
                             let dbItem = inventory[x];
-                            console.log(dbItem, item, done);
+                            console.log(dbItem, item, done, inventory, x);
                             if (dbItem.name === item.name && dbItem.type === item.type && dbItem.type === "crate" && done === false) {
                                 // This is the matching crate!
                                 done = true;
