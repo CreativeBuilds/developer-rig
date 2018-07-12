@@ -6,6 +6,7 @@ module.exports = class Armor extends Item{
         this.baseProtection = baseProtection;
         this.protectionMultiplier = protectionMultiplier,
         this.costMultiplier = costMultiplier;
+        this.baseCost = baseCost;
     }
 
     get protection(){
