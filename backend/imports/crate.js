@@ -34,26 +34,16 @@ module.exports = class Crate extends Item {
             }
         }
 
-        switch(rarity){
-            case "common":
-                this.unlockAmount = 10;
-                break;
-            case "uncommon":
-                this.unlockAmount = 25;
-                break;
-            case "rare":
-                this.unlockAmount = 50;
-                break;
-            case "epic":
-                this.unlockAmount = 100;
-                break;
-            case "legendary":
-                this.unlockAmount = 250;
-                break;
-            case "mythic":
-                this.unlockAmount = 1000;
-                break;
+        let rarityPrice = {
+            "common":10,
+            "uncommon":25,
+            "rare":50,
+            "epic":100,
+            "legendary":250,
+            "mythic":1000
         }
+
+        this.unlockAmount = rarityPrice[rarity];
 
     }
 
