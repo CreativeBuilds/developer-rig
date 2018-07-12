@@ -151,6 +151,22 @@ db.connect(null, function () {
 
             let chanceToGetCrate = chanceToGetCrateFunction();
 
+            let usersWhoHelped = this.usersWhoHelped;
+            Object.keys(usersWhoHelped).forEach(function(user){
+                // TODO Change >= to >
+                if(usersWhoHelped[user].activeDamage >= 0){
+                    if(random.integer(1,1000) <= 25){
+                        getPropertyOfAUser(user, "gems", function(err, gems){
+                            updateAUsersProperty(user, "gems", gems + 1, function(err){
+                                if(err) return;
+                                console.log("USER JUST GOT GEMS!");
+                            })
+                        })
+                        
+                    }
+                }
+            })
+
             Object.keys(users).forEach(function (user_id) {
                 //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
                 getPropertyOfAUser(user_id, "upgrade_points", function (err, points) {
