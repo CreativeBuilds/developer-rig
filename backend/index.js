@@ -98,9 +98,9 @@ db.connect(null, function () {
                     "amountOfActivePlayers": Object.keys(thisBoss.usersWhoHelped).length
                 });
             }
-            this.expiresIn30 = setTimeout(function () {
+            this.expires = setTimeout(function () {
                 this.usersLost();
-            }.bind(this), 30000)
+            }.bind(this), 60*1000)
         }
 
         damage(usersDamage, user_id) {
@@ -146,7 +146,7 @@ db.connect(null, function () {
             console.log(this.usersWhoHelped);
             console.log("----------------------------------------------");
             let thisBoss = this;
-            clearTimeout(this.expiresIn30);
+            clearTimeout(this.expires);
 
             let maxAmount = Object.keys(users).length;
             let currentAmount = 0;
@@ -423,14 +423,15 @@ db.connect(null, function () {
         name = "John",
         floor = 1,
         type = "common",
-        amountOfActivePlayers = 1
+        amountOfActivePlayers = 1,
+        secondsTillDeath = 60
     } = {}) {
         //This just gens a new boss
-        console.log("Made a new boss");
-        currentBoss = new Boss(name, floor, type, amountOfActivePlayers);
+        currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
+
         try {
             io.emit('newBoss');
-            io.emit('newFloor', floor);
+            io.emit('newFloor', {floorNum:floor,timeUntilFinished:Date.now() + (secondsTillDeath * 1000)});
         } catch (err) {
             console.log(err, io);
         }

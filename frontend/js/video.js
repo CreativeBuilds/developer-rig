@@ -110,8 +110,18 @@ app.controller('myCtrl', function ($scope) {
 
         verify();
 
-        socket.on("newFloor", (floorNum) => {
-            $scope.currentFloor = floorNum;
+        $scope.timeRemaining = 0;
+        $scope.timeUntilFinished = Date.now();
+
+        setInterval(function(){
+            if($scope.timeUntilFinished >= Date.now) return;
+            
+            $scope.timeRemaining = (obj.timeUntilFinished - Date.now())/1000;
+        },100)
+
+        socket.on("newFloor", (obj) => {
+            $scope.currentFloor = obj.floorNum;
+            $scope.timeUntilFinished = obj.timeUntilFinished;
         })
 
         socket.on("shareIdentity", () => {
