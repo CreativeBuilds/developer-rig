@@ -114,14 +114,15 @@ app.controller('myCtrl', function ($scope) {
         $scope.timeUntilFinished = Date.now();
 
         setInterval(function(){
-            if($scope.timeUntilFinished >= Date.now()) return;
             console.log($scope.timeRemaining, $scope.timeUntilFinished);
+            if($scope.timeUntilFinished >= Date.now()) return;
             $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
         },100)
 
         socket.on("newFloor", (obj) => {
+            console.log(obj);
             $scope.currentFloor = obj.floorNum;
-            console.log($scope.timeUntilFinished, obj.timeUntilFinished);
+            console.log($scope.timeUntilFinished, obj.timeUntilFinished, "set timeUntilFinished");
             $scope.timeUntilFinished = obj.timeUntilFinished;
         })
 

@@ -67,7 +67,7 @@ db.connect(null, function () {
 
     const Boss = class Boss {
         //Initiates the boss
-        constructor(name, floor, rarity, amountOfActivePlayers) {
+        constructor(name, floor, rarity, amountOfActivePlayers, secondsTillDeath = 60) {
 
             // All of these are variables for each boss, more can be added
             this.name = name;
@@ -81,6 +81,7 @@ db.connect(null, function () {
             this.floor = floor;
             this.rarity = rarity;
             let thisBoss = this;
+            this.timeUntilFinished = Date.now() + (secondsTillDeath * 1000)
             this.usersLost = function () {
                 Object.keys(users).forEach(function (user_id) {
                     //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -432,7 +433,7 @@ db.connect(null, function () {
         try {
             io.emit('newBoss');
             console.log("Time Until Finished", Date.now() + (secondsTillDeath * 1000));
-            io.emit('newFloor', {floorNum:floor,timeUntilFinished:Date.now() + (secondsTillDeath * 1000)});
+            io.emit('newFloor', {floorNum:floor,timeUntilFinished:currentBoss.timeUntilFinished});
         } catch (err) {
             console.log(err, io);
         }
@@ -643,7 +644,7 @@ db.connect(null, function () {
 
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
-                                        socket.emit('newFloor', currentBoss.floor);
+                                        socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
                                         console.log(result.gems, "- gems");
                                         socket.emit('gems', result.gems || 0);
@@ -661,7 +662,7 @@ db.connect(null, function () {
                                         socketUsers[decoded.user_id].push(socket);
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
-                                        socket.emit('newFloor', currentBoss.floor);
+                                        socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
                                         console.log(result.gems, "- gems2");
                                         socket.emit('gems', result.gems || 0);
