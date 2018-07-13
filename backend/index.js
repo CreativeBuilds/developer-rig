@@ -80,6 +80,9 @@ db.connect(null, function () {
             this.usersWhoHelped = {};
             this.floor = floor;
             this.rarity = rarity;
+            this.expiresIn30 = setTimeout(function(){
+                console.log(this, "should be destroyed");
+            }.bind(this),30000)
         }
 
         damage(usersDamage, user_id) {
