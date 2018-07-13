@@ -431,6 +431,7 @@ db.connect(null, function () {
 
         try {
             io.emit('newBoss');
+            console.log("Time Until Finished", Date.now() + (secondsTillDeath * 1000));
             io.emit('newFloor', {floorNum:floor,timeUntilFinished:Date.now() + (secondsTillDeath * 1000)});
         } catch (err) {
             console.log(err, io);
