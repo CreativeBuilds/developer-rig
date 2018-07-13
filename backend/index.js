@@ -80,9 +80,27 @@ db.connect(null, function () {
             this.usersWhoHelped = {};
             this.floor = floor;
             this.rarity = rarity;
-            this.expiresIn30 = setTimeout(function(){
-                console.log(this, "should be destroyed");
-            }.bind(this),30000)
+            let thisBoss = this;
+            this.usersLost = function () {
+                Object.keys(users).forEach(function (user_id) {
+                    //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
+
+                    let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
+                    sockets.forEach(function (socket) {
+                        console.log("Emitting to the sockets!");
+                        socket.emit("bossWon")
+                    });
+                })
+
+                generateNewBoss({
+                    name: "John",
+                    floor: 1,
+                    "amountOfActivePlayers": Object.keys(thisBoss.usersWhoHelped).length
+                });
+            }
+            this.expiresIn30 = setTimeout(function () {
+                this.usersLost();
+            }.bind(this), 30000)
         }
 
         damage(usersDamage, user_id) {
@@ -128,6 +146,7 @@ db.connect(null, function () {
             console.log(this.usersWhoHelped);
             console.log("----------------------------------------------");
             let thisBoss = this;
+            clearTimeout(this.expiresIn30);
 
             let maxAmount = Object.keys(users).length;
             let currentAmount = 0;
@@ -155,17 +174,17 @@ db.connect(null, function () {
             let chanceToGetCrate = chanceToGetCrateFunction();
 
             let usersWhoHelped = this.usersWhoHelped;
-            Object.keys(usersWhoHelped).forEach(function(user){
+            Object.keys(usersWhoHelped).forEach(function (user) {
                 // TODO Change >= to >
-                if(usersWhoHelped[user].activeDamage >= 0){
-                    if(random.integer(1,1000) <= 25){
-                        getPropertyOfAUser(user, "gems", function(err, gems){
-                            updateAUsersProperty(user, "gems", gems + 1, function(err){
-                                if(err) return;
+                if (usersWhoHelped[user].activeDamage >= 0) {
+                    if (random.integer(1, 1000) <= 25) {
+                        getPropertyOfAUser(user, "gems", function (err, gems) {
+                            updateAUsersProperty(user, "gems", gems + 1, function (err) {
+                                if (err) return;
                                 console.log("USER JUST GOT GEMS!");
                             })
                         })
-                        
+
                     }
                 }
             })
@@ -207,8 +226,8 @@ db.connect(null, function () {
 
                             for (let x = 0; x < inventory.length; x++) {
                                 // console.log("X:", x);
-                                if(!inventory[x])continue;
-                                if(!thisBoss)continue;
+                                if (!inventory[x]) continue;
+                                if (!thisBoss) continue;
                                 if (inventory[x].rarity === thisBoss.rarity && inventory[x].type === "crate" && !done && inventory[x].stackSize < 10000) {
                                     inventory[x].stackSize = inventory[x].stackSize + 1;
                                     done = true;
@@ -399,6 +418,7 @@ db.connect(null, function () {
         Legendary
         Mythical
     */
+
     function generateNewBoss({
         name = "John",
         floor = 1,
@@ -664,10 +684,10 @@ db.connect(null, function () {
                 console.log("got purchase crate")
                 if (!item) return;
                 db.getPropertyOfAUser(socket.user_id, "gems", function (err, gems) {
-                    if(err) return;
+                    if (err) return;
                     if (!gems) return;
                     db.parseInventory(socket.user_id, function (err, inventory) {
-                        if(err) return;
+                        if (err) return;
                         let done = false;
                         for (let x = 0; x < inventory.length; x++) {
                             let dbItem = inventory[x];
@@ -692,8 +712,8 @@ db.connect(null, function () {
                                                 var itemObject = new MainHand({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -702,8 +722,8 @@ db.connect(null, function () {
                                                 var itemObject = new OffHand({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseDamage: crateItem.baseDamage,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -712,8 +732,8 @@ db.connect(null, function () {
                                                 var itemObject = new Head({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -722,8 +742,8 @@ db.connect(null, function () {
                                                 var itemObject = new Breastplate({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -732,8 +752,8 @@ db.connect(null, function () {
                                                 var itemObject = new Legs({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -742,8 +762,8 @@ db.connect(null, function () {
                                                 var itemObject = new Feet({
                                                     name: crateItem.name,
                                                     level: 1,
-                                                    rarity:crateItem.rarity,
-                                                    baseCost:crateItem.baseCost,
+                                                    rarity: crateItem.rarity,
+                                                    baseCost: crateItem.baseCost,
                                                     baseProtection: crateItem.baseProtection,
                                                     imageLocation: crateItem.imageLocation || ''
                                                 });
@@ -751,7 +771,7 @@ db.connect(null, function () {
                                         }
                                         inventory[x].stackSize = inventory[x].stackSize - 1;
                                         if (inventory[x].stackSize === 0) {
-                                            inventory.splice(x,1);
+                                            inventory.splice(x, 1);
                                         }
                                         inventory.push(itemObject);
 
