@@ -101,7 +101,12 @@
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
             <div id="itemOverlayAmount" ng-if="itemOverlay.stackSize">{{itemOverlay.stackSize}}</div>
             <div id="itemOverlayAmount" ng-if="!itemOverlay.stackSize">LVL: {{itemOverlay.level}}</div>
-            <img class="displayImage clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
+            <div style="position:relative;">
+                <img class=" clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
+                <div id="itemOverlayImageOverlay">
+
+                </div>
+            </div>
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
                     <img src="/imgs/gem.png" alt="">
                     <span>{{itemOverlay.unlockAmount}}</span>

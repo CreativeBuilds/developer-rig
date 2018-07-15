@@ -261,6 +261,16 @@ body {
     transition: opacity .25s ease-in-out;
 }
 
+#itemOverlayImageOverlay{
+    width:200px;
+    height:200px;
+    position: absolute;
+    top: 55px;
+    left: 50px;
+    z-index:4;
+    background:rgba(33,33,33,0.8);
+}
+
 #itemOverlay img.displayImage {
     width: 200px;
     height: 200px;

@@ -148,6 +148,15 @@
     transition: width .5s ease;
 }
 
+#bossTimerChild {
+    height: 5px;
+    width: 100%;
+    background: #f1f1f1;
+    transition: width .5s ease;
+    position: absolute;
+    bottom:-5px;
+}
+
 #bossHealthPercentage {
     color: #f1f1f1;
     position: absolute;
