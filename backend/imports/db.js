@@ -97,6 +97,9 @@ exports.getPropertyOfAUser = function (username, property, callback) {
         if (err) {
             callback(err, null);
         } else {
+            if(property === "equippedItems"){
+                user[property] = JSON.parse(user[property]);
+            }
             callback(err, user[property]);
         }
     })

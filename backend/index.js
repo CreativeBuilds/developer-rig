@@ -43,7 +43,7 @@ db.connect(null, function () {
     let connection = db.get();
 
 
-    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, gems INT, upgrades TEXT, inventory TEXT)", function (err, result) {
+    connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, gems INT, upgrades TEXT, inventory TEXT, equippedItems TEXT)", function (err, result) {
         if (err) {
             // If the table exits (do nothing);
             if (err.message.includes("already exists")) {
@@ -66,11 +66,29 @@ db.connect(null, function () {
     let socketUsers = {};
 
     let findItemInInventory = function(item, inventory){
-        return new Promise(function(resolve, reject){
-            for(let x = 0; x < inventory.length; x++){
-                // if(inventory[x])
-            }
-        })
+        if(typeof item === "string"){
+            let uuid =  item;
+            return new Promise(function(resolve, reject){
+                for(let x = 0; x < inventory.length; x++){
+                    if(inventory[x].uuid === uuid){
+                        resolve(inventory[x])
+                    } else if(x + 1 >= inventory.length) {
+                        resolve(null);
+                    }
+                }
+            })
+        } else if(typeof item === "object"){
+            return new Promise(function(resolve, reject){
+                for(let x = 0; x < inventory.length; x++){
+                    if(inventory[x].uuid === item.uuid){
+                        resolve(inventory[x])
+                    } else if(x + 1 >= inventory.length) {
+                        resolve(null);
+                    }
+                }
+            })
+        }
+        
     }
 
     const Boss = class Boss {
@@ -538,7 +556,8 @@ db.connect(null, function () {
                 if (result.length === 0) {
                     // User doesn't exist (make the user!)
                     let inventory = [];
-                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, gems, upgrades, inventory) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,100,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}')`, function (err, result) {
+                    let equippedItems = {};
+                    connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, gems, upgrades, inventory, equippedItems) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,100,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}')`, function (err, result) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -547,6 +566,7 @@ db.connect(null, function () {
                     })
                 } else {
                     result[0].upgrades = JSON.parse(result[0].upgrades);
+                    result[0].equippedItems = JSON.parse(result[0].equippedItems);
                     callback(null, result[0]);
                 }
             }
@@ -812,7 +832,10 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
                     if(err) return;
                     if(!inventory) return;
-                    
+                    findItemInInventory(item, inventory).then((item)=>{
+                        if(!item) return;
+
+                    })
 
                 })
             })
