@@ -101,21 +101,21 @@
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
             <div id="itemOverlayAmount" ng-if="itemOverlay.stackSize">{{itemOverlay.stackSize}}</div>
             <div id="itemOverlayAmount" ng-if="!itemOverlay.stackSize">LVL: {{itemOverlay.level}}</div>
-            <div style="position:relative;">
-                <img class=" clickable" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
-                <div id="itemOverlayImageOverlay">
-
-                </div>
+            <img ng-class="itemOverlay.type === 'crate' ? 'hoverImage displayImage clickable' : 'displayImage clickable'" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
+            <div ng-class="itemOverlay.type === 'crate' ? 'addMarginTop' : 'noMarginTop'" id="itemOverlayImageOverlay">
+                <div id="itemOverlayUpgradeItem">UPGRADE</div>
+                <div id="itemOverlaySellItem">SELL</div>
             </div>
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
                     <img src="/imgs/gem.png" alt="">
                     <span>{{itemOverlay.unlockAmount}}</span>
                 </div>
-            <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'" ng-click="buyCrate($event, itemOverlay.item)">
+            <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'">
                     <div>Protection<br>{{itemOverlay.protection}}</div>
                     <div>Prot<br>Multiplier<br>{{itemOverlay.protectionMultiplier}}</div>
                     <div>Cost<br>Multiplier<br>{{itemOverlay.costMultiplier}}</div>
                     <div>Cost to<br>Upgrade<br>{{itemOverlay.cost}}</div>
+                    <div class="spanFullWidth" ng-click="equipItem($event, itemOverlay.item)">EQUIP</div>
             </div>
             <div id="itemOverlayReason">{{itemOverlay.reason}}</div>
         </div>

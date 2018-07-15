@@ -65,6 +65,14 @@ db.connect(null, function () {
 
     let socketUsers = {};
 
+    let findItemInInventory = function(item, inventory){
+        return new Promise(function(resolve, reject){
+            for(let x = 0; x < inventory.length; x++){
+                // if(inventory[x])
+            }
+        })
+    }
+
     const Boss = class Boss {
         //Initiates the boss
         constructor(name, floor, rarity, amountOfActivePlayers, secondsTillDeath = 60) {
@@ -796,6 +804,16 @@ db.connect(null, function () {
                             }
                         }
                     })
+                })
+            })
+
+            socket.on('equip', (item) => {
+                // Get the users current inventory
+                db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
+                    if(err) return;
+                    if(!inventory) return;
+                    
+
                 })
             })
 

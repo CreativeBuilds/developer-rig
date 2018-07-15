@@ -1,3 +1,6 @@
+var Random = require("random-js");
+var random = new Random(Random.engines.mt19937().autoSeed());
+
 module.exports = class Item {
     constructor({
         name,
@@ -7,7 +10,8 @@ module.exports = class Item {
         imageLocation,
         stackable = false,
         tradeable = true,
-        stackSize = 1
+        stackSize = 1,
+        uuid = random.uuid4()
     }) {
         this.name = name;
         this.rarity = rarity; //Types include common, uncommon, rare, epic, legendary, and mythic
@@ -18,5 +22,6 @@ module.exports = class Item {
         this.tradeable = tradeable;
         this.stackSize = stackSize;
         this.type = type;
+        this.uuid = uuid
     }
 }

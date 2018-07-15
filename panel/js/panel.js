@@ -201,6 +201,33 @@ app.controller('myCtrl', function ($scope) {
         socket.emit("purchaseCrate", item);
     }
 
+    $scope.equipped = {
+        'head':{},
+        'breastplate':{},
+        'legs':{},
+        'feet':{},
+        'mainHand':{},
+        'offHand':{}
+    };
+
+    let equipItem = function(item){
+        if(!item.type)return;
+        if(item.type === "head"){
+            if($scope.equipped.head !== {}){
+                $scope.inventory.push()
+            }
+        }
+    }
+
+    $scope.equipItem = function ($event, item){
+        console.log("User is trying to equip", item);
+        socket.emit("equip", item);
+    }
+
+    socket.on("equippedItems", (items) => {
+        $scope.equipped = items;
+    })
+
     let moving = false;
 
     $scope.inventoryFilterOpen = function () {

@@ -238,12 +238,34 @@ body {
     position: absolute;
     bottom:0;
     left: 0;
-    padding: 5px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap:5px;
     text-align: center;
     align-items: center;
     justify-content: center;
+}
+
+#itemOverlayArmorInfo div.spanFullWidth{
+    grid-column-start: 1;
+    grid-column-end: 5;
+    background:orange;
+    height:50px;
+    width:100%;
+    text-align:center;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    color:#f1f1f1;
+    background: #111111;
+    position: absolute;
+    bottom:0;
+    width:100%;
+    left:0;
+}
+
+#itemOverlayArmorInfo div.spanFullWidth:hover{
+    cursor: pointer;
+    background: #222222;
 }
 
 #itemOverlay {
@@ -261,7 +283,7 @@ body {
     transition: opacity .25s ease-in-out;
 }
 
-#itemOverlayImageOverlay{
+.noMarginTop{
     width:200px;
     height:200px;
     position: absolute;
@@ -269,13 +291,36 @@ body {
     left: 50px;
     z-index:4;
     background:rgba(33,33,33,0.8);
+    opacity:0;
+    display:grid;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    align-items: center;
+}
+
+.noMarginTop div{
+    width:100%;
+    height:45px;
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    background:#f1f1f1
+}
+
+.noMarginTop div:hover{
+    cursor:pointer;
+    box-shadow:4px 4px 4px #000000;
+    background:#d7d7d7;
+}
+
+.noMarginTop:hover{
+    opacity:1;
 }
 
 #itemOverlay img.displayImage {
     width: 200px;
     height: 200px;
     margin: auto;
-    margin-top: 25px;
     display: block;
     -webkit-transition: margin .25s ease-in-out;
     -moz-transition: margin .25s ease-in-out;
@@ -284,14 +329,24 @@ body {
     position: absolute;
     top: 55px;
     left: 50px;
+    margin-top:20px;
+}
+
+#itemOverlay img.displayImage.hoverImage{
+    margin-top:25px;
+}
+
+#itemOverlay img.displayImage.hoverImage:hover{
+    margin-top:20px;
+}
+
+.addMarginTop{
+    display:none;
+    
 }
 
 #itemOverlay img.displayImage.clickable:hover {
     cursor: pointer;
-}
-
-#itemOverlay img.displayImage:hover {
-    margin-top: 20px;
 }
 
 #itemOverlay div.crate img {

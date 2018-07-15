@@ -8,7 +8,8 @@ var random = new Random(Random.engines.mt19937().autoSeed());
 
 module.exports = class Crate extends Item {
     constructor({
-        rarity = "common"
+        rarity = "common",
+        uuid
     }) {
         rarity = rarity.charAt(0).toUpperCase() + rarity.slice(1);
         super({
@@ -18,7 +19,8 @@ module.exports = class Crate extends Item {
             imageLocation: rarity.toLowerCase() + 'Crate.png',
             stackable: true,
             tradeable: true,
-            stackSize: 1
+            stackSize: 1,
+            uuid
         })
         console.log("Running constructor");
         if (typeof rarity !== "string") rarity === "common";
