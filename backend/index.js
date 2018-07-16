@@ -928,7 +928,6 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
                     if(err) return;
                     if(!equippedItems) return;
-                    equippedItems = JSON.parse(equippedItems);
                     findItemInInventory(item, equippedItems).then((dbItem)=>{
                         if(!item) return;
                         if(!dbItem) return;
