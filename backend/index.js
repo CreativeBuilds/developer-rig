@@ -103,6 +103,7 @@ db.connect(null, function () {
                 for(let x = 0; x < inventory.length; x++){
                     if(inventory[x].uuid === uuid){
                         resolve(inventory[x])
+                        return;
                     } else if(x + 1 >= inventory.length) {
                         resolve(null);
                     }
@@ -872,7 +873,7 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
                     if(err) return;
                     if(!inventory) return;
-                    console.log(inventory, item);
+                    let inventory = JSON.parse(inventory);
                     findItemInInventory(item, inventory).then((dbItem)=>{
                         if(!item) return;
                         if(dbItem.type === "case") return;
