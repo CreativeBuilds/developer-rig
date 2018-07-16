@@ -890,6 +890,7 @@ db.connect(null, function () {
                     if(err) return;
                     if(!inventory) return;
                     inventory = JSON.parse(inventory);
+                    console.log("trying to get item from inventory", item);
                     findItemInInventory(item, inventory).then((dbItem)=>{
                         if(!item) return;
                         if(!dbItem) return;
