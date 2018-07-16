@@ -126,6 +126,10 @@ db.connect(null, function () {
             })
         } else if(typeof item === "object"){
             return new Promise(function(resolve, reject){
+                if(!inventory[item.type]){
+                    resolve(null);
+                    return;
+                }
                 if(inventory[item.type].uuid === item.uuid){
                     resolve(inventory[item.type]);
                 } else {
