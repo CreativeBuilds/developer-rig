@@ -247,7 +247,7 @@ app.controller('myCtrl', function ($scope) {
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
         if($scope.timeUntilFinished <= Date.now()) return;
         $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
-        // console.log($scope.timeRemaining, $scope.timeUntilFinished);
+         console.log($scope.timeRemaining, $scope.timeUntilFinished, $scope.timeUntilFinished - Date.now());
         $('#bossTimerChild').css('width', ($scope.timeRemaining/60*100)+"%")
 
     }
