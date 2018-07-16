@@ -594,7 +594,7 @@ db.connect(null, function () {
         Object.keys(list).forEach(function (upgrade_name) {
             if (!listFromDatabase[upgrade_name]) {
                 haveToUpdate = true;
-                listFromDatabase[upgrade_name].level = list[upgrade_name].level;
+                listFromDatabase[upgrade_name] = list[upgrade_name];
             } else {
                 list[upgrade_name].level = listFromDatabase[upgrade_name].level;
             }
