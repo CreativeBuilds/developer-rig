@@ -119,6 +119,7 @@ app.controller('myCtrl', function ($scope) {
             $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
         },500)
 
+        // TODO fix a bug where the timer is adding 5 seconds clientside and bugging out the white bar
         socket.on("newFloor", (obj) => {
             console.log(obj);
             $scope.currentFloor = obj.floorNum;
@@ -245,6 +246,7 @@ app.controller('myCtrl', function ($scope) {
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
         if($scope.timeUntilFinished <= Date.now()) return;
         $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
+        console.log($scope.timeRemaining, $scope.timeUntilFinished);
         $('#bossTimerChild').css('width', ($scope.timeRemaining/60*100)+"%")
 
     }

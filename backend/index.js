@@ -890,6 +890,7 @@ db.connect(null, function () {
                             }
                             inventory.splice(inventory.indexOf(dbItem),1);
                             let finish = function(){
+                                equippedItems[dbItem.type] = dbItem;
                                 db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
                                 db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
                                 socket.emit("inventory", inventory);
@@ -906,7 +907,6 @@ db.connect(null, function () {
                                     console.log(equippedItems[dbItem.type], typeof equippedItems[dbItem.type], dbItem.type, equippedItems);
                                     makeItem(equippedItems[dbItem.type]).then((item)=>{
                                         inventory.push(item);
-                                        equippedItems[dbItem.type] = dbItem;
                                         finish();
                                     }).catch((err)=>{
                                         console.log(err);
@@ -914,7 +914,6 @@ db.connect(null, function () {
                                     })
                                 }
                             } else {
-                                equippedItems[dbItem.type] = dbItem;
                                 finish();
                             }
                             
