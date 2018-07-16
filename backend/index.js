@@ -171,6 +171,7 @@ db.connect(null, function () {
                     //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
 
                     let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
+                    if(!sockets) return;
                     sockets.forEach(function (socket) {
                         console.log("Emitting to the sockets!");
                         socket.emit("bossWon")
@@ -339,6 +340,7 @@ db.connect(null, function () {
                                 if (bool) {
                                     console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
                                     let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
+                                    if(!sockets) return;
                                     sockets.forEach(function (socket) {
                                         console.log("Emitting to the sockets!");
                                         socket.emit("newCrate");

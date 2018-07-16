@@ -71,10 +71,9 @@ app.controller('myCtrl', function ($scope) {
         e = e ? e : window.event;
         var from = e.relatedTarget || e.toElement;
         if (!from || from.nodeName == "HTML") {
-            console.log("left page");
-            // minimize = setTimeout(function () {
-            //     $scope.closeApp();
-            // }, 2000)
+            minimize = setTimeout(function () {
+                $scope.closeApp();
+            }, 2000)
         }
 
     }
