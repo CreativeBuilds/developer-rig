@@ -894,6 +894,7 @@ db.connect(null, function () {
                                     equippedItems[dbItem.type] = dbItem;
                                     finish();
                                 }).catch((err)=>{
+                                    console.log(err);
                                     return;
                                 })
                             } else {
