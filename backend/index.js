@@ -899,6 +899,7 @@ db.connect(null, function () {
                                     finish();
                                     return;
                                 } else {
+                                    console.log(equippedItems[dbItem.type], typeof equippedItems[dbItem.type], dbItem.type);
                                     makeItem(equippedItems[dbItem.type]).then((item)=>{
                                         inventory.push(item);
                                         equippedItems[dbItem.type] = dbItem;
