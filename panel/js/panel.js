@@ -374,6 +374,7 @@ app.controller('myCtrl', function ($scope) {
     
             console.log("sent socket emit to buy crate", item);
             $scope.itemOverlay.stackSize = $scope.itemOverlay.stackSize - 1;
+            $scope.gems = $scope.gems - $scope.itemOverlay.unlockAmount;
             if ($scope.itemOverlay.stackSize <= 0) {
                 $scope.removeItemOverlay();
                 $scope.itemOverlay = null;

@@ -115,8 +115,10 @@ app.controller('myCtrl', function ($scope) {
 
         setInterval(function(){
             //console.log($scope.timeRemaining, $scope.timeUntilFinished);
-            if($scope.timeUntilFinished <= Date.now()) return;
-            $scope.timeRemaining = $scope.timeUntilFinished/1000;
+            let time = $scope.timeUntilFinished - 500
+            $scope.timeRemaining = time/1000;
+            $scope.timeUntilFinished = time;
+            console.log($scope.timeRemaining);
         },500)
 
         // TODO fix a bug where the timer is adding 5 seconds clientside and bugging out the white bar
@@ -245,7 +247,6 @@ app.controller('myCtrl', function ($scope) {
         }
         ////console.log((remainingHealthPercentage * 100) + "%");
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
-        if($scope.timeUntilFinished <= Date.now()) return;
         $scope.timeRemaining = $scope.timeUntilFinished/1000;
          console.log($scope.timeRemaining, $scope.timeUntilFinished, $scope.timeUntilFinished - Date.now());
         $('#bossTimerChild').css('width', ($scope.timeRemaining/60*100)+"%")

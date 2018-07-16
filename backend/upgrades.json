@@ -5,25 +5,34 @@
         "additionalDamage":0,
         "type":"active",
         "baseCostToUpgrade": 1,
-        "baseCostMultiplierPercentage":1.3,
-        "baseDamageMultiplierPercentage":1.15
+        "baseCostMultiplierPercentage":1.15,
+        "baseDamageMultiplierPercentage":1.07
     },
-    "Idle Damage": {
+    "Pebble Thrower": {
         "level":0,
         "baseDamage": 1,
         "additionalDamage":0,
         "type":"passive",
-        "baseCostToUpgrade": 2,
-        "baseCostMultiplierPercentage":1.2,
-        "baseDamageMultiplierPercentage":1.15
+        "baseCostToUpgrade": 10,
+        "baseCostMultiplierPercentage":1.15,
+        "baseDamageMultiplierPercentage":1.07
     },
-    "Idle Damage 2": {
+    "Rock Crusher": {
         "level":0,
-        "baseDamage": 1,
+        "baseDamage": 5,
         "additionalDamage":0,
         "type":"passive",
-        "baseCostToUpgrade": 1,
-        "baseCostMultiplierPercentage":1.3,
-        "baseDamageMultiplierPercentage":1.15
+        "baseCostToUpgrade": 60,
+        "baseCostMultiplierPercentage":1.15,
+        "baseDamageMultiplierPercentage":1.08
+    },
+    "Flame Trap": {
+        "level":0,
+        "baseDamage": 15,
+        "additionalDamage":0,
+        "type":"passive",
+        "baseCostToUpgrade": 200,
+        "baseCostMultiplierPercentage":1.15,
+        "baseDamageMultiplierPercentage":1.09
     }
 }
