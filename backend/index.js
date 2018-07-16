@@ -947,7 +947,7 @@ db.connect(null, function () {
                             if(typeof inventory === "string"){
                                 inventory = JSON.parse(inventory);
                             }
-                            equippedItems.splice(equippedItems.indexOf(dbItem),1);
+                            equippedItems[dbItem.type] = {};
                             let finish = function(){
                                 inventory[dbItem.type] = dbItem;
                                 db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
