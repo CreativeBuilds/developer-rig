@@ -884,6 +884,9 @@ db.connect(null, function () {
                         db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
                             if(err) return;
                             if(!equippedItems) equippedItems = {};
+                            if(typeof equippedItems === "string"){
+                                equippedItems = JSON.parse(equippedItems);
+                            }
                             inventory.splice(inventory.indexOf(dbItem),1);
                             let finish = function(){
                                 db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
