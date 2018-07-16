@@ -151,7 +151,7 @@ db.connect(null, function () {
             this.name = name;
             console.log(floor);
             console.log(amountOfActivePlayers);
-            this.health = Math.floor((100*amountOfActivePlayers) * Math.pow(1.15, floor));
+            this.health = Math.floor((100*amountOfActivePlayers) * Math.pow(1.25, floor));
             this.totalHealth = this.health;
             this.floor = floor;
             this.rewardUpgradePoints = floor; //TODO Remove this as a hardcode and make it a changeable variable;
