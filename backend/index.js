@@ -156,7 +156,7 @@ db.connect(null, function () {
             this.floor = floor;
             this.rarity = rarity;
             let thisBoss = this;
-            this.timeUntilFinished = Date.now() + (secondsTillDeath * 1000)
+            this.timeUntilFinishedValue = Date.now() + (secondsTillDeath * 1000)
             this.usersLost = function () {
                 Object.keys(users).forEach(function (user_id) {
                     //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
@@ -177,6 +177,10 @@ db.connect(null, function () {
             this.expires = setTimeout(function () {
                 this.usersLost();
             }.bind(this), 60*1000)
+        }
+
+        get timeUntilFinished(){
+            return this.timeUntilFinishedValue - Date.now(); 
         }
 
         damage(usersDamage, user_id) {
