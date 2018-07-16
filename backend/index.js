@@ -503,6 +503,9 @@ db.connect(null, function () {
         secondsTillDeath = 60
     } = {}) {
         //This just gens a new boss
+        if(amountOfActivePlayers < 1){
+            amountOfActivePlayers = 1;
+        }
         currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
 
         try {

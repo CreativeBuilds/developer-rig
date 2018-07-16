@@ -232,6 +232,7 @@ app.controller('myCtrl', function ($scope) {
         // Update the width of the health bar and change the color depending on how much is left;
         let startingColor = 'rgb(16,80,0)';
         let endingColor = 'rgb(78,12,12)';
+        console.log(health, totalHealth)
         let remainingHealthPercentage = health / totalHealth;
         ////console.log(health, totalHealth, remainingHealthPercentage);
         let currentColor = blendRGB(startingColor, endingColor, remainingHealthPercentage);
