@@ -66,6 +66,7 @@ db.connect(null, function () {
                 case "crate":
                     resolve(new Case(item));
                 default:
+                    console.log(item.type, item);
                     reject("Type not compatible");
             }
         })
