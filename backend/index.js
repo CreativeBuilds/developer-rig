@@ -113,7 +113,7 @@ db.connect(null, function () {
                     }
                 }
             })
-        } else if(typeof item === "object"){
+        } else if(typeof item === "object" && item.isArray()){
             return new Promise(function(resolve, reject){
                 for(let x = 0; x < inventory.length; x++){
                     // console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
@@ -122,6 +122,14 @@ db.connect(null, function () {
                     } else if(x + 1 >= inventory.length) {
                         resolve(null);
                     }
+                }
+            })
+        } else if(typeof item === "object"){
+            return new Promise(function(resolve, reject){
+                if(inventory[item.type].uuid === item.uuid){
+                    resolve(inventory[item.type]);
+                } else {
+                    resolve(null)
                 }
             })
         }
@@ -929,6 +937,7 @@ db.connect(null, function () {
                     if(err) return;
                     if(!equippedItems) return;
                     findItemInInventory(item, equippedItems).then((dbItem)=>{
+                        console.log("got here", item, equippedItems)
                         if(!item) return;
                         if(!dbItem) return;
                         if(dbItem.type === "case") return;
