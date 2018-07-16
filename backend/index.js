@@ -108,6 +108,7 @@ db.connect(null, function () {
         } else if(typeof item === "object"){
             return new Promise(function(resolve, reject){
                 for(let x = 0; x < inventory.length; x++){
+                    console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
                     if(inventory[x].uuid === item.uuid){
                         resolve(inventory[x])
                     } else if(x + 1 >= inventory.length) {
@@ -868,6 +869,7 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
                     if(err) return;
                     if(!inventory) return;
+                    console.log(inventory, item);
                     findItemInInventory(item, inventory).then((dbItem)=>{
                         if(!item) return;
                         if(dbItem.type === "case") return;
