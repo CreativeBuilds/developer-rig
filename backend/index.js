@@ -584,7 +584,14 @@ db.connect(null, function () {
                 if (result.length === 0) {
                     // User doesn't exist (make the user!)
                     let inventory = [];
-                    let equippedItems = {};
+                    let equippedItems = {
+                        "head":{},
+                        "breastplate":{},
+                        "legs":{},
+                        "feet":{},
+                        "mainHand":{},
+                        "offHand":{}
+                    };
                     connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, gems, upgrades, inventory, equippedItems) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,100,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}','${JSON.stringify(equippedItems)}')`, function (err, result) {
                         if (err) {
                             callback(err, null);
@@ -720,7 +727,11 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        socket.emit('equippedItems', JSON.parse(result.equippedItems));
+                                        if(result.equippedItems === "{}"){
+                                            socket.emit('equippedItems', {});
+                                        } else {
+                                            socket.emit('equippedItems', JSON.parse(result.equippedItems));
+                                        }
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
