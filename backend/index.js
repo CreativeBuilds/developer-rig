@@ -873,7 +873,7 @@ db.connect(null, function () {
                 db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
                     if(err) return;
                     if(!inventory) return;
-                    let inventory = JSON.parse(inventory);
+                    inventory = JSON.parse(inventory);
                     findItemInInventory(item, inventory).then((dbItem)=>{
                         if(!item) return;
                         if(dbItem.type === "case") return;
