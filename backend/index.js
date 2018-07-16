@@ -891,7 +891,14 @@ db.connect(null, function () {
                                 socket.emit("inventory", inventory);
                                 socket.emit("equippedItems", equippedItems);
                             }
-                            if(equippedItems[dbItem.type] && equippedItems[dbItem.type] !== {}){
+                            if(equippedItems[dbItem.type]){
+                                if(typeof equippedItems[dbItem.type] === "string"){
+                                    equippedItems[dbItem.type] = JSON.parse(equippedItems[dbItem.type]);
+                                }
+                                if(equippedItems[dbItem.type] === {}){
+                                    finish();
+                                    return;
+                                }
                                 makeItem(equippedItems[dbItem.type]).then((item)=>{
                                     inventory.push(item);
                                     equippedItems[dbItem.type] = dbItem;
