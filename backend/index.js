@@ -898,15 +898,16 @@ db.connect(null, function () {
                                 if(equippedItems[dbItem.type] === {}){
                                     finish();
                                     return;
+                                } else {
+                                    makeItem(equippedItems[dbItem.type]).then((item)=>{
+                                        inventory.push(item);
+                                        equippedItems[dbItem.type] = dbItem;
+                                        finish();
+                                    }).catch((err)=>{
+                                        console.log(err);
+                                        return;
+                                    })
                                 }
-                                makeItem(equippedItems[dbItem.type]).then((item)=>{
-                                    inventory.push(item);
-                                    equippedItems[dbItem.type] = dbItem;
-                                    finish();
-                                }).catch((err)=>{
-                                    console.log(err);
-                                    return;
-                                })
                             } else {
                                 finish();
                             }
