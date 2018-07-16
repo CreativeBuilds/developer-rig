@@ -42,6 +42,34 @@ var Crate = require('./imports/crate.js');
 db.connect(null, function () {
     let connection = db.get();
 
+    let makeItem = function(item){
+        return new Promise(function(resolve, reject){
+            switch (crateItem.type) {
+                case "mainHand":
+                    resolve(new MainHand(item));
+                    break;
+                case "offHand":
+                    resolve(new OffHand(item));
+                    break;
+                case "head":
+                    resolve(new Head(item));
+                    break;
+                case "breastplate":
+                    resolve(new Breastplate(item));
+                    break;
+                case "legs":
+                    resolve(new Legs(item));
+                    break;
+                case "feet":
+                    resolve(new Feet(item));
+                    break;
+                case "crate":
+                    resolve(new Case(item));
+                default:
+                    reject("Type not compatible");
+            }
+        })
+    }
 
     connection.query("CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, user_id VARCHAR(255), opaque_user_id VARCHAR(255), level INT, upgrade_points FLOAT, gems INT, upgrades TEXT, inventory TEXT, equippedItems TEXT)", function (err, result) {
         if (err) {
@@ -674,7 +702,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        console.log(result.gems, "- gems");
+                                        socket.emit('equippedItems', JSON.parse(result.equippedItems));
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
@@ -692,7 +720,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        console.log(result.gems, "- gems2");
+                                        socket.emit('equippedItems', JSON.parse(result.equippedItems));
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
@@ -829,12 +857,36 @@ db.connect(null, function () {
 
             socket.on('equip', (item) => {
                 // Get the users current inventory
+                if(item.type === "case") return;
                 db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
                     if(err) return;
                     if(!inventory) return;
-                    findItemInInventory(item, inventory).then((item)=>{
+                    findItemInInventory(item, inventory).then((dbItem)=>{
                         if(!item) return;
-
+                        if(dbItem.type === "case") return;
+                        db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
+                            if(err) return;
+                            if(!equippedItems) equippedItems = {};
+                            inventory.splice(inventory.indexOf(dbItem),1);
+                            let finish = function(){
+                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
+                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
+                                socket.emit("inventory", inventory);
+                                socket.emit("equippedItems", equippedItems);
+                            }
+                            if(equippedItems[dbItem.type] && equippedItems[dbItem.type] !== {}){
+                                makeItem(equippedItems[dbItem.type]).then((item)=>{
+                                    inventory.push(item);
+                                    equippedItems[dbItem.type] = dbItem;
+                                    finish();
+                                }).catch((err)=>{
+                                    return;
+                                })
+                            } else {
+                                finish();
+                            }
+                            
+                        })
                     })
 
                 })

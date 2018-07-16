@@ -172,33 +172,6 @@ app.controller('myCtrl', function ($scope) {
     }
 
     $scope.buyCrate = function ($event, item) {
-        if (!item.unlockAmount) {
-            $scope.triggerShake($event);
-            $scope.itemOverlay.reason = "Invalid Purchase Amount!";
-            setTimeout(function () {
-                $scope.itemOverlay.reason = "";
-            }, 1000)
-            return;
-        }
-
-        if (item.unlockAmount > $scope.gems) {
-            $scope.triggerShake($event);
-            console.log(item.unlockAmount, $scope.gems);
-            $scope.itemOverlay.reason = "Not Enough Gems!";
-            // In the future ask user to buy/watch ads for gems Kappa
-            setTimeout(function () {
-                $scope.itemOverlay.reason = "";
-            }, 1000)
-            return;
-        }
-
-        console.log("sent socket emit to buy crate", item);
-        $scope.itemOverlay.stackSize = $scope.itemOverlay.stackSize - 1;
-        if ($scope.itemOverlay.stackSize <= 0) {
-            $scope.removeItemOverlay();
-            $scope.itemOverlay = null;
-        }
-        socket.emit("purchaseCrate", item);
     }
 
     $scope.equipped = {
@@ -219,14 +192,9 @@ app.controller('myCtrl', function ($scope) {
         }
     }
 
-    $scope.equipItem = function ($event, item){
-        console.log("User is trying to equip", item);
-        socket.emit("equip", item);
-    }
+    $scope.equipItem = function ($event, item){}
 
-    socket.on("equippedItems", (items) => {
-        $scope.equipped = items;
-    })
+    
 
     let moving = false;
 
@@ -285,6 +253,11 @@ app.controller('myCtrl', function ($scope) {
         socket.on('verified', () => {
             //console.log("I'm verified")
             verified = true;
+        })
+
+        socket.on("equippedItems", (items) => {
+            console.log("I have these items equipped!", items);
+            $scope.equipped = items;
         })
 
         function verify() {
@@ -373,6 +346,41 @@ app.controller('myCtrl', function ($scope) {
 
             }
         })
+
+        $scope.buyCrate = function ($event, item) {
+            if (!item.unlockAmount) {
+                $scope.triggerShake($event);
+                $scope.itemOverlay.reason = "Invalid Purchase Amount!";
+                setTimeout(function () {
+                    $scope.itemOverlay.reason = "";
+                }, 1000)
+                return;
+            }
+    
+            if (item.unlockAmount > $scope.gems) {
+                $scope.triggerShake($event);
+                console.log(item.unlockAmount, $scope.gems);
+                $scope.itemOverlay.reason = "Not Enough Gems!";
+                // In the future ask user to buy/watch ads for gems Kappa
+                setTimeout(function () {
+                    $scope.itemOverlay.reason = "";
+                }, 1000)
+                return;
+            }
+    
+            console.log("sent socket emit to buy crate", item);
+            $scope.itemOverlay.stackSize = $scope.itemOverlay.stackSize - 1;
+            if ($scope.itemOverlay.stackSize <= 0) {
+                $scope.removeItemOverlay();
+                $scope.itemOverlay = null;
+            }
+            socket.emit("purchaseCrate", item);
+        }
+
+        $scope.equipItem = function ($event, item){
+            console.log("User is trying to equip", item);
+            socket.emit("equip", item);
+        }
 
     });
 
