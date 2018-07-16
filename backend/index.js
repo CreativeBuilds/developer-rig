@@ -113,7 +113,7 @@ db.connect(null, function () {
                     }
                 }
             })
-        } else if(typeof item === "object" && Array.isArray(item)){
+        } else if(typeof item === "object" && Array.isArray(inventory)){
             return new Promise(function(resolve, reject){
                 for(let x = 0; x < inventory.length; x++){
                     // console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
