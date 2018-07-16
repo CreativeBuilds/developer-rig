@@ -151,18 +151,16 @@ db.connect(null, function () {
             this.name = name;
             console.log(floor);
             console.log(amountOfActivePlayers);
-
-            let t1 = Math.floor((100*amountOfActivePlayers) * Math.pow(1.15, floor));
+            this.health = Math.floor((100*amountOfActivePlayers) * Math.pow(1.15, floor));
+            this.totalHealth = this.health;
+            this.floor = floor;
+            let t1= Math.floor(1 * Math.floor(1.07,floor));
             let t2 = floor;
             if(t2 > t1){
                 this.rewardUpgradePoints = t2;
             } else {
                 this.rewardUpgradePoints = t1;
             }
-
-            this.health = Math.floor((100*amountOfActivePlayers) * Math.pow(1.15, floor));
-            this.totalHealth = this.health;
-            this.floor = floor;
             this.usersWhoHelped = {};
             this.floor = floor;
             this.rarity = rarity;
