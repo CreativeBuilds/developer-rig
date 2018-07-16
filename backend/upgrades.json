@@ -6,7 +6,7 @@
         "type":"active",
         "baseCostToUpgrade": 1,
         "baseCostMultiplierPercentage":1.15,
-        "baseDamageMultiplierPercentage":1.07
+        "baseDamageMultiplierPercentage":1.10
     },
     "Pebble Thrower": {
         "level":0,
