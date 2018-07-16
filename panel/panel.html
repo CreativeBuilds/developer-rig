@@ -26,8 +26,8 @@
                 <ul id="menuContent">
                     <li ng-click="open('upgrades')" class="active">
                         <div>UPGRADES</div>
-                    </li
-                    ><li ng-click="open('inventory')">
+                    </li>
+                    <li ng-click="open('inventory')">
                         <div>INVENTORY</div>
                     </li>
                     <li id="overlay"></li>
@@ -35,12 +35,36 @@
             </div>
             <div id="inventory" style="display:none;opacity:0;">
                 <div id="equippedItems">
-                    <div id="mainHand"></div>
-                    <div id="offHand"></div>
-                    <div id="head"></div>
-                    <div id="breastplate"></div>
-                    <div id="legs"></div>
-                    <div id="feet"></div>
+                    <div id="mainHand">
+                        <div class="equippedItem" ng-if="equipped.mainHand.imageLocation" ng-click="openItemOverlay(equipped.mainHand, true)">
+                            <img src="/imgs/{{equipped.mainHand.imageLocation}}" alt="">
+                        </div>
+                    </div>
+                    <div id="offHand">
+                        <div class="equippedItem" ng-if="equipped.offHand.imageLocation" ng-click="openItemOverlay(equipped.offHand, true)">
+                            <img src="/imgs/{{equipped.offHand.imageLocation}}" alt="">
+                        </div>
+                    </div>
+                    <div id="head">
+                        <div class="equippedItem" ng-if="equipped.head.imageLocation" ng-click="openItemOverlay(equipped.head, true)">
+                            <img src="/imgs/{{equipped.head.imageLocation}}" alt="">
+                        </div>
+                    </div>
+                    <div id="breastplate">
+                        <div class="equippedItem" ng-if="equipped.breastplate.imageLocation" ng-click="openItemOverlay(equipped.breastplate, true)">
+                            <img src="/imgs/{{equipped.breastplate.imageLocation}}" alt="">
+                        </div>
+                    </div>
+                    <div id="legs">
+                        <div class="equippedItem" ng-if="equipped.legs.imageLocation" ng-click="openItemOverlay(equipped.legs, true)">
+                            <img src="/imgs/{{equipped.legs.imageLocation}}" alt="">
+                        </div>
+                    </div>
+                    <div id="feet">
+                        <div class="equippedItem" ng-if="equipped.feet.imageLocation" ng-click="openItemOverlay(equipped.feet, true)">
+                            <img src="/imgs/{{equipped.feet.imageLocation}}" alt="">
+                        </div>
+                    </div>
                 </div>
                 <div style="color:#f1f1f1;font-size:25px;text-align: center;margin-top:15px;position:relative;">ITEMS
                     <span id="inventoryFilterButton" class="glyphicon glyphicon-filter" ng-click="inventoryFilterOpen()"></span>
@@ -101,22 +125,33 @@
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
             <div id="itemOverlayAmount" ng-if="itemOverlay.stackSize">{{itemOverlay.stackSize}}</div>
             <div id="itemOverlayAmount" ng-if="!itemOverlay.stackSize">LVL: {{itemOverlay.level}}</div>
-            <img ng-class="itemOverlay.type === 'crate' ? 'hoverImage displayImage clickable' : 'displayImage clickable'" src="/imgs/{{itemOverlay.imageLocation}}" ng-click="triggerShake($event)">
+            <img ng-class="itemOverlay.type === 'crate' ? 'hoverImage displayImage clickable' : 'displayImage clickable'" src="/imgs/{{itemOverlay.imageLocation}}"
+                ng-click="triggerShake($event)">
             <div ng-class="itemOverlay.type === 'crate' ? 'addMarginTop' : 'noMarginTop'" id="itemOverlayImageOverlay">
                 <div id="itemOverlayUpgradeItem">UPGRADE</div>
                 <div id="itemOverlaySellItem">SELL</div>
             </div>
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
-                    <img src="/imgs/gem.png" alt="">
-                    <span>{{itemOverlay.unlockAmount}}</span>
-                </div>
-            <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'">
-                    <div>Protection<br>{{itemOverlay.protection}}</div>
-                    <div>Prot<br>Multiplier<br>{{itemOverlay.protectionMultiplier}}</div>
-                    <div>Cost<br>Multiplier<br>{{itemOverlay.costMultiplier}}</div>
-                    <div>Cost to<br>Upgrade<br>{{itemOverlay.cost}}</div>
-                    <div class="spanFullWidth" ng-click="equipItem($event, itemOverlay.item)">EQUIP</div>
+                <img src="/imgs/gem.png" alt="">
+                <span>{{itemOverlay.unlockAmount}}</span>
             </div>
+            <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'">
+                <div>Protection
+                    <br>{{itemOverlay.protection}}</div>
+                <div>Prot
+                    <br>Multiplier
+                    <br>{{itemOverlay.protectionMultiplier}}</div>
+                <div>Cost
+                    <br>Multiplier
+                    <br>{{itemOverlay.costMultiplier}}</div>
+                <div>Cost to
+                    <br>Upgrade
+                    <br>{{itemOverlay.cost}}</div>
+            </div>
+            <div class="spanFullWidth"  ng-if="itemOverlay.type === 'mainHand' || itemOverlay.type === 'offHand' || itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet' || itemOverlay.type === 'mainHand'" ng-click="equipItem($event, itemOverlay.item, itemOverlay.unequip)">
+                    <span ng-if="itemOverlay.unequip">UNEQUIP</span>
+                    <span ng-if="!itemOverlay.unequip">EQUIP</span>
+                </div>
             <div id="itemOverlayReason">{{itemOverlay.reason}}</div>
         </div>
     </div>

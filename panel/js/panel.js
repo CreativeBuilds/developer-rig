@@ -126,7 +126,7 @@ app.controller('myCtrl', function ($scope) {
         }, 250)
     }
 
-    $scope.openItemOverlay = function (item) {
+    $scope.openItemOverlay = function (item, fromEquipped) {
         console.log(item);
         let item2 = {};
         item2.imageLocation = item.imageLocation;
@@ -161,6 +161,11 @@ app.controller('myCtrl', function ($scope) {
         item2.unlockAmount = item.unlockAmount || 100;
         $scope.itemOverlay = item2;
         $scope.itemOverlay.type = item.type;
+        if(fromEquipped){
+            $scope.itemOverlay.unequip = true;
+        } else {
+            $scope.itemOverlay.unequip = false;
+        }
         $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.png', "200px.png");
         $scope.itemOverlay.imageLocation = item2.imageLocation.replace('.jpg', "200px.jpg");
         console.log(item);
@@ -182,15 +187,6 @@ app.controller('myCtrl', function ($scope) {
         'mainHand':{},
         'offHand':{}
     };
-
-    let equipItem = function(item){
-        if(!item.type)return;
-        if(item.type === "head"){
-            if($scope.equipped.head !== {}){
-                $scope.inventory.push()
-            }
-        }
-    }
 
     $scope.equipItem = function ($event, item){}
 
@@ -377,9 +373,16 @@ app.controller('myCtrl', function ($scope) {
             socket.emit("purchaseCrate", item);
         }
 
-        $scope.equipItem = function ($event, item){
-            console.log("User is trying to equip", item);
-            socket.emit("equip", item);
+        $scope.equipItem = function ($event, item, unequip){
+            if(unequip){
+                socket.emit('unequip', item);
+                $scope.removeItemOverlay();
+            } else {
+                console.log("User is trying to equip", item);
+                socket.emit("equip", item);
+                $scope.removeItemOverlay();
+            }
+            
         }
 
     });

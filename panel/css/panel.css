@@ -245,10 +245,9 @@ body {
     justify-content: center;
 }
 
-#itemOverlayArmorInfo div.spanFullWidth{
-    grid-column-start: 1;
-    grid-column-end: 5;
-    background:orange;
+.spanFullWidth{
+    /* grid-column-start: 1;
+    grid-column-end: 5; */
     height:50px;
     width:100%;
     text-align:center;
@@ -263,9 +262,13 @@ body {
     left:0;
 }
 
-#itemOverlayArmorInfo div.spanFullWidth:hover{
+.spanFullWidth:hover{
     cursor: pointer;
     background: #222222;
+}
+
+.equippedItem:hover{
+    cursor: pointer;
 }
 
 #itemOverlay {

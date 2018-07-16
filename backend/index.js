@@ -923,6 +923,44 @@ db.connect(null, function () {
                 })
             })
 
+            socket.on('unequip', (item) => {
+                if(item.type === "case") return;
+                db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
+                    if(err) return;
+                    if(!equippedItems) return;
+                    equippedItems = JSON.parse(equippedItems);
+                    findItemInInventory(item, equippedItems).then((dbItem)=>{
+                        if(!item) return;
+                        if(!dbItem) return;
+                        if(dbItem.type === "case") return;
+                        db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
+                            if(err) return;
+                            if(!inventory) inventory = {};
+                            if(typeof inventory === "string"){
+                                inventory = JSON.parse(inventory);
+                            }
+                            equippedItems.splice(equippedItems.indexOf(dbItem),1);
+                            let finish = function(){
+                                inventory[dbItem.type] = dbItem;
+                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
+                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
+                                socket.emit("inventory", inventory);
+                                socket.emit("equippedItems", equippedItems);
+                            }
+                            makeItem(dbItem).then((item)=>{
+                                inventory.push(item);
+                                finish();
+                            }).catch((err)=>{
+                                console.log(err);
+                                return;
+                            })
+                            
+                        })
+                    })
+
+                })
+            })
+
             //TODO find a socket based on socket id
 
             // User clicked the screen (This is how we will detect when people click the boss)

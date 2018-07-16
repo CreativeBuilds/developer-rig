@@ -114,7 +114,7 @@ app.controller('myCtrl', function ($scope) {
         $scope.timeUntilFinished = Date.now();
 
         setInterval(function(){
-            console.log($scope.timeRemaining, $scope.timeUntilFinished);
+            //console.log($scope.timeRemaining, $scope.timeUntilFinished);
             if($scope.timeUntilFinished <= Date.now()) return;
             $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
         },500)
@@ -246,7 +246,7 @@ app.controller('myCtrl', function ($scope) {
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
         if($scope.timeUntilFinished <= Date.now()) return;
         $scope.timeRemaining = ($scope.timeUntilFinished - Date.now())/1000;
-        console.log($scope.timeRemaining, $scope.timeUntilFinished);
+        // console.log($scope.timeRemaining, $scope.timeUntilFinished);
         $('#bossTimerChild').css('width', ($scope.timeRemaining/60*100)+"%")
 
     }
