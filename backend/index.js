@@ -914,6 +914,7 @@ db.connect(null, function () {
                                     })
                                 }
                             } else {
+                                equippedItems[dbItem.type] = dbItem;
                                 finish();
                             }
                             
