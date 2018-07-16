@@ -44,6 +44,9 @@ db.connect(null, function () {
 
     let makeItem = function(item){
         return new Promise(function(resolve, reject){
+            if(typeof item === "string"){
+                item = JSON.parse(item);
+            }
             switch (item.type) {
                 case "mainHand":
                     resolve(new MainHand(item));
