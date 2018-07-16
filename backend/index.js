@@ -709,12 +709,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        if(result.equippedItems === "{}"){
-
-                                        } else {
-                                            console.log(result.equippedItems, typeof result.equippedItems, JSON.parse(result.equippedItems));
-                                            socket.emit('equippedItems', JSON.parse(result.equippedItems));
-                                        }
+                                        socket.emit('equippedItems', result.equippedItems);  
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
@@ -732,11 +727,7 @@ db.connect(null, function () {
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        if(result.equippedItems === "{}"){
-                                            
-                                        } else {
-                                            socket.emit('equippedItems', JSON.parse(result.equippedItems));
-                                        }
+                                        socket.emit('equippedItems', result.equippedItems);  
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
