@@ -94,6 +94,9 @@ db.connect(null, function () {
     let socketUsers = {};
 
     let findItemInInventory = function(item, inventory){
+        if(typeof inventory === "string"){
+            inventory = JSON.parse(inventory);
+        }
         if(typeof item === "string"){
             let uuid =  item;
             return new Promise(function(resolve, reject){
