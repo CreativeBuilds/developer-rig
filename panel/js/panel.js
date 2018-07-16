@@ -253,7 +253,15 @@ app.controller('myCtrl', function ($scope) {
 
         socket.on("equippedItems", (items) => {
             console.log("I have these items equipped!", items);
+            Object.keys(items).forEach(function(itemKey){
+                items[itemKey].item = items[itemKey].item;
+            })
             $scope.equipped = items;
+            try{
+                $scope.$apply();
+            } catch (err) {
+                if(err) throw err;
+            }
         })
 
         function verify() {
