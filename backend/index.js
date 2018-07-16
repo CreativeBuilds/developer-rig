@@ -898,11 +898,11 @@ db.connect(null, function () {
                                 if(typeof equippedItems[dbItem.type] === "string"){
                                     equippedItems[dbItem.type] = JSON.parse(equippedItems[dbItem.type]);
                                 }
-                                if(equippedItems[dbItem.type] === {}){
+                                if(Object.keys(equippedItems[dbItem.type]).length === 0){
                                     finish();
                                     return;
                                 } else {
-                                    console.log(equippedItems[dbItem.type], typeof equippedItems[dbItem.type], dbItem.type);
+                                    console.log(equippedItems[dbItem.type], typeof equippedItems[dbItem.type], dbItem.type, equippedItems);
                                     makeItem(equippedItems[dbItem.type]).then((item)=>{
                                         inventory.push(item);
                                         equippedItems[dbItem.type] = dbItem;
