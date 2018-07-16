@@ -180,6 +180,7 @@ db.connect(null, function () {
         }
 
         get timeUntilFinished(){
+            console.log("Milliseconds till finish", this.timeUntilFinishedValue - Date.now());
             return this.timeUntilFinishedValue - Date.now(); 
         }
 
