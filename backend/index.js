@@ -600,7 +600,7 @@ db.connect(null, function () {
             }
         })
         if (haveToUpdate && username) {
-            updateAUsersProperty(username, "upgrades", listFromDatabase);
+            updateAUsersProperty(username, "upgrades", listFromDatabase, function(){});
         }
         console.log("returning", list);
         return list;
