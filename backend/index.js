@@ -44,7 +44,7 @@ db.connect(null, function () {
 
     let makeItem = function(item){
         return new Promise(function(resolve, reject){
-            switch (crateItem.type) {
+            switch (item.type) {
                 case "mainHand":
                     resolve(new MainHand(item));
                     break;
