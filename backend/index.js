@@ -112,7 +112,7 @@ db.connect(null, function () {
         } else if(typeof item === "object"){
             return new Promise(function(resolve, reject){
                 for(let x = 0; x < inventory.length; x++){
-                    console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
+                    // console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
                     if(inventory[x].uuid === item.uuid){
                         resolve(inventory[x])
                     } else if(x + 1 >= inventory.length) {
@@ -884,7 +884,6 @@ db.connect(null, function () {
                             let finish = function(){
                                 db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
                                 db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
-                                console.log("EMMITED ITEMS AND INVENTORY");
                                 socket.emit("inventory", inventory);
                                 socket.emit("equippedItems", equippedItems);
                             }
