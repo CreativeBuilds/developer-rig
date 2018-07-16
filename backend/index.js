@@ -712,6 +712,7 @@ db.connect(null, function () {
                                         if(result.equippedItems === "{}"){
 
                                         } else {
+                                            console.log(result.equippedItems, typeof result.equippedItems, JSON.parse(result.equippedItems));
                                             socket.emit('equippedItems', JSON.parse(result.equippedItems));
                                         }
                                         socket.emit('gems', result.gems || 0);
