@@ -884,6 +884,7 @@ db.connect(null, function () {
                             let finish = function(){
                                 db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
                                 db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
+                                console.log("EMMITED ITEMS AND INVENTORY");
                                 socket.emit("inventory", inventory);
                                 socket.emit("equippedItems", equippedItems);
                             }
