@@ -160,7 +160,7 @@ db.connect(null, function () {
             } else {
                 this.rarity = "common";
             }
-            if(boss[rarity]){
+            if(bosses[rarity]){
                 if(bosses[rarity].length > 1){
                     this.boss = bosses[rarity][random.integer(0,bosses[rarity].length - 1)]
                 } else if(bosses[rarity][0]){
@@ -171,7 +171,6 @@ db.connect(null, function () {
                         "images": ["tempboss.png"]
                     }
                 }
-                
             }
             
             this.name = this.boss.name;
