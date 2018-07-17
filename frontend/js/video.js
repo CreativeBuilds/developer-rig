@@ -58,7 +58,15 @@ app.controller('myCtrl', function ($scope) {
         $('#app').css('opacity', 1);
     }
 
+    let hide = false;
+
+    $scope.hideApp = function() {
+        // $('#app').css('opacity', 0);
+        hide = true;
+    }
+
     $scope.closeApp = function () {
+        hide = false;
         $('#app').css('opacity', 0);
         setTimeout(function () {
             window.location.reload();
@@ -72,7 +80,8 @@ app.controller('myCtrl', function ($scope) {
         var from = e.relatedTarget || e.toElement;
         if (!from || from.nodeName == "HTML") {
             minimize = setTimeout(function () {
-                $scope.closeApp();
+                // $scope.closeApp();
+                $scope.hideApp();
             }, 2000)
         }
 
@@ -81,6 +90,9 @@ app.controller('myCtrl', function ($scope) {
     enterPage = function (e) {
         console.log("thing has entered page")
         clearTimeout(minimize);
+        if(hide){
+            $scope.openApp();
+        }
     }
 
     var socket = io('https://twitchclickergame.com');

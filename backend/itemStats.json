@@ -8,7 +8,7 @@
             "baseDamage":2,
             "baseCost":1,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 20
+            "chanceToGet": 200
         },
         {
             "name":"Wooden Dagger",
@@ -18,7 +18,7 @@
             "baseDamage":1,
             "baseCost":1,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 20
+            "chanceToGet": 200
         },
         {
             "name":"Wooden Helm",
@@ -28,7 +28,7 @@
             "baseProtection":1,
             "baseCost":1,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 15
+            "chanceToGet": 150
         },
         {
             "name":"Wooden Breastplate",
@@ -38,7 +38,7 @@
             "baseProtection":3,
             "baseCost":2,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 15
+            "chanceToGet": 150
         },
         {
             "name":"Wooden Legs",
@@ -48,7 +48,7 @@
             "baseProtection":2,
             "baseCost":1,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 15
+            "chanceToGet": 150
         },
         {
             "name":"Wooden Boots",
@@ -58,7 +58,400 @@
             "baseProtection":1,
             "baseCost":1,
             "upgradeMultiplier":1.1,
-            "chanceToGet": 15
+            "chanceToGet": 150
+        }
+    ],
+    "uncommon":[
+        {
+            "name":"Wooden Sword",
+            "type":"mainHand",
+            "rarity":"uncommon",
+            "imageLocation":"woodenSword.png",
+            "baseDamage":4,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Wooden Dagger",
+            "type":"offHand",
+            "rarity":"uncommon",
+            "imageLocation":"woodenDagger.png",
+            "baseDamage":2,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Stone Sword",
+            "type":"mainHand",
+            "rarity":"uncommon",
+            "imageLocation":"stoneSword.png",
+            "baseDamage":6,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Stone Dagger",
+            "type":"offHand",
+            "rarity":"uncommon",
+            "imageLocation":"stoneDagger.png",
+            "baseDamage":4,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Wooden Helm",
+            "type":"head",
+            "rarity":"uncommon",
+            "imageLocation":"woodenHelm.png",
+            "baseProtection":2,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Wooden Breastplate",
+            "type":"breastplate",
+            "rarity":"uncommon",
+            "imageLocation":"woodenBreastplate.png",
+            "baseProtection":5,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Wooden Legs",
+            "type":"legs",
+            "rarity":"uncommon",
+            "imageLocation":"woodenLegs.png",
+            "baseProtection":4,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Wooden Boots",
+            "type":"feet",
+            "rarity":"uncommon",
+            "imageLocation":"woodenFeet.png",
+            "baseProtection":2,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        }
+    ],
+    "rare":[
+        {
+            "name":"Stone Sword",
+            "type":"mainHand",
+            "rarity":"rare",
+            "imageLocation":"stoneSword.png",
+            "baseDamage":8,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Stone Dagger",
+            "type":"offHand",
+            "rarity":"rare",
+            "imageLocation":"stoneDagger.png",
+            "baseDamage":6,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Gladiators Iron Sword",
+            "type":"mainHand",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsSword.png",
+            "baseDamage":9,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Gladiators Iron Dagger",
+            "type":"offHand",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsDagger.png",
+            "baseDamage":7,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Gladiators Iron Helm",
+            "type":"head",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsHelm.png",
+            "baseProtection":4,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gladiators Iron Breastplate",
+            "type":"breastplate",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsBreastplate.png",
+            "baseProtection":10,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gladiators Iron Legs",
+            "type":"legs",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsLegs.png",
+            "baseProtection":8,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gladiators Iron Boots",
+            "type":"feet",
+            "rarity":"rare",
+            "imageLocation":"gladiatorsFeet.png",
+            "baseProtection":4,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        }
+
+        
+    ],
+    "epic":[
+        {
+            "name":"Gold Dwarven Sword",
+            "type":"mainHand",
+            "rarity":"epic",
+            "imageLocation":"goldenSword.png",
+            "baseDamage":16,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Gold Dwarven Dagger",
+            "type":"offHand",
+            "rarity":"epic",
+            "imageLocation":"goldenDagger.png",
+            "baseDamage":13,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Gladiators Iron Sword",
+            "type":"mainHand",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsSword.png",
+            "baseDamage":13,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Gladiators Iron Dagger",
+            "type":"offHand",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsDagger.png",
+            "baseDamage":8,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 100
+        },
+        {
+            "name":"Gold Dwarven Helm",
+            "type":"head",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsHelm.png",
+            "baseProtection":7,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gold Dwarven Breastplate",
+            "type":"breastplate",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsBreastplate.png",
+            "baseProtection":16,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gold Dwarven Legs",
+            "type":"legs",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsLegs.png",
+            "baseProtection":15,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gold Dwarven Boots",
+            "type":"feet",
+            "rarity":"epic",
+            "imageLocation":"gladiatorsFeet.png",
+            "baseProtection":7,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        }
+    ],
+    "legendary":[
+        {
+            "name":"Gold Dwarven Sword",
+            "type":"mainHand",
+            "rarity":"legendary",
+            "imageLocation":"goldenSword.png",
+            "baseDamage":16,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Gold Dwarven Dagger",
+            "type":"offHand",
+            "rarity":"legendary",
+            "imageLocation":"goldenDagger.png",
+            "baseDamage":13,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Sword of Light",
+            "type":"mainHand",
+            "rarity":"legendary",
+            "imageLocation":"lightSword.png",
+            "baseDamage":32,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Dagger of Light",
+            "type":"offHand",
+            "rarity":"legendary",
+            "imageLocation":"lightDagger.png",
+            "baseDamage":26,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Helm of Light",
+            "type":"head",
+            "rarity":"legendary",
+            "imageLocation":"lightHelm.png",
+            "baseProtection":14,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Breastplate of Light",
+            "type":"breastplate",
+            "rarity":"legendary",
+            "imageLocation":"lightBreastplate.png",
+            "baseProtection":32,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Legs of Light",
+            "type":"legs",
+            "rarity":"legendary",
+            "imageLocation":"lightLegs.png",
+            "baseProtection":30,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        },
+        {
+            "name":"Boots of Light",
+            "type":"feet",
+            "rarity":"legendary",
+            "imageLocation":"lightFeet.png",
+            "baseProtection":14,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 125
+        }
+    ],
+    "mythic":[
+        {
+            "name":"Rainbow Sword",
+            "type":"mainHand",
+            "rarity":"mythic",
+            "imageLocation":"rainbowSword.png",
+            "baseDamage":100,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 200
+        },
+        {
+            "name":"Rainbow Dagger",
+            "type":"mainHand",
+            "rarity":"mythic",
+            "imageLocation":"lightSword.png",
+            "baseDamage":75,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 200
+        },
+        {
+            "name":"Rainbow Helm",
+            "type":"head",
+            "rarity":"mythic",
+            "imageLocation":"lightHelm.png",
+            "baseProtection":35,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Rainbow Light",
+            "type":"breastplate",
+            "rarity":"mythic",
+            "imageLocation":"lightBreastplate.png",
+            "baseProtection":75,
+            "baseCost":2,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Rainbow Legs",
+            "type":"legs",
+            "rarity":"mythic",
+            "imageLocation":"lightLegs.png",
+            "baseProtection":60,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
+        },
+        {
+            "name":"Rainbow Boots",
+            "type":"feet",
+            "rarity":"mythic",
+            "imageLocation":"lightFeet.png",
+            "baseProtection":35,
+            "baseCost":1,
+            "upgradeMultiplier":1.1,
+            "chanceToGet": 150
         }
     ]
+    
 }

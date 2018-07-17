@@ -54,7 +54,7 @@ module.exports = class Crate extends Item {
         return new Promise(function (resolve, reject) {
             let itemPoolWeCanWinFrom = items[this.rarity];
             console.log(itemPoolWeCanWinFrom, this.rarity);
-            let winningNumber = random.integer(1, 100);
+            let winningNumber = random.integer(1, 1000);
             let currentChance = 0;
             for (let x = 0; x < itemPoolWeCanWinFrom.length; x++) {
                 let currentItem = itemPoolWeCanWinFrom[x];

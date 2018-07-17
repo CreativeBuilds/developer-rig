@@ -42,9 +42,9 @@ var Crate = require('./imports/crate.js');
 db.connect(null, function () {
     let connection = db.get();
 
-    let makeItem = function(item){
-        return new Promise(function(resolve, reject){
-            if(typeof item === "string"){
+    let makeItem = function (item) {
+        return new Promise(function (resolve, reject) {
+            if (typeof item === "string") {
                 item = JSON.parse(item);
             }
             switch (item.type) {
@@ -97,47 +97,47 @@ db.connect(null, function () {
 
     let socketUsers = {};
 
-    let findItemInInventory = function(item, inventory){
-        if(typeof inventory === "string"){
+    let findItemInInventory = function (item, inventory) {
+        if (typeof inventory === "string") {
             inventory = JSON.parse(inventory);
         }
-        if(typeof item === "string"){
-            let uuid =  item;
-            return new Promise(function(resolve, reject){
-                for(let x = 0; x < inventory.length; x++){
-                    if(inventory[x].uuid === uuid){
+        if (typeof item === "string") {
+            let uuid = item;
+            return new Promise(function (resolve, reject) {
+                for (let x = 0; x < inventory.length; x++) {
+                    if (inventory[x].uuid === uuid) {
                         resolve(inventory[x])
                         return;
-                    } else if(x + 1 >= inventory.length) {
+                    } else if (x + 1 >= inventory.length) {
                         resolve(null);
                     }
                 }
             })
-        } else if(typeof item === "object" && Array.isArray(inventory)){
-            return new Promise(function(resolve, reject){
-                for(let x = 0; x < inventory.length; x++){
+        } else if (typeof item === "object" && Array.isArray(inventory)) {
+            return new Promise(function (resolve, reject) {
+                for (let x = 0; x < inventory.length; x++) {
                     // console.log("looping inventory", inventory[x], inventory[x].uuid, item.uuid);
-                    if(inventory[x].uuid === item.uuid){
+                    if (inventory[x].uuid === item.uuid) {
                         resolve(inventory[x])
-                    } else if(x + 1 >= inventory.length) {
+                    } else if (x + 1 >= inventory.length) {
                         resolve(null);
                     }
                 }
             })
-        } else if(typeof item === "object"){
-            return new Promise(function(resolve, reject){
-                if(!inventory[item.type]){
+        } else if (typeof item === "object") {
+            return new Promise(function (resolve, reject) {
+                if (!inventory[item.type]) {
                     resolve(null);
                     return;
                 }
-                if(inventory[item.type].uuid === item.uuid){
+                if (inventory[item.type].uuid === item.uuid) {
                     resolve(inventory[item.type]);
                 } else {
                     resolve(null)
                 }
             })
         }
-        
+
     }
 
     const Boss = class Boss {
@@ -145,25 +145,36 @@ db.connect(null, function () {
         constructor(name, floor, rarity, amountOfActivePlayers, secondsTillDeath = 60) {
 
             // All of these are variables for each boss, more can be added
-            if(amountOfActivePlayers < 1){
+            if (amountOfActivePlayers < 1) {
                 amountOfActivePlayers = 1;
             }
             this.name = name;
-            console.log(floor);
-            console.log(amountOfActivePlayers);
-            this.health = Math.floor((100*amountOfActivePlayers) * Math.pow(1.15, floor));
+            // console.log(floor);
+            // console.log(amountOfActivePlayers);
+            this.health = Math.floor((100 * amountOfActivePlayers) * Math.pow(1.15, floor));
             this.totalHealth = this.health;
             this.floor = floor;
-            let t1= Math.floor(1 * Math.floor(1.07,floor));
+            let t1 = Math.floor(1 * Math.floor(1.07, floor));
             let t2 = floor;
-            if(t2 > t1){
+            if (t2 > t1) {
                 this.rewardUpgradePoints = t2;
             } else {
                 this.rewardUpgradePoints = t1;
             }
             this.usersWhoHelped = {};
             this.floor = floor;
-            this.rarity = rarity;
+            // If floor is divisble by 1000 spawn mythic if divisible by 250 legendary if 100 rare 10 uncommon 
+            if (floor % 1000 === 0) {
+                this.rarity = "mythic";
+            } else if (floor % 250 === 0){
+                this.rarity = "legendary";
+            } else if(floor % 100 === 0){
+                this.rarity = "rare";
+            } else if(floor % 10 === 0){
+                this.rarity = "uncommon";
+            } else {
+                this.rarity = rarity;
+            }
             let thisBoss = this;
             this.timeUntilFinishedValue = Date.now() + (secondsTillDeath * 1000)
             this.usersLost = function () {
@@ -171,9 +182,8 @@ db.connect(null, function () {
                     //TODO Currently this will reward everyone in the stream (we may want to develop a system in-which the people who do more damage get more points)
 
                     let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
-                    if(!sockets) return;
+                    if (!sockets) return;
                     sockets.forEach(function (socket) {
-                        console.log("Emitting to the sockets!");
                         socket.emit("bossWon")
                     });
                 })
@@ -186,12 +196,12 @@ db.connect(null, function () {
             }
             this.expires = setTimeout(function () {
                 this.usersLost();
-            }.bind(this), 60*1000)
+            }.bind(this), 60 * 1000)
         }
 
-        get timeUntilFinished(){
+        get timeUntilFinished() {
             console.log("Milliseconds till finish", this.timeUntilFinishedValue - Date.now());
-            return this.timeUntilFinishedValue - Date.now(); 
+            return this.timeUntilFinishedValue - Date.now();
         }
 
         damage(usersDamage, user_id) {
@@ -247,13 +257,13 @@ db.connect(null, function () {
                 // These are stats out of 100 for each user to get a type of crate
                 switch (thisBoss.type) {
                     case "common":
-                        return 50;
+                        return 100;
                     case "uncommon":
-                        return 40;
+                        return 50;
                     case "rare":
                         return 25;
                     case "epic":
-                        return 15;
+                        return 10;
                     case "legendary":
                         return 5;
                     case "mythic":
@@ -306,7 +316,7 @@ db.connect(null, function () {
                     }
                 })
 
-                if (random.integer(1, 100) >= 50) {
+                if (random.integer(1, 1000) >= chanceToGetCrate) {
                     // Only do this if the user wins a crate.
                     db.parseInventory(user_id, function (err, inventory) {
                         if (err) {
@@ -340,7 +350,7 @@ db.connect(null, function () {
                                 if (bool) {
                                     console.log(user_id, 'got a crate of rarity:', thisBoss.rarity);
                                     let sockets = seeIfUserHasASocketConnected(user_id, socketUsers);
-                                    if(!sockets) return;
+                                    if (!sockets) return;
                                     sockets.forEach(function (socket) {
                                         console.log("Emitting to the sockets!");
                                         socket.emit("newCrate");
@@ -519,7 +529,7 @@ db.connect(null, function () {
         secondsTillDeath = 60
     } = {}) {
         //This just gens a new boss
-        if(amountOfActivePlayers < 1){
+        if (amountOfActivePlayers < 1) {
             amountOfActivePlayers = 1;
         }
         currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
@@ -528,7 +538,10 @@ db.connect(null, function () {
             io.emit('newBoss');
             console.log("Time Until Finished", Date.now() + (secondsTillDeath * 1000));
             console.log(currentBoss.timeUntilFinished, secondsTillDeath);
-            io.emit('newFloor', {floorNum:floor,timeUntilFinished:currentBoss.timeUntilFinished});
+            io.emit('newFloor', {
+                floorNum: floor,
+                timeUntilFinished: currentBoss.timeUntilFinished
+            });
         } catch (err) {
             console.log(err, io);
         }
@@ -611,7 +624,7 @@ db.connect(null, function () {
             }
         })
         if (haveToUpdate && username) {
-            updateAUsersProperty(username, "upgrades", listFromDatabase, function(){});
+            updateAUsersProperty(username, "upgrades", listFromDatabase, function () {});
         }
         console.log("returning", list);
         return list;
@@ -626,12 +639,12 @@ db.connect(null, function () {
                     // User doesn't exist (make the user!)
                     let inventory = [];
                     let equippedItems = {
-                        "head":{},
-                        "breastplate":{},
-                        "legs":{},
-                        "feet":{},
-                        "mainHand":{},
-                        "offHand":{}
+                        "head": {},
+                        "breastplate": {},
+                        "legs": {},
+                        "feet": {},
+                        "mainHand": {},
+                        "offHand": {}
                     };
                     connection.query(`INSERT INTO users (user_id, opaque_user_id, level, upgrade_points, gems, upgrades, inventory, equippedItems) VALUES ('${decoded.user_id}','${decoded.opaque_user_id}',1,0,100,'${JSON.stringify(returnLevelUpgradeList(upgradeList))}','${JSON.stringify(inventory)}','${JSON.stringify(equippedItems)}')`, function (err, result) {
                         if (err) {
@@ -748,9 +761,12 @@ db.connect(null, function () {
 
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
-                                        socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
+                                        socket.emit('newFloor', {
+                                            floorNum: currentBoss.floor,
+                                            timeUntilFinished: currentBoss.timeUntilFinished
+                                        });
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        socket.emit('equippedItems', result.equippedItems);  
+                                        socket.emit('equippedItems', result.equippedItems);
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
@@ -766,9 +782,12 @@ db.connect(null, function () {
                                         socketUsers[decoded.user_id].push(socket);
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
-                                        socket.emit('newFloor', {floorNum:currentBoss.floor,timeUntilFinished: currentBoss.timeUntilFinished});
+                                        socket.emit('newFloor', {
+                                            floorNum: currentBoss.floor,
+                                            timeUntilFinished: currentBoss.timeUntilFinished
+                                        });
                                         socket.emit('inventory', JSON.parse(result.inventory));
-                                        socket.emit('equippedItems', result.equippedItems);  
+                                        socket.emit('equippedItems', result.equippedItems);
                                         socket.emit('gems', result.gems || 0);
                                     }
                                 })
@@ -905,44 +924,44 @@ db.connect(null, function () {
 
             socket.on('equip', (item) => {
                 // Get the users current inventory
-                if(item.type === "case") return;
-                db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
-                    if(err) return;
-                    if(!inventory) return;
+                if (item.type === "case") return;
+                db.getPropertyOfAUser(socket.user_id, "inventory", function (err, inventory) {
+                    if (err) return;
+                    if (!inventory) return;
                     inventory = JSON.parse(inventory);
                     console.log("trying to get item from inventory", item);
-                    findItemInInventory(item, inventory).then((dbItem)=>{
-                        if(!item) return;
-                        if(!dbItem) return;
-                        if(dbItem.type === "case") return;
-                        db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
-                            if(err) return;
-                            if(!equippedItems) equippedItems = {};
-                            if(typeof equippedItems === "string"){
+                    findItemInInventory(item, inventory).then((dbItem) => {
+                        if (!item) return;
+                        if (!dbItem) return;
+                        if (dbItem.type === "case") return;
+                        db.getPropertyOfAUser(socket.user_id, "equippedItems", function (err, equippedItems) {
+                            if (err) return;
+                            if (!equippedItems) equippedItems = {};
+                            if (typeof equippedItems === "string") {
                                 equippedItems = JSON.parse(equippedItems);
                             }
-                            inventory.splice(inventory.indexOf(dbItem),1);
-                            let finish = function(){
+                            inventory.splice(inventory.indexOf(dbItem), 1);
+                            let finish = function () {
                                 equippedItems[dbItem.type] = dbItem;
-                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
-                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
+                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function () {});
+                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function () {});
                                 socket.emit("inventory", inventory);
                                 socket.emit("equippedItems", equippedItems);
                             }
-                            if(equippedItems[dbItem.type]){
-                                if(typeof equippedItems[dbItem.type] === "string"){
+                            if (equippedItems[dbItem.type]) {
+                                if (typeof equippedItems[dbItem.type] === "string") {
                                     equippedItems[dbItem.type] = JSON.parse(equippedItems[dbItem.type]);
                                 }
-                                if(Object.keys(equippedItems[dbItem.type]).length === 0){
+                                if (Object.keys(equippedItems[dbItem.type]).length === 0) {
                                     finish();
                                     return;
                                 } else {
                                     console.log(equippedItems[dbItem.type], typeof equippedItems[dbItem.type], dbItem.type, equippedItems);
-                                    makeItem(equippedItems[dbItem.type]).then((item)=>{
+                                    makeItem(equippedItems[dbItem.type]).then((item) => {
                                         console.log(item);
                                         inventory.push(item);
                                         finish();
-                                    }).catch((err)=>{
+                                    }).catch((err) => {
                                         console.log(err);
                                         return;
                                     })
@@ -950,7 +969,7 @@ db.connect(null, function () {
                             } else {
                                 finish();
                             }
-                            
+
                         })
                     })
 
@@ -958,37 +977,37 @@ db.connect(null, function () {
             })
 
             socket.on('unequip', (item) => {
-                if(item.type === "case") return;
-                db.getPropertyOfAUser(socket.user_id, "equippedItems", function(err, equippedItems){
-                    if(err) return;
-                    if(!equippedItems) return;
-                    findItemInInventory(item, equippedItems).then((dbItem)=>{
+                if (item.type === "case") return;
+                db.getPropertyOfAUser(socket.user_id, "equippedItems", function (err, equippedItems) {
+                    if (err) return;
+                    if (!equippedItems) return;
+                    findItemInInventory(item, equippedItems).then((dbItem) => {
                         console.log("got here", item, equippedItems)
-                        if(!item) return;
-                        if(!dbItem) return;
-                        if(dbItem.type === "case") return;
-                        db.getPropertyOfAUser(socket.user_id, "inventory", function(err, inventory){
-                            if(err) return;
-                            if(!inventory) inventory = {};
-                            if(typeof inventory === "string"){
+                        if (!item) return;
+                        if (!dbItem) return;
+                        if (dbItem.type === "case") return;
+                        db.getPropertyOfAUser(socket.user_id, "inventory", function (err, inventory) {
+                            if (err) return;
+                            if (!inventory) inventory = {};
+                            if (typeof inventory === "string") {
                                 inventory = JSON.parse(inventory);
                             }
                             equippedItems[dbItem.type] = {};
-                            let finish = function(){
+                            let finish = function () {
                                 inventory[dbItem.type] = dbItem;
-                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function(){});
-                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function(){});
+                                db.updateAUsersProperty(socket.user_id, "inventory", inventory, function () {});
+                                db.updateAUsersProperty(socket.user_id, "equippedItems", equippedItems, function () {});
                                 socket.emit("inventory", inventory);
                                 socket.emit("equippedItems", equippedItems);
                             }
-                            makeItem(dbItem).then((item)=>{
+                            makeItem(dbItem).then((item) => {
                                 inventory.push(item);
                                 finish();
-                            }).catch((err)=>{
+                            }).catch((err) => {
                                 console.log(err);
                                 return;
                             })
-                            
+
                         })
                     })
 
