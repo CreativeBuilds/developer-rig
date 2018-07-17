@@ -60,7 +60,7 @@ app.controller('myCtrl', function ($scope) {
 
     let hide = false;
 
-    $scope.hideApp = function() {
+    $scope.hideApp = function () {
         // $('#app').css('opacity', 0);
         hide = true;
     }
@@ -90,7 +90,7 @@ app.controller('myCtrl', function ($scope) {
     enterPage = function (e) {
         console.log("thing has entered page")
         clearTimeout(minimize);
-        if(hide){
+        if (hide) {
             $scope.openApp();
         }
     }
@@ -124,13 +124,13 @@ app.controller('myCtrl', function ($scope) {
         $scope.timeRemaining = 0;
         $scope.timeUntilFinished = Date.now();
 
-        setInterval(function(){
+        setInterval(function () {
             //console.log($scope.timeRemaining, $scope.timeUntilFinished);
             let time = $scope.timeUntilFinished - 500
-            $scope.timeRemaining = time/1000;
+            $scope.timeRemaining = time / 1000;
             $scope.timeUntilFinished = time;
             console.log($scope.timeRemaining);
-        },500)
+        }, 500)
 
         // TODO fix a bug where the timer is adding 5 seconds clientside and bugging out the white bar
         socket.on("newFloor", (obj) => {
@@ -160,7 +160,26 @@ app.controller('myCtrl', function ($scope) {
             ////console.log("Boss", boss);
         })
 
-        socket.on('newBoss', () => {
+        let loopInterval = 0;
+        let loopBossImageChange = setInterval(function () {
+            if ($scope.bossImages) {
+                if ($scope.bossImages.length < 1) {
+                    return;
+                }
+                generateNewBossGameObject({
+                    imageLocation: $scope.bossImages[loopInterval]
+                });
+                if(loopInterval + 1 > $scope.bossImages.length){
+                    loopInterval = 0;
+                } else {
+                    loopInterval = loopInterval + 1;
+                }
+            }
+        }, 250)
+
+        socket.on('newBoss', (info) => {
+            $scope.bossImages = info.images;
+            loopInterval = 0;
             socket.emit('getUpgradePoints');
         })
 
@@ -258,9 +277,9 @@ app.controller('myCtrl', function ($scope) {
         }
         ////console.log((remainingHealthPercentage * 100) + "%");
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
-        $scope.timeRemaining = $scope.timeUntilFinished/1000;
-         console.log($scope.timeRemaining, $scope.timeUntilFinished, $scope.timeUntilFinished - Date.now());
-        $('#bossTimerChild').css('width', ($scope.timeRemaining/60*100)+"%")
+        $scope.timeRemaining = $scope.timeUntilFinished / 1000;
+        console.log($scope.timeRemaining, $scope.timeUntilFinished, $scope.timeUntilFinished - Date.now());
+        $('#bossTimerChild').css('width', ($scope.timeRemaining / 60 * 100) + "%")
 
     }
 

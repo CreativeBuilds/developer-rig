@@ -30,6 +30,7 @@ var jwt = require('jsonwebtoken');
 var config = require('./config.json');
 
 var upgradeList = require('./upgrades.json');
+var bosses = require('./bosses.json');
 
 var MainHand = require('./imports/mainHand.js');
 var OffHand = require('./imports/offHand.js');
@@ -148,7 +149,32 @@ db.connect(null, function () {
             if (amountOfActivePlayers < 1) {
                 amountOfActivePlayers = 1;
             }
-            this.name = name;
+            if (floor % 1000 === 0) {
+                this.rarity = "mythic";
+            } else if (floor % 250 === 0){
+                this.rarity = "legendary";
+            } else if(floor % 100 === 0){
+                this.rarity = "rare";
+            } else if(floor % 10 === 0){
+                this.rarity = "uncommon";
+            } else {
+                this.rarity = "common";
+            }
+            if(boss[rarity]){
+                if(bosses[rarity].length > 1){
+                    this.boss = bosses[rarity][random.integer(0,bosses[rarity].length - 1)]
+                } else if(bosses[rarity][0]){
+                    this.boss = bosses[rarity][0]
+                } else {
+                    this.boss = {
+                        "name": name,
+                        "images": ["tempboss.png"]
+                    }
+                }
+                
+            }
+            
+            this.name = this.boss.name;
             // console.log(floor);
             // console.log(amountOfActivePlayers);
             this.health = Math.floor((100 * amountOfActivePlayers) * Math.pow(1.15, floor));
@@ -164,17 +190,8 @@ db.connect(null, function () {
             this.usersWhoHelped = {};
             this.floor = floor;
             // If floor is divisble by 1000 spawn mythic if divisible by 250 legendary if 100 rare 10 uncommon 
-            if (floor % 1000 === 0) {
-                this.rarity = "mythic";
-            } else if (floor % 250 === 0){
-                this.rarity = "legendary";
-            } else if(floor % 100 === 0){
-                this.rarity = "rare";
-            } else if(floor % 10 === 0){
-                this.rarity = "uncommon";
-            } else {
-                this.rarity = rarity;
-            }
+            
+            this.images
             let thisBoss = this;
             this.timeUntilFinishedValue = Date.now() + (secondsTillDeath * 1000)
             this.usersLost = function () {
@@ -535,7 +552,8 @@ db.connect(null, function () {
         currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
 
         try {
-            io.emit('newBoss');
+            
+            io.emit('newBoss', {images:currentBoss.boss.images});
             console.log("Time Until Finished", Date.now() + (secondsTillDeath * 1000));
             console.log(currentBoss.timeUntilFinished, secondsTillDeath);
             io.emit('newFloor', {
