@@ -719,7 +719,7 @@ db.connect(null, function () {
     }
 
     setInterval(function () {
-        //currentBoss.idleDamage(users);
+        currentBoss.idleDamage(users);
     }, 1000);
 
     function setupIO(https, callback) {
