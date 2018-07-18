@@ -470,7 +470,7 @@ db.connect(null, function () {
             let list = returnUpgradesWithType(this.upgradeList, "passive");
             let thisCopy = this;
             list.forEach(function (upgrade) {
-                console.log(this.upgradeList[upgrade], upgrade, thisCopy.damageFromUpgrade(upgrade));
+                console.log(list[upgrade], upgrade, thisCopy.damageFromUpgrade(upgrade));
                 totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
             })
             thisCopy = null;
