@@ -795,14 +795,15 @@ db.connect(null, function () {
                                 })
 
                             } else {
-                                console.log("ADDING USER TO AN ARRAY");
+                                
                                 getOrMakeUser(decoded, function (err, result) {
                                     if (err) {
                                         throw err;
                                     } else {
                                         //socket.type = type;
-                                        let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
+                                        console.log("ADDING USER TO AN ARRAY", socketUsers[decoded.user_id], type);
                                         socketUsers[decoded.user_id].push(socket);
+                                        let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                         socket.emit('verified');
                                         socket.emit('upgradeList', upgrades);
                                         socket.emit('newFloor', {
