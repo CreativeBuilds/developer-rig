@@ -720,7 +720,7 @@ db.connect(null, function () {
     }
 
     setInterval(function () {
-        currentBoss.idleDamage(users);
+        //currentBoss.idleDamage(users);
     }, 1000);
 
     function setupIO(https, callback) {
@@ -788,7 +788,9 @@ db.connect(null, function () {
                                     } else {
                                         //socket.type = type;
                                         let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
+                                        console.log("SETTING THE UPGRADES OF THIS FUCKING USER", upgrades);
                                         users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
+                                        console.log(users[decoded.user_id.upgrades])
                                         socketUsers[decoded.user_id] = [socket];
 
                                         socket.emit('verified');
