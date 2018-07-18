@@ -394,18 +394,17 @@ db.connect(null, function () {
         idleDamage(users) {
             let thisBoss = this;
             if (thisBoss.health === 0) return;
-            let maxNum = Object.keys(users);
-            let currentNum = 0;
-            console.log(maxNum, currentNum)
+            let dead = false;
             Object.keys(users).forEach(function (user_id) {
+                if(dead){
+                    return;
+                }
                 if (user_id === "undefined" || typeof user_id === "undefined") {
-                    currentNum++;
                     return;
                 }
                 console.log("Users id is defined", user_id);
                 if (!users[user_id].isActive){
                     console.log(user_id, "is not active", users[user_id].isActive);
-                    currentNum++;
                     return;
                 }
                 console.log("User is active", user_id, users[user_id])
@@ -417,7 +416,6 @@ db.connect(null, function () {
                 } else {
                     thisBoss.health = thisBoss.health - passiveDamage;
                 }
-                currentNum++;
                 if (!thisBoss.usersWhoHelped[user_id]) {
                     thisBoss.usersWhoHelped[user_id] = {
                         "passiveDamage": passiveDamage,
@@ -429,6 +427,7 @@ db.connect(null, function () {
                     console.log("updated passiveDamage", thisBoss.usersWhoHelped[user_id], user_id)
                 }
                 if (thisBoss.testIfKilled()) {
+                    dead = true;
                     console.log("Should be killed!");
                     thisBoss.handleDeath();
                 }
@@ -1112,6 +1111,7 @@ db.connect(null, function () {
             socket.on('joinFight', function () {
                 if (socket.user_id) {
                     if (!users[socket.user_id]) return;
+                    console.log(users[socket.user_id], "joined the fight!");
                     users[socket.user_id].isActive = true;
                     socket.emit("joinedFight");
                 }
@@ -1136,6 +1136,7 @@ db.connect(null, function () {
                     }
                     if (socketUsers[socket.user_id].length === 0) {
                         //No more sockets connected!
+                        delete users[socket.user_id];
                         delete socketUsers[socket.user_id];
                         // console.log("User is fully disconnected!", users);
                     } else {
