@@ -37,6 +37,7 @@ let authCode = '';
 window.Twitch.ext.onAuthorized(auth => {
     //console.log("Twitch verified!");
     authCode = auth;
+    console.log("This auth!", auth);
 })
 
 app.controller('myCtrl', function ($scope) {
@@ -282,11 +283,7 @@ app.controller('myCtrl', function ($scope) {
         socket.on("shareIdentity", () => {
             //The server needs the user to agree to share their identity, ask them!
             ////console.log("Server asked me to share identity with it");
-            window2.Twitch.ext.actions.requestIdShare(function (one, two) {
-                ////console.log("Something happened!");
-                ////console.log(one, two);
-                //TODO in the future when this is actually an extension make sure this works!
-            })
+            window2.Twitch.ext.actions.requestIdShare();
         })
 
         socket.on('currentUpgradePoints', (currentUpgradePoints) => {
