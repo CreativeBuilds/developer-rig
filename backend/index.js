@@ -467,11 +467,10 @@ db.connect(null, function () {
         get passiveDamage() {
             if (!this.isActive) return 0;
             let totalDamage = 0;
-            console.log("upgrade list", this.upgradeList);
             let list = returnUpgradesWithType(this.upgradeList, "passive");
             let thisCopy = this;
             list.forEach(function (upgrade) {
-                console.log(list[upgrade], upgrade, thisCopy.damageFromUpgrade(upgrade));
+                console.log(list, upgrade, thisCopy.damageFromUpgrade(upgrade));
                 totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
             })
             thisCopy = null;
@@ -491,6 +490,7 @@ db.connect(null, function () {
         let tempPoints = 0;
         Object.keys(list).forEach(function (upgrade) {
             if (list[upgrade].type === type) {
+                console.log(list[upgrade], "---- Looping");
                 tempList.push(list[upgrade]);
             }
 
