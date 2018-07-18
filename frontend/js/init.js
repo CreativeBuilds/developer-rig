@@ -15,7 +15,7 @@ addEvent(window,"load",function(e) {
     addEvent(document, "mouseenter", enterPage);
 });
 if(!mouse){
-    mouse = {
+    var mouse = {
         x: 0,
         y: 0
     };
