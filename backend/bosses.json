@@ -9,5 +9,10 @@
                 "slime2.png"
             ]
         }
-    ]
+    ],
+    "uncommon":[],
+    "rare":[],
+    "epic":[],
+    "legendary":[],
+    "mythic":[]
 }

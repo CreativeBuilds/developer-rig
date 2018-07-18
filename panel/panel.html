@@ -37,32 +37,32 @@
                 <div id="equippedItems">
                     <div id="mainHand">
                         <div class="equippedItem" ng-if="equipped.mainHand.imageLocation" ng-click="openItemOverlay(equipped.mainHand, true)">
-                            <img src="/imgs/{{equipped.mainHand.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.mainHand.imageLocation}}" alt="">
                         </div>
                     </div>
                     <div id="offHand">
                         <div class="equippedItem" ng-if="equipped.offHand.imageLocation" ng-click="openItemOverlay(equipped.offHand, true)">
-                            <img src="/imgs/{{equipped.offHand.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.offHand.imageLocation}}" alt="">
                         </div>
                     </div>
                     <div id="head">
                         <div class="equippedItem" ng-if="equipped.head.imageLocation" ng-click="openItemOverlay(equipped.head, true)">
-                            <img src="/imgs/{{equipped.head.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.head.imageLocation}}" alt="">
                         </div>
                     </div>
                     <div id="breastplate">
                         <div class="equippedItem" ng-if="equipped.breastplate.imageLocation" ng-click="openItemOverlay(equipped.breastplate, true)">
-                            <img src="/imgs/{{equipped.breastplate.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.breastplate.imageLocation}}" alt="">
                         </div>
                     </div>
                     <div id="legs">
                         <div class="equippedItem" ng-if="equipped.legs.imageLocation" ng-click="openItemOverlay(equipped.legs, true)">
-                            <img src="/imgs/{{equipped.legs.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.legs.imageLocation}}" alt="">
                         </div>
                     </div>
                     <div id="feet">
                         <div class="equippedItem" ng-if="equipped.feet.imageLocation" ng-click="openItemOverlay(equipped.feet, true)">
-                            <img src="/imgs/{{equipped.feet.imageLocation}}" alt="">
+                            <img src="imgs/{{equipped.feet.imageLocation}}" alt="">
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                 </div>
                 <ul id="inventoryItems">
                     <li ng-repeat="item in inventory | inventorySort:sort.type:sort.rarity | orderBy:sort.sort" ng-click="openItemOverlay(item)">
-                        <img src="/imgs/{{item.imageLocation}}" alt="">
+                        <img src="imgs/{{item.imageLocation}}" alt="">
                         <div ng-if="item.stackSize">{{item.stackSize}}</div>
                         <div ng-if="!item.stackSize">1</div>
                     </li>
@@ -125,14 +125,14 @@
             <div id="itemOverlayTitle">{{itemOverlay.name}}</div>
             <div id="itemOverlayAmount" ng-if="itemOverlay.stackSize">{{itemOverlay.stackSize}}</div>
             <div id="itemOverlayAmount" ng-if="!itemOverlay.stackSize">LVL: {{itemOverlay.level}}</div>
-            <img ng-class="itemOverlay.type === 'crate' ? 'hoverImage displayImage clickable' : 'displayImage clickable'" src="/imgs/{{itemOverlay.imageLocation}}"
+            <img ng-class="itemOverlay.type === 'crate' ? 'hoverImage displayImage clickable' : 'displayImage clickable'" src="imgs/{{itemOverlay.imageLocation}}"
                 ng-click="triggerShake($event)">
             <div ng-class="itemOverlay.type === 'crate' ? 'addMarginTop' : 'noMarginTop'" id="itemOverlayImageOverlay">
                 <div id="itemOverlayUpgradeItem">UPGRADE</div>
                 <div id="itemOverlaySellItem">SELL</div>
             </div>
             <div class="crate" ng-if="itemOverlay.type === 'crate'" ng-click="buyCrate($event, itemOverlay.item)">
-                <img src="/imgs/gem.png" alt="">
+                <img src="imgs/gem.png" alt="">
                 <span>{{itemOverlay.unlockAmount}}</span>
             </div>
             <div id="itemOverlayArmorInfo" ng-if="itemOverlay.type === 'head' || itemOverlay.type === 'breastplate' || itemOverlay.type === 'legs' || itemOverlay.type === 'feet'">

@@ -335,7 +335,7 @@ db.connect(null, function () {
                     }
                 })
 
-                if (random.integer(1, 1000) >= chanceToGetCrate) {
+                if (random.integer(1, 1000) <= chanceToGetCrate) {
                     // Only do this if the user wins a crate.
                     db.parseInventory(user_id, function (err, inventory) {
                         if (err) {
