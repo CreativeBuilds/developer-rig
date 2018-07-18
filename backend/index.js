@@ -490,7 +490,7 @@ db.connect(null, function () {
         let tempPoints = 0;
         Object.keys(list).forEach(function (upgrade) {
             if (list[upgrade].type === type) {
-                console.log(list[upgrade], "---- Looping");
+                // console.log(list[upgrade], "---- Looping");
                 tempList.push(list[upgrade]);
             }
 
@@ -552,7 +552,7 @@ db.connect(null, function () {
         if (amountOfActivePlayers < 1) {
             amountOfActivePlayers = 1;
         }
-        currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
+        //currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
 
         try {
             
@@ -760,7 +760,7 @@ db.connect(null, function () {
                         if (decoded.opaque_user_id[0] !== 'U') {
                             //The user is not logged into twitch, dont allow them to do anything
                             socket.disconnect(0);
-                        } else if (!decoded.user_id) {
+                        } else if (!decoded.user_id ) {
                             // User has not shared their identity with us, dont allow them do do anything
                             console.log("user did not share identity with us!")
                             socket.emit('shareIdentity');
@@ -768,6 +768,7 @@ db.connect(null, function () {
                         } else {
                             //User has shared their identity with us!
                             socket.user_id = decoded.user_id;
+                            console.log("This user connected", decoded.user_id);
                             if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
                                 //User is connecting for the first time
                                 // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
