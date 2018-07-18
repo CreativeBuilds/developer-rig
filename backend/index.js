@@ -404,10 +404,11 @@ db.connect(null, function () {
                 }
                 console.log("Users id is defined", user_id);
                 if (!users[user_id].isActive){
+                    console.log(users[user_id].isActive);
                     currentNum++;
                     return;
                 }
-                console.log("User is active", user_id)
+                console.log("User is active", user_id, users[user_id])
                 console.log(user_id," current damage: ",users[user_id].passiveDamage);
                 let passiveDamage = users[user_id].passiveDamage;
                 if (thisBoss.health - passiveDamage < 0) {
