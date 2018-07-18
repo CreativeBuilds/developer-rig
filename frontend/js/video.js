@@ -88,7 +88,6 @@ app.controller('myCtrl', function ($scope) {
     }
 
     enterPage = function (e) {
-        console.log("thing has entered page")
         clearTimeout(minimize);
         if (hide) {
             $scope.openApp();
@@ -161,24 +160,26 @@ app.controller('myCtrl', function ($scope) {
         })
 
         let loopInterval = 0;
+        $scope.bossImages = ["tempboss.png"];
         let loopBossImageChange = setInterval(function () {
             if ($scope.bossImages) {
                 if ($scope.bossImages.length < 1) {
                     return;
                 }
                 generateNewBossGameObject({
-                    imageLocation: $scope.bossImages[loopInterval]
+                    imageLocation: `imgs/${$scope.bossImages[loopInterval]}`
                 });
-                if(loopInterval + 1 > $scope.bossImages.length){
+                if(loopInterval + 1 === $scope.bossImages.length){
                     loopInterval = 0;
                 } else {
                     loopInterval = loopInterval + 1;
                 }
-            }
+            } 
         }, 250)
 
         socket.on('newBoss', (info) => {
             $scope.bossImages = info.images;
+            console.log(info);
             loopInterval = 0;
             socket.emit('getUpgradePoints');
         })
@@ -264,7 +265,6 @@ app.controller('myCtrl', function ($scope) {
         // Update the width of the health bar and change the color depending on how much is left;
         let startingColor = 'rgb(16,80,0)';
         let endingColor = 'rgb(78,12,12)';
-        console.log(health, totalHealth)
         let remainingHealthPercentage = health / totalHealth;
         ////console.log(health, totalHealth, remainingHealthPercentage);
         let currentColor = blendRGB(startingColor, endingColor, remainingHealthPercentage);
@@ -278,7 +278,6 @@ app.controller('myCtrl', function ($scope) {
         ////console.log((remainingHealthPercentage * 100) + "%");
         $('#bossHealthChild').css(`width`, (remainingHealthPercentage * 100) + "%");
         $scope.timeRemaining = $scope.timeUntilFinished / 1000;
-        console.log($scope.timeRemaining, $scope.timeUntilFinished, $scope.timeUntilFinished - Date.now());
         $('#bossTimerChild').css('width', ($scope.timeRemaining / 60 * 100) + "%")
 
     }

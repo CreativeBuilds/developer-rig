@@ -172,6 +172,8 @@ db.connect(null, function () {
                     }
                 }
             }
+
+            console.log("THIS BOSS", this.boss);
             
             this.name = this.boss.name;
             // console.log(floor);
