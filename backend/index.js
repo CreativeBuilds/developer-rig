@@ -650,15 +650,13 @@ db.connect(null, function () {
             if (!listFromDatabase[upgrade_name]) {
                 haveToUpdate = true;
                 listFromDatabase[upgrade_name] = list[upgrade_name];
-            } else {
-                list[upgrade_name].level = listFromDatabase[upgrade_name].level;
             }
         })
         if (haveToUpdate && username) {
             updateAUsersProperty(username, "upgrades", listFromDatabase, function () {});
         }
-        console.log("returning", list);
-        return list;
+        console.log("returning", listFromDatabase);
+        return listFromDatabase;
     }
 
     function getOrMakeUser(decoded, callback) {
