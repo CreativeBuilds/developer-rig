@@ -402,16 +402,16 @@ db.connect(null, function () {
                 if (user_id === "undefined" || typeof user_id === "undefined") {
                     return;
                 }
-                console.log("Users id is defined", user_id);
+                //console.log("Users id is defined", user_id);
                 if (!users[user_id].isActive){
                     console.log(user_id, "is not active", users[user_id].isActive);
                     return;
                 }
-                console.log("User is active", user_id, users[user_id])
+                //console.log("User is active", user_id, users[user_id])
                 console.log(user_id," current damage: ",users[user_id].passiveDamage,users);
                 let passiveDamage = users[user_id].passiveDamage;
                 if (thisBoss.health - passiveDamage < 0) {
-                    console.log("Health is set to 0!");
+                    //console.log("Health is set to 0!");
                     thisBoss.health = 0;
                 } else {
                     thisBoss.health = thisBoss.health - passiveDamage;
@@ -421,7 +421,7 @@ db.connect(null, function () {
                         "passiveDamage": passiveDamage,
                         "activeDamage": 0
                     };
-                    console.log("set passiveDamage");
+                    //console.log("set passiveDamage");
                 } else {
                     thisBoss.usersWhoHelped[user_id].passiveDamage = thisBoss.usersWhoHelped[user_id].passiveDamage + passiveDamage;
                     console.log("updated passiveDamage", thisBoss.usersWhoHelped[user_id], user_id)
@@ -748,13 +748,16 @@ db.connect(null, function () {
                 if (typeof token === "string") {
                     var tokenSecret = config.secret;
                     var type = "overlay";
+                    socket.type = "overlay";
                 } else {
                     if (token.type === "panel") {
                         var tokenSecret = config.panelSecret;
                         var type = "panel";
+                        socket.type = "panel";
                     } else {
                         var tokenSecret = config.secret;
                         var type = "overlay";
+                        socket.type = "overlay";
                     }
                     token = token.token;
                 }
@@ -1135,6 +1138,14 @@ db.connect(null, function () {
                         // console.log(users[socket.user_id].length)
                         let oldSocket = returnASocketFromAListOfSockets(socketUsers[socket.user_id], socket)
                         removeObjFromArray(socketUsers[socket.user_id], oldSocket);
+
+                        for(let x = 0; x < socketUsers[socket.user_id].length; x++){
+                            if(socketUsers[socket.user_id][x].type === "overlay"){
+                                return;
+                            } else if(x + 1 === socketUsers[socket.user_id].length){
+                                users[socket.user_id].isActive = false;
+                            }
+                        }
                         // console.log(users[socket.user_id].length)
                     }
                     if (socketUsers[socket.user_id].length === 0) {
