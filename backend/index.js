@@ -568,7 +568,7 @@ db.connect(null, function () {
         }
 
     }
-    //generateNewBoss();
+    generateNewBoss();
 
 
     function calculateCost(currentLevel, increasePerLevel, baseCost) {
