@@ -776,7 +776,7 @@ db.connect(null, function () {
                                     } else {
                                         //socket.type = type;
                                         let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
-                                        console.log("new user", decode.user_id, upgrades);
+                                        console.log("new user", decoded.user_id, upgrades);
                                         users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
                                         socketUsers[decoded.user_id] = [socket];
 
