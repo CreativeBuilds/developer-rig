@@ -769,15 +769,13 @@ db.connect(null, function () {
                         socket.disconnect(0)
                     } else {
                         console.log(decoded);
-                        if (decoded.opaque_user_id[0] !== 'U') {
-                            //The user is not logged into twitch, dont allow them to do anything
-                            socket.disconnect(0);
-                        } else if (!decoded.user_id || decoded.user_id) {
+                        if (!decoded.opaque_user_id) {
                             // User has not shared their identity with us, dont allow them do do anything
                             console.log("user did not share identity with us!")
                             socket.emit('shareIdentity');
                         } else {
                             //User has shared their identity with us!
+                            decoded.user_id = decoded.opaque_user_id;
                             socket.user_id = decoded.user_id;
                             console.log("This user connected", decoded.user_id);
                             if (!socketUsers[decoded.user_id]) {
