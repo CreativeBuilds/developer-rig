@@ -552,7 +552,7 @@ db.connect(null, function () {
         if (amountOfActivePlayers < 1) {
             amountOfActivePlayers = 1;
         }
-        //currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
+        currentBoss = new Boss(name, floor, type, amountOfActivePlayers, secondsTillDeath);
 
         try {
             
@@ -568,7 +568,7 @@ db.connect(null, function () {
         }
 
     }
-    generateNewBoss();
+    //generateNewBoss();
 
 
     function calculateCost(currentLevel, increasePerLevel, baseCost) {
