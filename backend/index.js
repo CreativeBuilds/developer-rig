@@ -467,6 +467,7 @@ db.connect(null, function () {
         get passiveDamage() {
             if (!this.isActive) return 0;
             let totalDamage = 0;
+            console.log("upgrade list", this.upgradeList);
             let list = returnUpgradesWithType(this.upgradeList, "passive");
             let thisCopy = this;
             list.forEach(function (upgrade) {
@@ -776,7 +777,6 @@ db.connect(null, function () {
                                     } else {
                                         //socket.type = type;
                                         let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
-                                        console.log("new user", decoded.user_id, upgrades);
                                         users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
                                         socketUsers[decoded.user_id] = [socket];
 
