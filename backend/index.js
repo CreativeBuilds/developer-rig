@@ -768,10 +768,11 @@ db.connect(null, function () {
                         console.log(err);
                         socket.disconnect(0)
                     } else {
+                        console.log(decoded);
                         if (decoded.opaque_user_id[0] !== 'U') {
                             //The user is not logged into twitch, dont allow them to do anything
                             socket.disconnect(0);
-                        } else if (!decoded.user_id ) {
+                        } else if (!decoded.user_id || decoded.user_id) {
                             // User has not shared their identity with us, dont allow them do do anything
                             console.log("user did not share identity with us!")
                             socket.emit('shareIdentity');
