@@ -399,6 +399,7 @@ db.connect(null, function () {
             Object.keys(users).forEach(function (user_id) {
                 if (user_id === "undefined" || typeof user_id === "undefined") return;
                 if (!users[user_id].isActive) return;
+                console.log(user_id," current damage: ",users[user_id].passiveDamage);
                 let passiveDamage = users[user_id].passiveDamage;
                 if (thisBoss.health - passiveDamage < 0) {
                     console.log("Health is set to 0!");
@@ -472,9 +473,7 @@ db.connect(null, function () {
                 totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
             })
             thisCopy = null;
-            return totalDamage
-
-
+            return totalDamage;
         }
     }
 
