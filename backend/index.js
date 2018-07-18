@@ -769,7 +769,7 @@ db.connect(null, function () {
                             //User has shared their identity with us!
                             socket.user_id = decoded.user_id;
                             console.log("This user connected", decoded.user_id);
-                            if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
+                            if (!socketUsers[decoded.user_id]) {
                                 console.log("USER CONNECTING FOR THE FIRST TIME");
                                 //User is connecting for the first time
                                 // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
