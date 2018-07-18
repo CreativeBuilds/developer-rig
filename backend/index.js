@@ -790,7 +790,9 @@ db.connect(null, function () {
                                         let upgrades = addUpgradeInfoBack(result.upgrades, upgradeList, decoded.user_id);
                                         console.log("SETTING THE UPGRADES OF THIS FUCKING USER", upgrades);
                                         users[decoded.user_id] = new User(decoded.user_id, result.level, 0, 0, upgrades);
-                                        console.log(users[decoded.user_id.upgrades])
+                                        Object.keys(users).forEach(function(user_id){
+                                            console.log("Looping through each user to get their upgrades", users[user_id].upgradeList);
+                                        })
                                         socketUsers[decoded.user_id] = [socket];
 
                                         socket.emit('verified');
