@@ -770,6 +770,7 @@ db.connect(null, function () {
                             socket.user_id = decoded.user_id;
                             console.log("This user connected", decoded.user_id);
                             if (!seeIfUserHasASocketConnected(decoded.user_id, socketUsers)) {
+                                console.log("USER CONNECTING FOR THE FIRST TIME");
                                 //User is connecting for the first time
                                 // TODO if the user doesn't have all of the upgrades from the upgradeList then we need to update it!
                                 getOrMakeUser(decoded, function (err, result) {
@@ -794,7 +795,7 @@ db.connect(null, function () {
                                 })
 
                             } else {
-
+                                console.log("ADDING USER TO AN ARRAY");
                                 getOrMakeUser(decoded, function (err, result) {
                                     if (err) {
                                         throw err;
