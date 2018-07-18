@@ -396,9 +396,18 @@ db.connect(null, function () {
             if (thisBoss.health === 0) return;
             let maxNum = Object.keys(users);
             let currentNum = 0;
+            console.log(maxNum, currentNum)
             Object.keys(users).forEach(function (user_id) {
-                if (user_id === "undefined" || typeof user_id === "undefined") return;
-                if (!users[user_id].isActive) return;
+                if (user_id === "undefined" || typeof user_id === "undefined") {
+                    currentNum++;
+                    return;
+                }
+                console.log("Users id is defined", user_id);
+                if (!users[user_id].isActive){
+                    currentNum++;
+                    return;
+                }
+                console.log("User is active", user_id)
                 console.log(user_id," current damage: ",users[user_id].passiveDamage);
                 let passiveDamage = users[user_id].passiveDamage;
                 if (thisBoss.health - passiveDamage < 0) {
