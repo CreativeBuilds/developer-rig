@@ -645,6 +645,7 @@ db.connect(null, function () {
 
     function addUpgradeInfoBack(listFromDatabase, list, username) {
         let haveToUpdate = false;
+        console.log("DATABASE:",listFromDatabase,"defaults",list,"username",username);
         Object.keys(list).forEach(function (upgrade_name) {
             if (!listFromDatabase[upgrade_name]) {
                 haveToUpdate = true;
