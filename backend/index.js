@@ -776,7 +776,6 @@ db.connect(null, function () {
                             // User has not shared their identity with us, dont allow them do do anything
                             console.log("user did not share identity with us!")
                             socket.emit('shareIdentity');
-                            socket.disconnect(0);
                         } else {
                             //User has shared their identity with us!
                             socket.user_id = decoded.user_id;

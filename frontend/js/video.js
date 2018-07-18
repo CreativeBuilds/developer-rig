@@ -205,7 +205,8 @@ app.controller('myCtrl', function ($scope) {
     });
 
     socket.on('disconnect', function () {
-        window.location.reload();
+        //window.location.reload();
+        console.log("The window is being reloaded because the socket was disconnected");
     })
 
     setInterval(function () {
