@@ -226,15 +226,15 @@ db.connect(null, function () {
         damage(usersDamage, user_id) {
             if (user_id === "undefined" || typeof user_id === "undefined") return;
             let thisBoss = this;
-            console.log("dealing damage to the boss, current health:", this.health, user_id);
+            //console.log("dealing damage to the boss, current health:", this.health, user_id);
 
             if (this.health === 0) return;
-            console.log("Got past this!")
+            //console.log("Got past this!")
             if (this.health - usersDamage < 0) {
-                console.log("Health is set to 0!");
+                //console.log("Health is set to 0!");
                 this.health = 0;
             } else {
-                console.log()
+                //console.log()
                 this.health = this.health - usersDamage;
             }
             if (!thisBoss.usersWhoHelped[user_id]) {
@@ -261,10 +261,10 @@ db.connect(null, function () {
 
         // Basically just reward users
         handleDeath() {
-            console.log("You just beat a man to death...... GOOD JOB!!!");
-            console.log("----------------------------------------------");
-            console.log(this.usersWhoHelped);
-            console.log("----------------------------------------------");
+            // console.log("You just beat a man to death...... GOOD JOB!!!");
+            // console.log("----------------------------------------------");
+            // console.log(this.usersWhoHelped);
+            // console.log("----------------------------------------------");
             let thisBoss = this;
             clearTimeout(this.expires);
 
@@ -470,7 +470,7 @@ db.connect(null, function () {
             let list = returnUpgradesWithType(this.upgradeList, "passive");
             let thisCopy = this;
             list.forEach(function (upgrade) {
-                console.log(list, upgrade, thisCopy.damageFromUpgrade(upgrade));
+                //console.log(list, upgrade, thisCopy.damageFromUpgrade(upgrade));
                 totalDamage = totalDamage + thisCopy.damageFromUpgrade(upgrade);
             })
             thisCopy = null;
