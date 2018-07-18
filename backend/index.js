@@ -404,7 +404,7 @@ db.connect(null, function () {
                 }
                 console.log("Users id is defined", user_id);
                 if (!users[user_id].isActive){
-                    console.log(users[user_id].isActive);
+                    console.log(user_id, "is not active", users[user_id].isActive);
                     currentNum++;
                     return;
                 }
