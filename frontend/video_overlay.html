@@ -10,49 +10,23 @@
 
 </head>
 
-<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100% !important; height: 100% !important; margin: 0px; padding: 0px;"
-    tabindex="-1" ng-app="app" ng-controller="myCtrl">
-    <div id="app" class="full-height ng-scope" >
+<body tabindex="-1" ng-app="app" ng-controller="myCtrl">
+    <div id="app" class="full-height ng-scope">
         <!-- Health bar at the top of the screen -->
         <div id="bossHealth">
-            <div id="bossHealthChild" style="background: rgb(38, 54, 4); width: 63%;"></div>
+            <div id="bossHealthChild"></div>
             <div id="bossHealthPercentage">{{remainingHealthPercentage}}%</div>
-            <div id="bossTimerChild" style="background: rgb(255,255,255); width: 100%;"></div>
+            <div id="bossTimerChild"></div>
             <div id="minimizeGame" ng-click="closeApp()">
-                <span class="glyphicon glyphicon-remove" style="font-size:15px;color:#f1f1f1;"></span>
+                <span class="glyphicon glyphicon-remove"></span>
             </div>
-            <!-- <span class="glyphicon glyphicon-remove" id="minimizeGame" ng-click="closeApp()" style="font-size:15px;color:#f1f1f1;"></span> -->
         </div>
 
        <div id="floor">
            <h3>{{currentFloor}}</h3>
        </div> 
 
-        <!-- Click this tab to bring out left Menu! -->
-        <!-- <div id="leftMenu" style="left: -250px;display:block;">
-            <h3 id="leftMenuTitle">
-                <span style="text-align: left;">Upgrades</span>
-                <span style="text-align: right;font-size:15px;" id="currentUpgradePoints">{{upgradePoints | number : '1.2'}}</span>
-            </h3>
-            <ul id="leftMenuContent">
-                <li ng-repeat="upgrade in upgradeList">
-                    <span style="float:left;position:absolute;text-align: left;top:2.5px;left:2.5px;">{{upgrade.name}}</span>
-                    <span style="float:right;position:absolute;text-align: right;top:2.5px;right:2.5px;font-size:15px;" >LVL: {{upgrade.level}}</span>
-                    <span style="float:left;position:absolute;text-align: left;bottom:2.5px;left:2.5px;font-size:13px;">DPS: {{calculateDamage(upgrade.level, upgrade.baseDamageMultiplierPercentage, upgrade.baseDamage, upgrade.additionalDamage)}}</span>
-                    <span style="float:right;position:absolute;text-align: right;bottom:2.5px;right:2.5px;font-size:13px;">Cost: {{calculateCost(upgrade.level, upgrade.baseCostMultiplierPercentage, upgrade.baseCostToUpgrade)}}</span>
-                    <div class="upgradeOverlay" data-ng-click="upgradeClicked(upgrade.name)">
-                        <div>UPGRADE</div>
-                    </div>
-                </li>
-            </ul>
-            <div id="leftMenuTab">
-                <div data-ng-click="toggleLeftMenu()">
-                    <span class="glyphicon glyphicon-chevron-right" id="leftMenuTabArrow" style="transform: rotate(0deg);"></span>
-                </div>
-            </div>
-        </div> -->
-
-        <div id="clickArea"style="position: absolute;top:25px;left:0;height:100%;width:100%;display:grid;justify-content: center;align-items: center;background: rgb(44, 38, 48);">
+        <div id="clickArea">
             
         </div>
 
@@ -60,13 +34,13 @@
             <div id="joinButton" ng-click="joinFight()">JOIN</div>
         </div>
 
-        <div id="registerClicks" style="width:0;height:0;" ng-click="clicked()"></div>
+        <div id="registerClicks" ng-click="clicked()"></div>
     </div>
     <div id="twitchScreenDetector">
         <div id="twitchButton" ng-click="openApp()">OPEN</div>
     </div>
-    <div id="topOverlay" style="z-index:90000;background:#111111;height:100px;width:100%;position: absolute;top:0;display:none;"></div>
-    <div id="bottomOverlay" style="z-index:90000;background:#111111;height:80px;width:100%;position: absolute;bottom:0;display:none;"></div>
+    <div id="topOverlay"></div>
+    <div id="bottomOverlay"></div>
     <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
     <script src="viewer.js" type="text/javascript"></script>
 

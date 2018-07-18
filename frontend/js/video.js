@@ -3,10 +3,7 @@ $(document).ready(function () {
     ////console.log($("body"));
 })
 
-
-
 let window2 = window;
-
 
 var app = angular.module('app', []);
 
@@ -143,8 +140,8 @@ app.controller('myCtrl', function ($scope) {
             //The server needs the user to agree to share their identity, ask them!
             ////console.log("Server asked me to share identity with it");
             window2.Twitch.ext.actions.requestIdShare(function (one, two) {
-                ////console.log("Something happened!");
-                ////console.log(one, two);
+                console.log("Something happened!");
+                console.log(one, two);
                 //TODO in the future when this is actually an extension make sure this works!
             })
         })

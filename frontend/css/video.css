@@ -1,6 +1,5 @@
 @import url("./bootstrap.css");
 @import url('https://fonts.googleapis.com/css?family=Roboto');
-
 * {
     font-family: "Roboto", sans-serif;
     user-select: none;
@@ -18,11 +17,11 @@
     transition: opacity 0.25s ease;
 }
 
-div#minimizeGame{
-    width:25px;
-    height:12vh;
-    background:#1f1f1f;
-    color:#f1f1f1;
+div#minimizeGame {
+    width: 25px;
+    height: 12vh;
+    background: #1f1f1f;
+    color: #f1f1f1;
     display: grid;
     justify-content: center;
     align-items: center;
@@ -34,9 +33,14 @@ div#minimizeGame{
 
 #minimizeGame {
     position: absolute;
-    top:44vh;
-    right:0px;
+    top: 44vh;
+    right: 0px;
     cursor: pointer;
+}
+
+#minimizeGame span.glyphicon {
+    font-size: 15px;
+    color: #f1f1f1;
 }
 
 #twitchScreenDetector {
@@ -142,7 +146,7 @@ div#minimizeGame{
     margin-top: 10px;
     font-size: 20px;
     letter-spacing: 1.5px;
-    z-index:1;
+    z-index: 1;
 }
 
 /* Everything to do with the boss */
@@ -152,7 +156,7 @@ div#minimizeGame{
     height: 25px;
     position: relative;
     background: rgb(24, 24, 24);
-    z-index:2;
+    z-index: 2;
 }
 
 #bossHealthChild {
@@ -168,7 +172,7 @@ div#minimizeGame{
     background: #f1f1f1;
     transition: width .5s ease;
     position: absolute;
-    bottom:-5px;
+    bottom: -5px;
 }
 
 #bossHealthPercentage {
@@ -223,7 +227,7 @@ div#minimizeGame{
     grid-template-columns: 1fr 1fr;
     margin: 5px 0px 0px;
     padding: 0px 10px;
-    height:95px;
+    height: 95px;
 }
 
 #leftMenuTab {
@@ -316,4 +320,41 @@ div#minimizeGame{
 
 #leftMenuTabArrow {
     transition: transform 0.5s ease-in-out;
+}
+
+#clickArea {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background: rgb(44, 38, 48);
+}
+
+#registerClicks {
+    width: 0;
+    height: 0;
+}
+
+#topOverlay {
+    z-index: 90000;
+    background: #111111;
+    height: 100px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    display: none;
+}
+
+#bottomOverlay {
+    z-index: 90000;
+    background: #111111;
+    height: 80px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    display: none;
 }

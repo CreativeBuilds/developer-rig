@@ -14,6 +14,13 @@ addEvent(window,"load",function(e) {
     addEvent(document, "mouseout", leftPage);
     addEvent(document, "mouseenter", enterPage);
 });
+if(!mouse){
+    mouse = {
+        x: 0,
+        y: 0
+    };
+    
+}
 
 (function() {
     document.onmousemove = handleMouseMove;

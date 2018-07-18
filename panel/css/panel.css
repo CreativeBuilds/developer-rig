@@ -7,6 +7,11 @@
 
 body {
     overflow: hidden;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0px;
+    padding: 0px;
 }
 
 #app {
@@ -230,44 +235,44 @@ body {
 }
 
 #itemOverlayArmorInfo {
-    display:grid;
-    background:#f1f1f1;
-    color:#111111;
-    width:100%;
-    height:225px;
+    display: grid;
+    background: #f1f1f1;
+    color: #111111;
+    width: 100%;
+    height: 225px;
     position: absolute;
-    bottom:0;
+    bottom: 0;
     left: 0;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap:5px;
+    grid-gap: 5px;
     text-align: center;
     align-items: center;
     justify-content: center;
 }
 
-.spanFullWidth{
+.spanFullWidth {
     /* grid-column-start: 1;
     grid-column-end: 5; */
-    height:50px;
-    width:100%;
-    text-align:center;
+    height: 50px;
+    width: 100%;
+    text-align: center;
     display: grid;
     justify-content: center;
     align-items: center;
-    color:#f1f1f1;
+    color: #f1f1f1;
     background: #111111;
     position: absolute;
-    bottom:0;
-    width:100%;
-    left:0;
+    bottom: 0;
+    width: 100%;
+    left: 0;
 }
 
-.spanFullWidth:hover{
+.spanFullWidth:hover {
     cursor: pointer;
     background: #222222;
 }
 
-.equippedItem:hover{
+.equippedItem:hover {
     cursor: pointer;
 }
 
@@ -286,38 +291,38 @@ body {
     transition: opacity .25s ease-in-out;
 }
 
-.noMarginTop{
-    width:200px;
-    height:200px;
+.noMarginTop {
+    width: 200px;
+    height: 200px;
     position: absolute;
     top: 55px;
     left: 50px;
-    z-index:4;
-    background:rgba(33,33,33,0.8);
-    opacity:0;
-    display:grid;
+    z-index: 4;
+    background: rgba(33, 33, 33, 0.8);
+    opacity: 0;
+    display: grid;
     grid-template-columns: 1fr;
     justify-content: center;
     align-items: center;
 }
 
-.noMarginTop div{
-    width:100%;
-    height:45px;
-    display:grid;
+.noMarginTop div {
+    width: 100%;
+    height: 45px;
+    display: grid;
     justify-content: center;
     align-items: center;
-    background:#f1f1f1
+    background: #f1f1f1
 }
 
-.noMarginTop div:hover{
-    cursor:pointer;
-    box-shadow:4px 4px 4px #000000;
-    background:#d7d7d7;
+.noMarginTop div:hover {
+    cursor: pointer;
+    box-shadow: 4px 4px 4px #000000;
+    background: #d7d7d7;
 }
 
-.noMarginTop:hover{
-    opacity:1;
+.noMarginTop:hover {
+    opacity: 1;
 }
 
 #itemOverlay img.displayImage {
@@ -332,20 +337,19 @@ body {
     position: absolute;
     top: 55px;
     left: 50px;
-    margin-top:20px;
+    margin-top: 20px;
 }
 
-#itemOverlay img.displayImage.hoverImage{
-    margin-top:25px;
+#itemOverlay img.displayImage.hoverImage {
+    margin-top: 25px;
 }
 
-#itemOverlay img.displayImage.hoverImage:hover{
-    margin-top:20px;
+#itemOverlay img.displayImage.hoverImage:hover {
+    margin-top: 20px;
 }
 
-.addMarginTop{
-    display:none;
-    
+.addMarginTop {
+    display: none;
 }
 
 #itemOverlay img.displayImage.clickable:hover {
@@ -417,44 +421,45 @@ body {
     text-align: center;
     right: 15;
 }
-#inventoryFilterButtonClose{
+
+#inventoryFilterButtonClose {
     position: absolute;
     text-align: center;
     right: 15;
-    display:none;
+    display: none;
 }
 
-#inventoryFilterButtonClose:hover{
+#inventoryFilterButtonClose:hover {
     cursor: pointer;
 }
 
-#inventoryFilterButton:hover{
+#inventoryFilterButton:hover {
     cursor: pointer;
 }
 
-#inventoryFilterMenu{
-    display:none;
-    background:#f1f1f1;
-    width:100%;
-    height:200px;
+#inventoryFilterMenu {
+    display: none;
+    background: #f1f1f1;
+    width: 100%;
+    height: 200px;
     position: absolute;
-    top:150px;
-    z-index:3;
+    top: 150px;
+    z-index: 3;
 }
 
-#inventoryFilterMenu div#inventoryFilterMenuTitle{
-    color:#111111;
-    width:100%;
+#inventoryFilterMenu div#inventoryFilterMenuTitle {
+    color: #111111;
+    width: 100%;
     text-align: center;
 }
 
-#inventoryFilterMenu div#inventoryFilterMenuOptions{
-    display:grid;
-    width:100%;
+#inventoryFilterMenu div#inventoryFilterMenuOptions {
+    display: grid;
+    width: 100%;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-#inventoryFilterMenu div#inventoryFilterMenuOptions div{
+#inventoryFilterMenu div#inventoryFilterMenuOptions div {
     text-align: center;
 }
 
@@ -472,7 +477,7 @@ body {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    max-height:355px;
+    max-height: 355px;
 }
 
 #inventoryItems li {
