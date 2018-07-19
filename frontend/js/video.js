@@ -1,6 +1,12 @@
 $(document).ready(function () {
     ////console.log("Document is ready!");
     ////console.log($("body"));
+    window.Twitch.ext.onAuthorized(auth => {
+        //console.log("Twitch verified!");
+        authCode = auth;
+        console.log("This auth video!", auth);
+    })
+    //window.Twitch.ext.actions.requestIdShare();
 })
 
 let window2 = window;
@@ -148,7 +154,7 @@ app.controller('myCtrl', function ($scope) {
         socket.on("shareIdentity", () => {
             //The server needs the user to agree to share their identity, ask them!
             ////console.log("Server asked me to share identity with it");
-            console.log(window.Twitch.ext.actions.requestIdShare);
+            console.log("plz share your identity sir/mam");
             window.Twitch.ext.actions.requestIdShare();
         })
 

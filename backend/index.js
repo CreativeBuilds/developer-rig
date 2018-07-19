@@ -634,13 +634,13 @@ db.connect(null, function () {
     // Will take a object in the form of upgrade.json and strip everything except the levels (useful for saving in the database))
     function returnLevelUpgradeList(list) {
         let tempObj = {};
-        Object.keys(list).forEach(function (upgrade_name) {
-            tempObj[upgrade_name] = {
-                "level": list[upgrade_name].level
-            };
-        })
+        // Object.keys(list).forEach(function (upgrade_name) {
+        //     tempObj[upgrade_name] = {
+        //         "level": list[upgrade_name].level
+        //     };
+        // })
         console.log("Returning", tempObj);
-        return tempObj;
+        return list;
     }
 
     function addUpgradeInfoBack(listFromDatabase, list, username) {

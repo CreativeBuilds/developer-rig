@@ -1,9 +1,17 @@
 $(document).ready(function () {
     ////console.log("Document is ready!");
     ////console.log($("body"));
+
+    window.Twitch.ext.onAuthorized(auth => {
+        //console.log("Twitch verified!");
+        authCode = auth;
+        console.log("This auth!", auth);
+    })
+    //window.Twitch.ext.actions.requestIdShare();
 })
 
 let window2 = window;
+
 
 var app = angular.module('app', []);
 
@@ -34,11 +42,7 @@ app.filter('inventorySort', function () {
 
 let authCode = '';
 
-window.Twitch.ext.onAuthorized(auth => {
-    //console.log("Twitch verified!");
-    authCode = auth;
-    console.log("This auth!", auth);
-})
+
 
 app.controller('myCtrl', function ($scope) {
 
